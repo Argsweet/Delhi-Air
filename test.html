@@ -1,0 +1,1955 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delhi's Deadly Air</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --peach: #d4956a;
+        --peach-light: #e8b48a;
+        --peach-pale: #f0c89a;
+        --dark: #2e2e2e;
+        --charcoal: #3a3a3a;
+        --smoke: #555;
+        --rust: #b84020;
+        --rust-light: #d05030;
+        --sand: #c8916a;
+        --tan: #8b6840;
+        --wheat-gold: #c8a070;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--peach-light);
+        font-family: "DM Sans", sans-serif;
+        color: var(--dark);
+        overflow-x: hidden;
+      }
+
+      /* ── SMOKE CLOUD TOP ── */
+      .smoke-top {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        pointer-events: none;
+        height: 100px;
+      }
+      .smoke-top svg {
+        display: block;
+        width: 100%;
+      }
+
+      /* ── HERO ── */
+      .hero {
+        min-height: 100vh;
+        background: var(--peach-light);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 120px 40px 80px;
+        position: relative;
+      }
+      .hero-eyebrow {
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--rust);
+        margin-bottom: 20px;
+      }
+      .hero h1 {
+        font-family: "Libre Baskerville", serif;
+        font-size: clamp(42px, 7vw, 90px);
+        font-weight: 700;
+        line-height: 1.05;
+        color: var(--dark);
+        margin-bottom: 24px;
+      }
+      .hero h1 em {
+        color: var(--rust);
+        font-style: normal;
+      }
+      .hero-sub {
+        font-size: clamp(15px, 2vw, 20px);
+        line-height: 1.7;
+        max-width: 600px;
+        color: #4a3a2a;
+        margin-bottom: 48px;
+      }
+      .hero-stat-row {
+        display: flex;
+        gap: 48px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .hero-stat {
+        text-align: center;
+      }
+      .hero-stat .num {
+        font-family: "Libre Baskerville", serif;
+        font-size: clamp(36px, 5vw, 56px);
+        font-weight: 700;
+        color: var(--rust);
+        line-height: 1;
+      }
+      .hero-stat .label {
+        font-size: 13px;
+        color: var(--tan);
+        letter-spacing: 0.05em;
+        margin-top: 6px;
+      }
+      .scroll-hint {
+        position: absolute;
+        bottom: 36px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tan);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .scroll-arrow {
+        width: 20px;
+        height: 20px;
+        border-right: 2px solid var(--tan);
+        border-bottom: 2px solid var(--tan);
+        transform: rotate(45deg);
+        animation: bounce 1.4s ease infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: rotate(45deg) translateY(0);
+        }
+        50% {
+          transform: rotate(45deg) translateY(5px);
+        }
+      }
+
+      /* ── SECTION HEADERS ── */
+      .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--rust);
+        margin-bottom: 12px;
+      }
+      .section-h2 {
+        font-family: "Libre Baskerville", serif;
+        font-size: clamp(28px, 4vw, 48px);
+        font-weight: 700;
+        line-height: 1.15;
+        color: var(--dark);
+        margin-bottom: 16px;
+      }
+      .section-body {
+        font-size: clamp(14px, 1.6vw, 17px);
+        line-height: 1.8;
+        color: #4a3a2a;
+        max-width: 560px;
+      }
+
+      /* ── SCROLLYTELLING CONTAINER ── */
+      .scrolly {
+        position: relative;
+      }
+      .scrolly-sticky {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .scrolly-steps {
+        position: relative;
+        z-index: 10;
+        margin-top: -100vh;
+      }
+      .scrolly-step {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 60px 8%;
+      }
+      .step-text {
+        max-width: 340px;
+        opacity: 0;
+        transform: translateY(32px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+        pointer-events: all;
+      }
+      .step-text.in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── SECTION: WHY FARMERS BURN ── */
+      .s-farmers {
+        background: var(--peach-light);
+        padding: 100px 8%;
+      }
+      .farmers-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      @media (max-width: 700px) {
+        .farmers-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+      }
+
+      /* GAUGE */
+      .gauge-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 440px;
+        margin: 0 auto;
+      }
+      .gauge-svg {
+        width: 100%;
+        display: block;
+      }
+      .gauge-needle {
+        transform-origin: 50% 100%;
+        transform: rotate(-85deg);
+        transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      /* PROCESS STEPS */
+      .process-steps {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-top: 40px;
+        flex-wrap: nowrap;
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: 8px;
+        padding: 20px 16px;
+      }
+      .proc-item {
+        flex: 1;
+        text-align: center;
+        font-size: 12px;
+        color: var(--tan);
+        line-height: 1.4;
+      }
+      .proc-icon {
+        font-size: 28px;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .proc-label {
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .proc-label.fire-label {
+        color: var(--rust);
+      }
+      .proc-arrow {
+        font-size: 18px;
+        color: var(--tan);
+        padding: 0 4px;
+        flex-shrink: 0;
+      }
+
+      /* ── FIRE COUNT SCROLLYTELLING ── */
+      .s-fire-scroll {
+        background: var(--peach-light);
+        position: relative;
+      }
+      .fire-sticky-bg {
+        position: absolute;
+        inset: 0;
+        background: var(--peach-light);
+      }
+
+      /* fire chart canvas */
+      .fire-chart-wrap {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 5% 20px;
+      }
+
+      /* ── CIGARETTE INTERACTIVE ── */
+      .s-cigarette {
+        background: var(--peach-light);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 100px 8%;
+        position: relative;
+      }
+      .cig-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+        max-width: 1100px;
+        width: 100%;
+      }
+      @media (max-width: 700px) {
+        .cig-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .cig-left {
+      }
+      .cig-right {
+        background: rgba(255, 255, 255, 0.28);
+        border: 1px solid rgba(180, 130, 80, 0.3);
+        border-radius: 8px;
+        padding: 28px;
+      }
+
+      .cig-big {
+        margin: 32px 0;
+      }
+      .cig-big svg {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .guess-input-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+      .guess-num {
+        font-family: "Libre Baskerville", serif;
+        font-size: 56px;
+        font-weight: 700;
+        color: var(--rust);
+        min-width: 90px;
+        text-align: center;
+        border: 2px solid var(--rust);
+        padding: 8px 12px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.4);
+      }
+      .spinner {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .spin-btn {
+        width: 32px;
+        height: 24px;
+        background: rgba(180, 100, 40, 0.15);
+        border: 1px solid var(--rust);
+        border-radius: 3px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--rust);
+        transition: background 0.15s;
+      }
+      .spin-btn:hover {
+        background: rgba(180, 100, 40, 0.3);
+      }
+      .guess-unit {
+        font-size: 14px;
+        color: var(--tan);
+      }
+
+      .confirm-btn {
+        background: var(--dark);
+        color: #f0e8dc;
+        border: none;
+        padding: 14px 32px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 8px;
+      }
+      .confirm-btn:hover {
+        background: var(--charcoal);
+      }
+
+      /* reveal panel */
+      .reveal-panel {
+        display: none;
+      }
+      .reveal-panel.show {
+        display: block;
+      }
+      .real-num {
+        font-family: "Libre Baskerville", serif;
+        font-size: 72px;
+        font-weight: 700;
+        color: var(--rust);
+        line-height: 1;
+      }
+
+      /* cig grid */
+      .cig-grid {
+        display: grid;
+        grid-template-columns: repeat(11, 1fr);
+        gap: 4px;
+        margin: 16px 0;
+      }
+      .cig-icon {
+        width: 100%;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cig-icon svg {
+        width: 100%;
+        height: auto;
+      }
+
+      /* histogram */
+      .histogram-wrap {
+        margin-top: 20px;
+      }
+      .hist-title {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tan);
+        margin-bottom: 12px;
+      }
+      #histCanvas {
+        width: 100%;
+        border-radius: 4px;
+      }
+
+      /* ── AIR QUALITY SCROLLYTELLING ── */
+      .s-aq-scroll {
+        background: var(--peach-light);
+        position: relative;
+      }
+      .aq-sticky {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .aq-chart-area {
+        width: 70%;
+        max-width: 700px;
+        padding: 20px;
+      }
+
+      /* ── SMOKE WISP SVG ── */
+      .smoke-wisp {
+        position: absolute;
+        top: 0;
+        right: 60px;
+        opacity: 0.6;
+        animation: wisp 3s ease-in-out infinite;
+      }
+      @keyframes wisp {
+        0%,
+        100% {
+          transform: translateY(0) scaleX(1);
+        }
+        50% {
+          transform: translateY(-8px) scaleX(1.05);
+        }
+      }
+
+      /* ── DARK BLOB TOPS ── */
+      .cloud-blob {
+        width: 100%;
+        overflow: hidden;
+        line-height: 0;
+      }
+      .cloud-blob svg {
+        display: block;
+        width: 100%;
+      }
+
+      /* Wheat decoration */
+      .wheat-side {
+        position: absolute;
+        bottom: 0;
+        opacity: 0.55;
+      }
+      .wheat-left {
+        left: 20px;
+      }
+      .wheat-right {
+        right: 20px;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--peach);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--rust);
+        border-radius: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FIXED SMOKE TOP -->
+    <div class="smoke-top">
+      <svg
+        viewBox="0 0 1400 110"
+        preserveAspectRatio="xMidYMin slice"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M0,0 L1400,0 L1400,45 C1340,45 1320,85 1270,72 C1230,95 1190,62 1150,78 C1110,95 1075,65 1040,80 C1000,95 965,68 930,80 C895,93 860,65 820,78 C780,92 745,62 705,76 C665,90 625,60 580,74 C540,88 500,58 455,72 C415,86 375,55 330,70 C285,85 245,55 200,68 C155,82 115,50 70,64 C40,74 20,50 0,58 Z"
+          fill="#4a4a4a"
+        />
+      </svg>
+    </div>
+
+    <!-- ══════════════════════════════════
+  SECTION 1: HERO
+══════════════════════════════════ -->
+    <section class="hero">
+      <!-- smoke wisp top right -->
+      <svg
+        class="smoke-wisp"
+        width="40"
+        height="80"
+        viewBox="0 0 40 80"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M20,80 Q10,60 18,45 Q26,30 15,15 Q8,5 12,0"
+          fill="none"
+          stroke="#5a5a5a"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+        <path
+          d="M28,80 Q38,58 30,42 Q22,28 32,12"
+          fill="none"
+          stroke="#5a5a5a"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+
+      <div class="hero-eyebrow">Delhi, India · Air Quality Crisis</div>
+      <h1>Breathing<br /><em>Smoke</em></h1>
+      <p class="hero-sub">
+        Every autumn, millions of farmers across northern India burn their crop
+        stubble — sending a toxic cloud over Delhi that turns the sky grey for
+        weeks and chokes <strong>33 million people</strong>.
+      </p>
+
+      <div class="hero-stat-row">
+        <div class="hero-stat">
+          <div class="num">3rd</div>
+          <div class="label">Most polluted city<br />in the world</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">33M</div>
+          <div class="label">People affected<br />in Delhi NCR</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">500+</div>
+          <div class="label">AQI on worst days<br />(Hazardous &gt;300)</div>
+        </div>
+      </div>
+
+      <div class="scroll-hint">
+        <span>Scroll</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+  SECTION 2: WHY FARMERS BURN — GAUGE
+══════════════════════════════════ -->
+    <section class="s-farmers" id="secFarmers">
+      <!-- cloud blob transition -->
+      <div
+        class="cloud-blob"
+        style="margin: -100px -8% 60px; position: relative"
+      >
+        <svg
+          viewBox="0 0 1200 80"
+          preserveAspectRatio="xMidYMax meet"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <ellipse
+            cx="600"
+            cy="0"
+            rx="700"
+            ry="60"
+            fill="rgba(180,120,60,0.15)"
+          />
+        </svg>
+        <!-- wheat left -->
+        <svg
+          class="wheat-side wheat-left"
+          width="80"
+          height="160"
+          viewBox="0 0 80 160"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            x1="40"
+            y1="160"
+            x2="40"
+            y2="20"
+            stroke="#C8906A"
+            stroke-width="3"
+          />
+          <ellipse
+            cx="22"
+            cy="80"
+            rx="14"
+            ry="26"
+            transform="rotate(-35,22,80)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="58"
+            cy="95"
+            rx="13"
+            ry="24"
+            transform="rotate(30,58,95)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="20"
+            cy="55"
+            rx="12"
+            ry="22"
+            transform="rotate(-40,20,55)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="58"
+            cy="68"
+            rx="11"
+            ry="20"
+            transform="rotate(35,58,68)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="30"
+            cy="32"
+            rx="10"
+            ry="18"
+            transform="rotate(-25,30,32)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="52"
+            cy="42"
+            rx="9"
+            ry="16"
+            transform="rotate(20,52,42)"
+            fill="#C8906A"
+          />
+        </svg>
+        <svg
+          class="wheat-side wheat-right"
+          width="80"
+          height="160"
+          viewBox="0 0 80 160"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            x1="40"
+            y1="160"
+            x2="40"
+            y2="20"
+            stroke="#C8906A"
+            stroke-width="3"
+          />
+          <ellipse
+            cx="58"
+            cy="80"
+            rx="14"
+            ry="26"
+            transform="rotate(35,58,80)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="22"
+            cy="95"
+            rx="13"
+            ry="24"
+            transform="rotate(-30,22,95)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="60"
+            cy="55"
+            rx="12"
+            ry="22"
+            transform="rotate(40,60,55)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="22"
+            cy="68"
+            rx="11"
+            ry="20"
+            transform="rotate(-35,22,68)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="50"
+            cy="32"
+            rx="10"
+            ry="18"
+            transform="rotate(25,50,32)"
+            fill="#C8906A"
+          />
+          <ellipse
+            cx="28"
+            cy="42"
+            rx="9"
+            ry="16"
+            transform="rotate(-20,28,42)"
+            fill="#C8906A"
+          />
+        </svg>
+      </div>
+
+      <div class="farmers-grid">
+        <div>
+          <div class="section-label">The Why</div>
+          <h2 class="section-h2">A window<br />that's too small</h2>
+          <p class="section-body">
+            After rice harvest, farmers have only a
+            <strong>7–10 day window</strong> to prepare their fields and sow
+            wheat. The short gap leaves no time—and no choice but to burn what's
+            left behind.
+          </p>
+          <p class="section-body" style="margin-top: 16px">
+            Punjab and Haryana together produce over
+            <strong>50% of India's wheat and rice</strong>. A missed sowing
+            window means a lost season — for farmers already earning less than
+            $3/day, that's catastrophic.
+          </p>
+
+          <!-- Process flow -->
+          <div class="process-steps" style="margin-top: 32px">
+            <div class="proc-item">
+              <span class="proc-icon">🚜</span>
+              <div class="proc-label">Rice is<br />harvested</div>
+            </div>
+            <div class="proc-arrow">→</div>
+            <div class="proc-item">
+              <span class="proc-icon">🌾</span>
+              <div class="proc-label">Crop residue<br />left behind</div>
+            </div>
+            <div class="proc-arrow">→</div>
+            <div class="proc-item">
+              <span class="proc-icon">🔥</span>
+              <div class="proc-label fire-label">
+                <strong>Fields are<br />burned</strong>
+              </div>
+            </div>
+            <div class="proc-arrow">→</div>
+            <div class="proc-item">
+              <span class="proc-icon">🌱</span>
+              <div class="proc-label">Wheat is<br />sown</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GAUGE -->
+        <div>
+          <div style="text-align: center; margin-bottom: 16px">
+            <div
+              style="
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--tan);
+              "
+            >
+              Time between rice harvest & wheat sowing
+            </div>
+          </div>
+          <div class="gauge-wrap">
+            <svg
+              class="gauge-svg"
+              viewBox="0 0 400 240"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <!-- gauge background arc -->
+              <path
+                d="M 40,200 A 160,160 0 0,1 360,200"
+                fill="none"
+                stroke="#d4a070"
+                stroke-width="36"
+                stroke-linecap="round"
+              />
+              <!-- red danger zone (0–10 days, roughly first 30° of arc) -->
+              <path
+                d="M 40,200 A 160,160 0 0,1 95,68"
+                fill="none"
+                stroke="#B84020"
+                stroke-width="36"
+                stroke-linecap="round"
+              />
+              <!-- tick marks -->
+              <g stroke="#8B6840" stroke-width="1.5" opacity="0.6">
+                <line x1="40" y1="200" x2="52" y2="184" />
+                <line x1="82" y1="88" x2="90" y2="102" />
+                <line x1="200" y1="42" x2="200" y2="58" />
+                <line x1="318" y1="88" x2="310" y2="102" />
+                <line x1="360" y1="200" x2="348" y2="184" />
+              </g>
+              <!-- labels -->
+              <text
+                x="28"
+                y="224"
+                font-size="13"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+                font-weight="600"
+              >
+                0
+              </text>
+              <text
+                x="14"
+                y="236"
+                font-size="11"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+              >
+                DAYS
+              </text>
+              <text
+                x="185"
+                y="32"
+                font-size="13"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+                font-weight="600"
+              >
+                30
+              </text>
+              <text
+                x="181"
+                y="46"
+                font-size="11"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+              >
+                DAYS
+              </text>
+              <text
+                x="346"
+                y="224"
+                font-size="13"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+                font-weight="600"
+              >
+                60
+              </text>
+              <text
+                x="336"
+                y="236"
+                font-size="11"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+              >
+                DAYS
+              </text>
+
+              <!-- 7-10 day label -->
+              <text
+                x="58"
+                y="150"
+                font-size="22"
+                fill="#B84020"
+                font-family="Libre Baskerville,serif"
+                font-weight="700"
+              >
+                7–10
+              </text>
+              <text
+                x="60"
+                y="166"
+                font-size="12"
+                fill="#B84020"
+                font-family="DM Sans,sans-serif"
+                font-weight="700"
+                letter-spacing="0.08em"
+              >
+                DAYS
+              </text>
+              <text
+                x="56"
+                y="184"
+                font-size="11"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+              >
+                The narrow window
+              </text>
+              <text
+                x="58"
+                y="196"
+                font-size="11"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+              >
+                farmers have to
+              </text>
+              <text
+                x="62"
+                y="208"
+                font-size="11"
+                fill="#8B6840"
+                font-family="DM Sans,sans-serif"
+              >
+                prepare for wheat.
+              </text>
+
+              <!-- needle -->
+              <g
+                class="gauge-needle"
+                id="gaugeNeedle"
+                transform="rotate(-80) translate(0,0)"
+                style="transform-origin: 200px 200px"
+              >
+                <line
+                  x1="200"
+                  y1="200"
+                  x2="200"
+                  y2="55"
+                  stroke="#1a1a1a"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+                <circle cx="200" cy="200" r="9" fill="#2a2a2a" />
+                <circle cx="200" cy="200" r="5" fill="#E8B48A" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+  SECTION 3: FIRE COUNTS SCROLLYTELLING
+══════════════════════════════════ -->
+    <section class="s-fire-scroll scrolly" id="secFire">
+      <div class="scrolly-sticky">
+        <div class="fire-sticky-bg"></div>
+        <div
+          class="fire-chart-wrap"
+          style="flex-direction: column; gap: 12px; padding-top: 80px"
+        >
+          <div style="text-align: center; max-width: 680px">
+            <div class="section-label">MODIS Fire Data · Punjab & Haryana</div>
+          </div>
+          <canvas
+            id="fireCanvas"
+            width="700"
+            height="380"
+            style="max-width: 100%; border-radius: 6px"
+          ></canvas>
+          <div
+            style="
+              display: flex;
+              gap: 24px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                color: var(--tan);
+              "
+            >
+              <div style="width: 24px; height: 3px; background: #b84020"></div>
+              Peak burning season
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                color: var(--tan);
+              "
+            >
+              <div
+                style="
+                  width: 10px;
+                  height: 10px;
+                  border-radius: 50%;
+                  background: #d4956a;
+                "
+              ></div>
+              Fire count (FIRMS)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scrolly-steps" style="margin-top: -100vh">
+        <div
+          class="scrolly-step"
+          style="justify-content: flex-end"
+          data-step="0"
+        >
+          <div class="step-text" id="fireStep0">
+            <div class="section-label">October–November</div>
+            <h2 class="section-h2" style="font-size: clamp(24px, 3vw, 36px)">
+              After rice harvest,<br />fires ignite
+            </h2>
+            <p class="section-body">
+              Each year between October and November, satellite data from MODIS
+              detects a dramatic spike in fire activity across Punjab and
+              Haryana — the breadbasket states upwind of Delhi.
+            </p>
+          </div>
+        </div>
+        <div
+          class="scrolly-step"
+          style="justify-content: flex-end"
+          data-step="1"
+        >
+          <div class="step-text" id="fireStep1">
+            <div class="section-label">Peak: Oct 25 – Nov 10</div>
+            <h2 class="section-h2" style="font-size: clamp(24px, 3vw, 36px)">
+              Thousands of fires<br />in days
+            </h2>
+            <p class="section-body">
+              At peak season, over <strong>4,000 active fires</strong> are
+              detected in a single day across the two states — a 40× increase
+              from baseline levels in September.
+            </p>
+          </div>
+        </div>
+        <div
+          class="scrolly-step"
+          style="justify-content: flex-end"
+          data-step="2"
+        >
+          <div class="step-text" id="fireStep2">
+            <div class="section-label">Wind Direction</div>
+            <h2 class="section-h2" style="font-size: clamp(24px, 3vw, 36px)">
+              Smoke travels<br />straight to Delhi
+            </h2>
+            <p class="section-body">
+              Prevailing north-westerly winds during this period carry the smoke
+              plume directly over Delhi. The city has no escape — hemmed in by
+              the Himalayas to the north and the Aravalli ridge to the south.
+            </p>
+          </div>
+        </div>
+        <div
+          class="scrolly-step"
+          style="justify-content: flex-end"
+          data-step="3"
+        >
+          <div class="step-text" id="fireStep3">
+            <div class="section-label">Year after year</div>
+            <h2 class="section-h2" style="font-size: clamp(24px, 3vw, 36px)">
+              It happens<br />every season
+            </h2>
+            <p class="section-body">
+              Despite bans and subsidies for alternative methods, the pattern
+              repeats annually. Farmers face ₹2,500 fines — but clearing a
+              hectare by machine costs ₹6,000. The economics make burning
+              inevitable.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+  SECTION 4: CIGARETTE INTERACTIVE
+══════════════════════════════════ -->
+    <section class="s-cigarette" id="secCig">
+      <div
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          overflow: hidden;
+          height: 80px;
+        "
+      >
+        <svg
+          viewBox="0 0 1200 80"
+          preserveAspectRatio="xMidYMin slice"
+          style="width: 100%; display: block"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,0 L1200,0 L1200,28 C1150,28 1120,65 1080,50 C1040,70 1000,42 955,58 C910,74 870,44 825,60 C775,76 735,46 690,62 C645,78 605,48 560,64 C510,80 470,50 425,66 C375,82 335,50 285,65 C235,80 195,48 150,63 C110,76 70,46 30,60 C15,65 5,48 0,52 Z"
+            fill="#3a3a3a"
+          />
+        </svg>
+      </div>
+
+      <!-- large cigarette illustration top right -->
+      <div style="position: absolute; top: 80px; right: 40px; opacity: 0.6">
+        <svg
+          width="48"
+          height="90"
+          viewBox="0 0 48 90"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M24,90 Q14,70 18,52 Q22,36 14,18 Q8,6 14,0"
+            fill="none"
+            stroke="#5a5a5a"
+            stroke-width="3.5"
+            stroke-linecap="round"
+          />
+          <path
+            d="M32,90 Q40,68 35,50 Q30,34 37,16"
+            fill="none"
+            stroke="#5a5a5a"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+
+      <div class="cig-layout">
+        <!-- LEFT: interactive guess -->
+        <div class="cig-left">
+          <div class="section-label">Feel the scale</div>
+          <h2 class="section-h2">
+            Daily exposure<br />in Delhi during<br />severe pollution<br />is
+            equivalent to
+          </h2>
+
+          <!-- Big cigarette SVG -->
+          <div class="cig-big">
+            <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg">
+              <!-- smoke -->
+              <path
+                d="M242,18 Q228,8 232,0"
+                fill="none"
+                stroke="#888"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+              <path
+                d="M235,20 Q218,10 220,2"
+                fill="none"
+                stroke="#888"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <!-- filter -->
+              <rect
+                x="10"
+                y="32"
+                width="70"
+                height="26"
+                rx="6"
+                fill="#C8872A"
+              />
+              <rect x="77" y="34" width="6" height="22" rx="2" fill="#B07020" />
+              <!-- paper -->
+              <rect
+                x="83"
+                y="29"
+                width="155"
+                height="32"
+                rx="4"
+                fill="#EDE8DC"
+              />
+              <!-- texture lines -->
+              <line
+                x1="118"
+                y1="29"
+                x2="118"
+                y2="61"
+                stroke="#d5d0c5"
+                stroke-width="0.7"
+              />
+              <line
+                x1="155"
+                y1="29"
+                x2="155"
+                y2="61"
+                stroke="#d5d0c5"
+                stroke-width="0.7"
+              />
+              <line
+                x1="192"
+                y1="29"
+                x2="192"
+                y2="61"
+                stroke="#d5d0c5"
+                stroke-width="0.7"
+              />
+              <!-- lit end -->
+              <rect
+                x="237"
+                y="30"
+                width="22"
+                height="30"
+                rx="4"
+                fill="#CC3A10"
+              />
+              <circle cx="252" cy="45" r="5" fill="#FF6020" opacity="0.7" />
+            </svg>
+          </div>
+
+          <div class="guess-input-wrap">
+            <div class="guess-num" id="guessNum">25</div>
+            <div class="spinner">
+              <button class="spin-btn" id="spinUp">▲</button>
+              <button class="spin-btn" id="spinDown">▼</button>
+            </div>
+            <div class="guess-unit">cigarettes/day</div>
+          </div>
+          <button class="confirm-btn" id="confirmBtn">Confirm my guess</button>
+        </div>
+
+        <!-- RIGHT: reveal -->
+        <div class="cig-right">
+          <!-- before state -->
+          <div id="beforeState">
+            <div style="font-size: 14px; color: var(--tan); line-height: 1.6">
+              <p>
+                How many cigarettes do you think a Delhi resident effectively
+                "smokes" during peak pollution season?
+              </p>
+              <p style="margin-top: 12px; font-size: 12px; opacity: 0.7">
+                Make your guess on the left, then confirm.
+              </p>
+            </div>
+          </div>
+
+          <!-- after reveal -->
+          <div class="reveal-panel" id="revealPanel">
+            <div
+              style="
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--tan);
+                margin-bottom: 8px;
+              "
+            >
+              The real amount is
+            </div>
+            <div class="real-num">44</div>
+            <div
+              style="font-size: 14px; color: var(--tan); margin-bottom: 20px"
+            >
+              cigarettes/day
+            </div>
+
+            <!-- 44 cigarette icons grid -->
+            <div class="cig-grid" id="cigGrid"></div>
+
+            <!-- histogram -->
+            <div class="histogram-wrap">
+              <div class="hist-title">What others guessed</div>
+              <canvas id="histCanvas" height="140"></canvas>
+            </div>
+
+            <div
+              id="guessComment"
+              style="
+                margin-top: 14px;
+                font-size: 13px;
+                color: var(--rust);
+                font-weight: 600;
+              "
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+  SECTION 5: DELHI AIR QUALITY SCROLLYTELLING
+══════════════════════════════════ -->
+    <section class="s-aq-scroll scrolly" id="secAQ">
+      <div class="aq-sticky scrolly-sticky">
+        <div
+          style="position: absolute; inset: 0; background: var(--peach-light)"
+        ></div>
+        <div class="aq-chart-area">
+          <div style="text-align: center; margin-bottom: 12px">
+            <div class="section-label">
+              Delhi Air Quality Dataset · 2015–2020
+            </div>
+          </div>
+          <canvas
+            id="aqCanvas"
+            width="700"
+            height="380"
+            style="max-width: 100%; border-radius: 6px"
+          ></canvas>
+          <div
+            style="
+              display: flex;
+              gap: 20px;
+              justify-content: center;
+              margin-top: 10px;
+              flex-wrap: wrap;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                color: var(--tan);
+              "
+            >
+              <div
+                style="width: 20px; height: 3px; background: var(--rust)"
+              ></div>
+              PM2.5 (µg/m³)
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                color: var(--tan);
+              "
+            >
+              <div
+                style="
+                  width: 20px;
+                  height: 3px;
+                  background: #8b6840;
+                  border-style: dashed;
+                "
+              ></div>
+              WHO safe limit (15 µg/m³)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scrolly-steps" style="margin-top: -100vh; padding-right: 0">
+        <div class="scrolly-step" data-step="aq0">
+          <div class="step-text" id="aqStep0">
+            <div class="section-label">Year-round baseline</div>
+            <h2 class="section-h2" style="font-size: clamp(22px, 3vw, 34px)">
+              Delhi air is<br />never truly clean
+            </h2>
+            <p class="section-body" style="max-width: 300px">
+              Even in summer, Delhi's PM2.5 levels average
+              <strong>60–80 µg/m³</strong> — four to five times the WHO safe
+              limit of 15 µg/m³.
+            </p>
+          </div>
+        </div>
+        <div class="scrolly-step" data-step="aq1">
+          <div class="step-text" id="aqStep1">
+            <div class="section-label">October–November</div>
+            <h2 class="section-h2" style="font-size: clamp(22px, 3vw, 34px)">
+              Crop burning<br />breaks the scale
+            </h2>
+            <p class="section-body" style="max-width: 300px">
+              When fires peak, PM2.5 regularly breaches
+              <strong>500 µg/m³</strong> — 33× the safe limit. Visibility drops
+              to under 500 metres. Flights are grounded. Schools close.
+            </p>
+          </div>
+        </div>
+        <div class="scrolly-step" data-step="aq2">
+          <div class="step-text" id="aqStep2">
+            <div class="section-label">Health burden</div>
+            <h2 class="section-h2" style="font-size: clamp(22px, 3vw, 34px)">
+              A health crisis<br />hiding in plain sight
+            </h2>
+            <p class="section-body" style="max-width: 300px">
+              Long-term exposure at these levels cuts life expectancy by an
+              estimated <strong>8–12 years</strong> for Delhi residents.
+              Children born today will breathe this air for decades.
+            </p>
+          </div>
+        </div>
+        <div class="scrolly-step" data-step="aq3">
+          <div class="step-text" id="aqStep3">
+            <div class="section-label">What needs to change</div>
+            <h2 class="section-h2" style="font-size: clamp(22px, 3vw, 34px)">
+              Subsidise<br />the alternative
+            </h2>
+            <p class="section-body" style="max-width: 300px">
+              Happy Seeder machines can plant wheat directly into stubble — but
+              cost ₹1.5 lakh to rent per season. Without meaningful subsidies,
+              burning will remain the only viable option for smallholder
+              farmers.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- END padding -->
+    <div
+      style="
+        background: var(--peach-light);
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <p
+        style="
+          font-size: 12px;
+          color: var(--tan);
+          letter-spacing: 0.08em;
+          text-align: center;
+        "
+      >
+        Data: MODIS AOD · MODIS FIRMS · Delhi Air Quality (Kaggle) · WHO Air
+        Quality Guidelines
+      </p>
+    </div>
+
+    <script>
+      // ── GAUGE ANIMATION ON SCROLL ──
+      const gaugeNeedle = document.getElementById("gaugeNeedle");
+      let gaugeAnimated = false;
+      const gaugeObs = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !gaugeAnimated) {
+            gaugeAnimated = true;
+            setTimeout(() => {
+              // rotate from -80 to about -55 (representing ~8 days on 0-60 arc)
+              gaugeNeedle.style.transform = "rotate(-55deg)";
+            }, 400);
+          }
+        },
+        { threshold: 0.4 },
+      );
+      const farmersSection = document.getElementById("secFarmers");
+      if (farmersSection) gaugeObs.observe(farmersSection);
+
+      // ── SCROLLYTELLING CARD OBSERVER ──
+      const stepEls = document.querySelectorAll(".step-text");
+      const stepObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            e.target.classList.toggle("in", e.isIntersecting);
+          });
+        },
+        { threshold: 0.45 },
+      );
+      stepEls.forEach((el) => stepObs.observe(el));
+
+      // ── FIRE DATA (synthetic MODIS-style, Oct–Nov peak) ──
+      function buildFireData() {
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        const base = [80, 60, 55, 90, 110, 85, 70, 95, 120, 0, 0, 70];
+        const data = [];
+        // day-level for Oct (index 9) and Nov (index 10) — simulate the big spike
+        // We'll produce weekly buckets across the year
+        const weekly = [];
+        const labels = [];
+        for (let m = 0; m < 12; m++) {
+          for (let w = 0; w < 4; w++) {
+            labels.push(w === 0 ? months[m] : "");
+            let v = base[m] + Math.round((Math.random() - 0.5) * 30);
+            if (m === 9) {
+              // Oct: rises steeply week by week
+              const peakCurve = [300, 1400, 3200, 4100];
+              v = peakCurve[w] + Math.round((Math.random() - 0.5) * 200);
+            } else if (m === 10) {
+              const peakCurve = [3800, 2400, 1200, 400];
+              v = peakCurve[w] + Math.round((Math.random() - 0.5) * 150);
+            }
+            weekly.push(Math.max(0, v));
+          }
+        }
+        return { weekly, labels };
+      }
+
+      const fireData = buildFireData();
+
+      function drawFireChart(highlight) {
+        const canvas = document.getElementById("fireCanvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        const W = canvas.width,
+          H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+        const pad = { top: 30, right: 20, bottom: 50, left: 60 };
+        const chartW = W - pad.left - pad.right;
+        const chartH = H - pad.top - pad.bottom;
+        const data = fireData.weekly;
+        const labels = fireData.labels;
+        const max = Math.max(...data);
+        const n = data.length;
+        const barW = chartW / n;
+
+        // grid lines
+        ctx.strokeStyle = "rgba(180,130,80,0.2)";
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+          const y = pad.top + chartH * (1 - i / 4);
+          ctx.beginPath();
+          ctx.moveTo(pad.left, y);
+          ctx.lineTo(pad.left + chartW, y);
+          ctx.stroke();
+          ctx.fillStyle = "rgba(140,100,60,0.7)";
+          ctx.font = "11px DM Sans,sans-serif";
+          ctx.textAlign = "right";
+          ctx.fillText(
+            Math.round((max * i) / 4).toLocaleString(),
+            pad.left - 6,
+            y + 4,
+          );
+        }
+        ctx.fillStyle = "rgba(140,100,60,0.6)";
+        ctx.font = "11px DM Sans,sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Fire count (FIRMS)", 16, pad.top + chartH / 2);
+
+        // bars
+        data.forEach((v, i) => {
+          const x = pad.left + i * barW;
+          const bh = (v / max) * chartH;
+          const y = pad.top + chartH - bh;
+          // Oct peak = weeks 36-39, Nov = 40-43
+          const isPeak = i >= 36 && i <= 43;
+          if (isPeak) {
+            ctx.fillStyle = highlight >= 1 ? "#B84020" : "rgba(184,64,32,0.35)";
+          } else {
+            ctx.fillStyle = "rgba(180,130,80,0.55)";
+          }
+          ctx.fillRect(x + 1, y, barW - 2, bh);
+        });
+
+        // x labels
+        ctx.fillStyle = "rgba(140,100,60,0.8)";
+        ctx.font = "11px DM Sans,sans-serif";
+        ctx.textAlign = "center";
+        const monthLabels = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        monthLabels.forEach((l, m) => {
+          const x = pad.left + (m * 4 + 2) * barW;
+          ctx.fillText(l, x, H - 10);
+        });
+
+        // annotation for peak
+        if (highlight >= 1) {
+          const peakX = pad.left + 38 * barW;
+          const peakY = pad.top + chartH - (fireData.weekly[38] / max) * chartH;
+          ctx.strokeStyle = "#B84020";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 3]);
+          ctx.beginPath();
+          ctx.moveTo(peakX, peakY - 8);
+          ctx.lineTo(peakX, pad.top + 4);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "#B84020";
+          ctx.font = "bold 12px DM Sans,sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Peak burning season", peakX + 2, pad.top + 1);
+        }
+        if (highlight >= 2) {
+          // add wind arrow annotation
+          ctx.fillStyle = "rgba(70,50,30,0.8)";
+          ctx.font = "11px DM Sans,sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText(
+            "↗ Smoke travels NW → Delhi",
+            pad.left + chartW * 0.55,
+            pad.top + 20,
+          );
+        }
+      }
+
+      // initial draw
+      drawFireChart(0);
+
+      // re-draw on scroll based on which step is visible
+      const fireSteps = document.querySelectorAll('[id^="fireStep"]');
+      const fireObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              const step = parseInt(e.target.id.replace("fireStep", ""));
+              drawFireChart(step);
+            }
+          });
+        },
+        { threshold: 0.5 },
+      );
+      fireSteps.forEach((el) => fireObs.observe(el));
+
+      // ── CIGARETTE INTERACTIVE ──
+      let guessVal = 25;
+      const guessNumEl = document.getElementById("guessNum");
+      function updateGuess(delta) {
+        guessVal = Math.max(1, Math.min(100, guessVal + delta));
+        guessNumEl.textContent = guessVal;
+      }
+      document
+        .getElementById("spinUp")
+        .addEventListener("click", () => updateGuess(1));
+      document
+        .getElementById("spinDown")
+        .addEventListener("click", () => updateGuess(-1));
+
+      // build 44-cig grid
+      function buildCigGrid() {
+        const grid = document.getElementById("cigGrid");
+        grid.innerHTML = "";
+        for (let i = 0; i < 44; i++) {
+          const div = document.createElement("div");
+          div.className = "cig-icon";
+          div.innerHTML = `<svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="3" width="8" height="8" rx="2" fill="#C8872A"/>
+      <rect x="8" y="1" width="18" height="12" rx="2" fill="#EDE8DC"/>
+      <rect x="25" y="2" width="5" height="10" rx="1" fill="#CC3A10"/>
+    </svg>`;
+          grid.appendChild(div);
+        }
+      }
+
+      // histogram data (simulated from a realistic distribution)
+      const histBins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+      const histVals = [
+        1.5, 2.2, 5.5, 8.8, 15.2, 16.0, 13.5, 10.2, 8.0, 6.5, 4.8, 3.5, 2.5,
+        1.5, 1.0,
+      ];
+
+      function drawHistogram(userGuess) {
+        const canvas = document.getElementById("histCanvas");
+        if (!canvas) return;
+        canvas.width =
+          canvas.offsetWidth * window.devicePixelRatio || canvas.offsetWidth;
+        canvas.height = 140 * window.devicePixelRatio || 140;
+        canvas.style.width = "100%";
+        canvas.style.height = "140px";
+        const ctx = canvas.getContext("2d");
+        const s = window.devicePixelRatio || 1;
+        ctx.scale(s, s);
+        const W = canvas.offsetWidth,
+          H = 140;
+        ctx.clearRect(0, 0, W, H);
+        const pad = { top: 20, right: 10, bottom: 30, left: 38 };
+        const chartW = W - pad.left - pad.right;
+        const chartH = H - pad.top - pad.bottom;
+        // 11 bins: 0,10,...,100
+        const bins = 11;
+        const barW = chartW / bins;
+        const maxV = Math.max(...histVals);
+        histVals.slice(0, bins).forEach((v, i) => {
+          const x = pad.left + i * barW;
+          const bh = (v / maxV) * chartH;
+          const y = pad.top + chartH - bh;
+          ctx.fillStyle = "rgba(90,80,70,0.65)";
+          ctx.fillRect(x + 1, y, barW - 2, bh);
+        });
+        // x axis labels
+        ctx.fillStyle = "rgba(100,80,55,0.8)";
+        ctx.font = `10px DM Sans,sans-serif`;
+        ctx.textAlign = "center";
+        [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].forEach((l, i) => {
+          ctx.fillText(l, pad.left + i * barW + barW / 2, H - 4);
+        });
+        ctx.fillStyle = "rgba(100,80,55,0.6)";
+        ctx.font = "10px DM Sans,sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("cigarettes/day", W / 2, H + 2);
+        // y label
+        ctx.save();
+        ctx.translate(12, H / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.font = "10px DM Sans,sans-serif";
+        ctx.fillStyle = "rgba(100,80,55,0.7)";
+        ctx.textAlign = "center";
+        ctx.fillText("% of people", 0, 0);
+        ctx.restore();
+        // y axis ticks
+        ["20%", "15%", "10%", "5%"].forEach((t, i) => {
+          const y = pad.top + (chartH * i) / 4;
+          ctx.fillStyle = "rgba(100,80,55,0.6)";
+          ctx.font = "9px DM Sans,sans-serif";
+          ctx.textAlign = "right";
+          ctx.fillText(t, pad.left - 3, y + 3);
+        });
+
+        // user guess line
+        const guessX = pad.left + (userGuess / 10) * barW + barW / 2;
+        ctx.strokeStyle = "#4a6fa5";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(guessX, pad.top);
+        ctx.lineTo(guessX, pad.top + chartH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#4a6fa5";
+        ctx.font = "bold 10px DM Sans,sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("YOUR GUESS", guessX, pad.top - 2);
+
+        // actual line
+        const actualX = pad.left + (44 / 10) * barW + barW / 2;
+        ctx.strokeStyle = "#B84020";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(actualX, pad.top);
+        ctx.lineTo(actualX, pad.top + chartH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#B84020";
+        ctx.font = "bold 10px DM Sans,sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("ACTUAL: 44", actualX, pad.top - 2);
+      }
+
+      document.getElementById("confirmBtn").addEventListener("click", () => {
+        document.getElementById("beforeState").style.display = "none";
+        const panel = document.getElementById("revealPanel");
+        panel.classList.add("show");
+        buildCigGrid();
+        setTimeout(() => drawHistogram(guessVal), 50);
+        const diff = guessVal - 44;
+        const commentEl = document.getElementById("guessComment");
+        if (Math.abs(diff) < 5)
+          commentEl.textContent = "Impressive — you were very close!";
+        else if (diff < 0)
+          commentEl.textContent = `You underestimated by ${Math.abs(diff)} cigarettes. Most people do.`;
+        else
+          commentEl.textContent = `You overestimated by ${diff} cigarettes. Still — it's a staggering number.`;
+      });
+
+      // ── AIR QUALITY DATA & CHART ──
+      // Synthetic monthly PM2.5 averages for Delhi (µg/m³), typical pattern
+      const aqMonths = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      // 2 years of monthly data to show the pattern
+      const aqData2019 = [180, 155, 120, 90, 80, 65, 55, 60, 75, 180, 380, 220];
+      const aqData2020 = [175, 148, 95, 75, 70, 58, 50, 55, 70, 165, 410, 200];
+      const aqYears = ["2019", "2020"];
+      let aqHighlight = 0;
+
+      function drawAQChart(highlight) {
+        const canvas = document.getElementById("aqCanvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        const W = canvas.width,
+          H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+        const pad = { top: 30, right: 20, bottom: 50, left: 60 };
+        const chartW = W - pad.left - pad.right;
+        const chartH = H - pad.top - pad.bottom;
+        const allVals = [...aqData2019, ...aqData2020];
+        const maxV = Math.max(...allVals) * 1.1;
+        const minV = 0;
+        const n = 12;
+        const segW = chartW / n;
+
+        // grid
+        ctx.strokeStyle = "rgba(180,130,80,0.2)";
+        ctx.lineWidth = 1;
+        [0, 100, 200, 300, 400, 500].forEach((v) => {
+          if (v > maxV) return;
+          const y = pad.top + chartH * (1 - (v - minV) / (maxV - minV));
+          ctx.beginPath();
+          ctx.moveTo(pad.left, y);
+          ctx.lineTo(pad.left + chartW, y);
+          ctx.stroke();
+          ctx.fillStyle = "rgba(140,100,60,0.7)";
+          ctx.font = "11px DM Sans,sans-serif";
+          ctx.textAlign = "right";
+          ctx.fillText(v, pad.left - 6, y + 4);
+        });
+
+        // WHO line
+        const whoY = pad.top + chartH * (1 - 15 / (maxV - minV));
+        ctx.strokeStyle = "rgba(139,104,64,0.5)";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, whoY);
+        ctx.lineTo(pad.left + chartW, whoY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(139,104,64,0.6)";
+        ctx.font = "10px DM Sans,sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText("WHO safe limit", pad.left + 4, whoY - 3);
+
+        // Oct–Nov highlight zone (months 9,10)
+        if (highlight >= 1) {
+          const x1 = pad.left + 9 * segW;
+          const x2 = pad.left + 11 * segW;
+          ctx.fillStyle = "rgba(184,64,32,0.12)";
+          ctx.fillRect(x1, pad.top, x2 - x1, chartH);
+          ctx.fillStyle = "rgba(184,64,32,0.6)";
+          ctx.font = "bold 11px DM Sans,sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Crop burning", x1 + (x2 - x1) / 2, pad.top + 12);
+        }
+
+        // draw lines for each year
+        [
+          [aqData2019, "rgba(184,64,32,0.9)"],
+          [aqData2020, "rgba(184,64,32,0.45)"],
+        ].forEach(([data, color]) => {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2.5;
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          data.forEach((v, i) => {
+            const x = pad.left + (i + 0.5) * segW;
+            const y = pad.top + chartH * (1 - (v - minV) / (maxV - minV));
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+          // dots
+          data.forEach((v, i) => {
+            const x = pad.left + (i + 0.5) * segW;
+            const y = pad.top + chartH * (1 - (v - minV) / (maxV - minV));
+            ctx.beginPath();
+            ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+          });
+        });
+
+        // x labels
+        ctx.fillStyle = "rgba(140,100,60,0.8)";
+        ctx.font = "11px DM Sans,sans-serif";
+        ctx.textAlign = "center";
+        aqMonths.forEach((l, i) => {
+          ctx.fillText(l, pad.left + (i + 0.5) * segW, H - 8);
+        });
+
+        // y axis label
+        ctx.save();
+        ctx.translate(14, pad.top + chartH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.font = "11px DM Sans,sans-serif";
+        ctx.fillStyle = "rgba(140,100,60,0.7)";
+        ctx.textAlign = "center";
+        ctx.fillText("PM2.5 (µg/m³)", 0, 0);
+        ctx.restore();
+      }
+
+      drawAQChart(0);
+
+      const aqSteps = document.querySelectorAll('[id^="aqStep"]');
+      const aqObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              const step = parseInt(e.target.id.replace("aqStep", ""));
+              drawAQChart(step);
+            }
+          });
+        },
+        { threshold: 0.5 },
+      );
+      aqSteps.forEach((el) => aqObs.observe(el));
+    </script>
+  </body>
+</html>
