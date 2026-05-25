@@ -125,6 +125,135 @@
     
 })();
 
+// Component script 3
+(() => {
+  const root = document.querySelector("#cigarette-interactive");
+  if (!root) return;
+
+  const ACTUAL_CIGARETTES = 44;
+  let guess = 25;
+
+  const guessEl = root.querySelector("#guess-number");
+  const beforeEl = root.querySelector("#before-guess");
+  const afterEl = root.querySelector("#after-guess");
+  const gridEl = root.querySelector("#cig-grid");
+  const commentEl = root.querySelector("#guess-comment");
+  const canvas = root.querySelector("#guess-histogram");
+
+  function setGuess(nextGuess) {
+    guess = Math.max(1, Math.min(100, nextGuess));
+    guessEl.textContent = guess;
+  }
+
+  function buildCigaretteGrid() {
+    gridEl.innerHTML = "";
+
+    for (let i = 0; i < ACTUAL_CIGARETTES; i++) {
+      const icon = document.createElement("div");
+      icon.className = "cig-icon";
+      icon.innerHTML = `<svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="0" y="3" width="8" height="8" rx="2" fill="#C8872A"></rect>
+        <rect x="8" y="1" width="18" height="12" rx="2" fill="#EDE8DC"></rect>
+        <rect x="25" y="2" width="5" height="10" rx="1" fill="#CC3A10"></rect>
+      </svg>`;
+      gridEl.appendChild(icon);
+    }
+  }
+
+  function drawHistogram() {
+    if (!canvas) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const width = Math.max(260, canvas.clientWidth || 360);
+    const height = 150;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+
+    const values = [1.5, 2.2, 5.5, 8.8, 15.2, 16.0, 13.5, 10.2, 8.0, 6.5, 4.8];
+    const pad = { top: 22, right: 12, bottom: 28, left: 34 };
+    const chartWidth = width - pad.left - pad.right;
+    const chartHeight = height - pad.top - pad.bottom;
+    const barWidth = chartWidth / values.length;
+    const maxValue = Math.max(...values);
+
+    values.forEach((value, index) => {
+      const barHeight = (value / maxValue) * chartHeight;
+      const x = pad.left + index * barWidth;
+      const y = pad.top + chartHeight - barHeight;
+      ctx.fillStyle = "rgba(74, 67, 59, 0.66)";
+      ctx.fillRect(x + 2, y, Math.max(2, barWidth - 4), barHeight);
+    });
+
+    ctx.strokeStyle = "rgba(95, 78, 60, 0.32)";
+    ctx.beginPath();
+    ctx.moveTo(pad.left, pad.top + chartHeight);
+    ctx.lineTo(width - pad.right, pad.top + chartHeight);
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(80, 65, 48, 0.8)";
+    ctx.font = "10px Arial, Helvetica, sans-serif";
+    ctx.textAlign = "center";
+    for (let label = 0; label <= 100; label += 20) {
+      const x = pad.left + (label / 100) * chartWidth;
+      ctx.fillText(label, x, height - 7);
+    }
+
+    drawMarker(ctx, pad, chartWidth, chartHeight, guess, "#4a6fa5", "YOUR GUESS");
+    drawMarker(ctx, pad, chartWidth, chartHeight, ACTUAL_CIGARETTES, "#B84020", "ACTUAL: 44");
+  }
+
+  function drawMarker(ctx, pad, chartWidth, chartHeight, value, color, label) {
+    const x = pad.left + (value / 100) * chartWidth;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x, pad.top);
+    ctx.lineTo(x, pad.top + chartHeight);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = color;
+    ctx.font = "bold 10px Arial, Helvetica, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(label, x, pad.top - 5);
+    ctx.restore();
+  }
+
+  function revealGuess() {
+    beforeEl.hidden = true;
+    afterEl.hidden = false;
+    buildCigaretteGrid();
+    drawHistogram();
+
+    const diff = guess - ACTUAL_CIGARETTES;
+    if (Math.abs(diff) < 5) {
+      commentEl.textContent = "Impressive. You were very close.";
+    } else if (diff < 0) {
+      commentEl.textContent = `You underestimated by ${Math.abs(diff)} cigarettes. Most people do.`;
+    } else {
+      commentEl.textContent = `You overestimated by ${diff} cigarettes. Still, the exposure is staggering.`;
+    }
+  }
+
+  root.querySelectorAll(".guess-step").forEach((button) => {
+    button.addEventListener("click", () => {
+      setGuess(guess + Number(button.dataset.delta));
+      if (!afterEl.hidden) drawHistogram();
+    });
+  });
+
+  root.querySelector("#guess-confirm").addEventListener("click", revealGuess);
+  window.addEventListener("resize", () => {
+    if (!afterEl.hidden) drawHistogram();
+  });
+
+  setGuess(guess);
+})();
+
 // Component script 2
 (() => {
 

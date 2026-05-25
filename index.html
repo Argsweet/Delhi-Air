@@ -215,24 +215,6 @@
 <path d="M0 1395 C115 1368 205 1412 315 1392 C435 1368 525 1415 650 1392 C780 1365 875 1418 1018 1392 C1155 1368 1245 1405 1440 1380 L1440 1900 L0 1900 Z" fill="#343434"></path>
 </svg>
 </div>
-<div class="sticky-card-wrap">
-<article class="text-card">
-<p>
-            Punjab and Haryana are among India’s largest producers of rice and
-            wheat, feeding millions across the country. But after rice is
-            harvested in late October, farmers have only a very small window —
-            often just <strong>7 to 10 days</strong> — to clear their fields
-            before wheat sowing begins in early November.
-          </p>
-<p>
-            Clearing crop residue manually takes time and money that many
-            farmers cannot afford. Missing the sowing window can reduce yields
-            dramatically, cutting into already thin profits. For many farmers,
-            burning the leftover stubble becomes the fastest and cheapest way to
-            prepare fields in time.
-          </p>
-</article>
-</div>
 <div aria-hidden="true" class="grain"></div>
 </section>
 <section class="fire-scrolly" id="fire-scrolly">
@@ -299,6 +281,59 @@
             </p>
 </article>
 </section>
+</div>
+</section>
+
+<section aria-label="Cigarette equivalent interactive" class="cigarette-interactive" id="cigarette-interactive">
+<div aria-hidden="true" class="cig-smoke-top"></div>
+<div class="cig-layout">
+<article class="cig-copy">
+<p class="kicker">Feel the scale</p>
+<h1>How many cigarettes is one severe Delhi air day?</h1>
+<p>
+              PM2.5 is hard to feel as a number. This interaction translates a
+              peak pollution day into a cigarette-equivalent estimate, then
+              compares your guess with the benchmark used in the prototype.
+            </p>
+<div aria-hidden="true" class="cigarette-illustration">
+<svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
+<path d="M276 32 C250 16 270 5 248 -8" fill="none" stroke="#4d4d4d" stroke-linecap="round" stroke-width="5"></path>
+<path d="M292 38 C270 24 288 12 270 0" fill="none" stroke="#4d4d4d" stroke-linecap="round" stroke-width="3"></path>
+<g transform="rotate(-32 160 62)">
+<rect fill="#e3912d" height="34" rx="9" width="82" x="18" y="45"></rect>
+<rect fill="#efe8d8" height="38" rx="6" width="170" x="92" y="43"></rect>
+<rect fill="#de5932" height="38" rx="6" width="38" x="250" y="43"></rect>
+<circle cx="279" cy="62" fill="#ff3c25" opacity="0.7" r="7"></circle>
+</g>
+</svg>
+</div>
+<div class="guess-control">
+<button aria-label="Decrease guess" class="guess-step" data-delta="-1" type="button">▼</button>
+<div class="guess-number" id="guess-number">25</div>
+<button aria-label="Increase guess" class="guess-step" data-delta="1" type="button">▲</button>
+<span>cigarettes/day</span>
+</div>
+<button class="guess-confirm" id="guess-confirm" type="button">Confirm my guess</button>
+</article>
+<aside class="cig-reveal">
+<div class="before-guess" id="before-guess">
+<p>
+                Make your guess on the left. The reveal will show the benchmark,
+                a cigarette grid, and how your guess compares.
+              </p>
+</div>
+<div class="after-guess" id="after-guess" hidden>
+<p class="reveal-label">The real amount is</p>
+<div class="real-number">44</div>
+<p class="real-unit">cigarettes/day</p>
+<div class="cig-grid" id="cig-grid"></div>
+<div class="histogram-wrap">
+<p class="hist-title">What others guessed</p>
+<canvas height="150" id="guess-histogram"></canvas>
+</div>
+<p class="guess-comment" id="guess-comment"></p>
+</div>
+</aside>
 </div>
 </section>
 

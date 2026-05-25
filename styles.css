@@ -1078,7 +1078,7 @@ body {
 
 .fire-transition {
   position: relative;
-  min-height: 170vh;
+  min-height: 115vh;
   background: var(--charcoal);
   overflow: clip;
 }
@@ -1304,8 +1304,8 @@ body {
   position: relative;
   z-index: 5;
   width: min(1120px, 94vw);
-  margin: -100vh auto 0;
-  padding-top: 120vh;
+  margin: 0 auto;
+  padding-top: 16vh;
   padding-bottom: 110vh;
   pointer-events: none;
 }
@@ -1721,4 +1721,207 @@ body {
 }
 .fire-scrolly .dot.old {
   background: var(--map-red);
+}
+
+/* Cigarette interactive */
+.cigarette-interactive {
+  position: relative;
+  min-height: 112vh;
+  padding: clamp(6rem, 11vw, 9rem) clamp(1.5rem, 7vw, 6rem);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 217, 173, 0.42), transparent 22rem),
+    linear-gradient(180deg, #343434 0 5rem, #e2b579 5rem 100%);
+  color: #252525;
+}
+
+.cig-smoke-top {
+  position: absolute;
+  inset: 0 -4rem auto;
+  height: 9rem;
+  background:
+    radial-gradient(circle at 9% 0, #343434 0 4.4rem, transparent 4.55rem),
+    radial-gradient(circle at 24% 0, #343434 0 5rem, transparent 5.15rem),
+    radial-gradient(circle at 44% 0, #343434 0 4.6rem, transparent 4.75rem),
+    radial-gradient(circle at 64% 0, #343434 0 5.4rem, transparent 5.55rem),
+    radial-gradient(circle at 85% 0, #343434 0 4.8rem, transparent 4.95rem),
+    linear-gradient(#343434, #343434);
+  background-repeat: no-repeat;
+  background-size: 100% 5.5rem;
+}
+
+.cig-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.9fr) minmax(19rem, 1.1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.cig-copy,
+.cig-reveal {
+  background: rgba(255, 217, 173, 0.34);
+  border: 1px solid rgba(93, 68, 42, 0.24);
+  box-shadow: 0 18px 38px rgba(72, 45, 26, 0.16);
+}
+
+.cig-copy {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.cig-copy .kicker {
+  margin: 0 0 0.65rem;
+  color: #9f4f35;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cig-copy h1 {
+  margin: 0 0 1rem;
+  color: #252525;
+  font-size: clamp(2rem, 4.3vw, 3.8rem);
+  line-height: 0.98;
+}
+
+.cig-copy p,
+.cig-reveal p {
+  color: rgba(37, 37, 37, 0.78);
+  line-height: 1.55;
+}
+
+.cigarette-illustration {
+  width: min(100%, 340px);
+  margin: 1.6rem 0;
+}
+
+.cigarette-illustration svg {
+  display: block;
+  width: 100%;
+}
+
+.guess-control {
+  display: grid;
+  grid-template-columns: 2rem 5.5rem 2rem 1fr;
+  gap: 0.45rem;
+  align-items: center;
+  margin-top: 1.25rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.guess-number {
+  padding: 0.35rem 0.2rem;
+  border: 2px solid rgba(159, 79, 53, 0.52);
+  background: rgba(255, 249, 242, 0.58);
+  color: #bf6b35;
+  font-size: 2.15rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
+.guess-step,
+.guess-confirm {
+  border: 0;
+  background: #3f3f3d;
+  color: #eee6dc;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.guess-step {
+  height: 2.1rem;
+  border-radius: 3px;
+}
+
+.guess-confirm {
+  margin-top: 0.9rem;
+  padding: 0.85rem 1.25rem;
+}
+
+.cig-reveal {
+  min-height: 34rem;
+  padding: clamp(1.4rem, 3vw, 2rem);
+}
+
+.before-guess {
+  display: grid;
+  min-height: 28rem;
+  place-items: center;
+  text-align: center;
+}
+
+.reveal-label,
+.hist-title {
+  margin: 0 0 0.5rem;
+  color: #7a5232;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.real-number {
+  color: #bf6b35;
+  font-size: clamp(4rem, 8vw, 6rem);
+  font-weight: 900;
+  line-height: 0.9;
+}
+
+.real-unit {
+  margin: 0 0 1.25rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cig-grid {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin: 1rem 0 1.35rem;
+}
+
+.cig-icon {
+  aspect-ratio: 30 / 14;
+}
+
+.cig-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.histogram-wrap {
+  margin-top: 1rem;
+}
+
+#guess-histogram {
+  width: 100%;
+  height: 150px;
+  display: block;
+}
+
+.guess-comment {
+  margin: 1rem 0 0;
+  color: #9f4f35;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+}
+
+@media (max-width: 760px) {
+  .cig-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cig-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 }
