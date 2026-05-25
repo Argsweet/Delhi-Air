@@ -1409,7 +1409,7 @@ body {
   overflow: hidden;
   background:
     radial-gradient(circle at 50% 48%, rgba(45, 45, 45, 0.35), transparent 42%),
-    linear-gradient(#020202, #000);
+    linear-gradient(#020202, rgb(56, 53, 47));
   isolation: isolate;
 }
 
@@ -1489,7 +1489,7 @@ body {
 
 .after-space {
   height: 85vh;
-  background: #000;
+  background: rgba(255, 255, 255, 0.18);
 }
 
 @keyframes titleReveal {
@@ -1530,7 +1530,7 @@ body {
 
 .intro-smoke + .after-space {
   height: 30vh;
-  background: #000;
+  background: rgb(56, 53, 47);
 }
 
 /* Problem intro scope */
