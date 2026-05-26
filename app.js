@@ -277,13 +277,16 @@
       const parseDate = d3.timeParse("%Y-%m-%d");
       const formatDate = d3.timeFormat("%b %d, %Y");
 
-      const FIRE_CSV = "data/processed/fire_points_2020_2024.csv";
+      const FIRE_CSV = "data/processed/fire_grid_2023.csv";
       const INDIA_GEOJSON = "data/geo/india_states.geojson";
       const SELECTED_YEAR = 2023;
 
-      let currentFires = [];
+      let fireRows = [];
       let dates = [];
       let currentIndex = 0;
+      let frames = [];
+      let pendingIndex = null;
+      let renderQueued = false;
 
       Promise.all([
         d3.json(INDIA_GEOJSON),
@@ -291,28 +294,24 @@
           lat: +d.latitude,
           lon: +d.longitude,
           date: parseDate(d.date),
-          year: +d.year,
+          count: +d.count || 1,
           frp: +d.frp || 1,
-          state: d.state || d.name || "",
         })),
-      ]).then(([india, fires]) => {
-        const regionFires = fires.filter(
-          (d) =>
-            d.date &&
-            d.year === SELECTED_YEAR &&
-            d.lon >= 73 &&
-            d.lon <= 79 &&
-            d.lat >= 27 &&
-            d.lat <= 33,
-        );
+      ]).then(([india, rows]) => {
+        fireRows = rows
+          .filter(
+            (d) =>
+              d.date && d.lon >= 73 && d.lon <= 79 && d.lat >= 27 && d.lat <= 33,
+          )
+          .sort((a, b) => a.date - b.date);
 
-        currentFires = regionFires.sort((a, b) => a.date - b.date);
-        dates = Array.from(d3.group(currentFires, (d) => +d.date).keys())
+        dates = Array.from(d3.group(fireRows, (d) => +d.date).keys())
           .sort(d3.ascending)
           .map((d) => new Date(+d));
+        frames = buildFrames(fireRows, dates);
 
         drawMap(india);
-        updateByProgress(0.08);
+        updateByProgress(0);
         setupScroller();
       });
 
@@ -380,21 +379,30 @@
             progress: true,
           })
           .onStepEnter((response) => {
-            const progress = +response.element.dataset.progress;
-            updateByProgress(progress);
+            updateByProgress(getFireScrollProgress());
           })
           .onStepProgress((response) => {
-            const steps = Array.from(document.querySelectorAll(".step"));
-            const stepIndex = steps.indexOf(response.element);
-            const start = +response.element.dataset.progress;
-            const next = steps[stepIndex + 1]
-              ? +steps[stepIndex + 1].dataset.progress
-              : start;
-            const interpolated = start + (next - start) * response.progress;
-            updateByProgress(interpolated);
+            updateByProgress(getFireScrollProgress());
           });
 
         window.addEventListener("resize", scroller.resize);
+        window.addEventListener(
+          "scroll",
+          () => updateByProgress(getFireScrollProgress()),
+          { passive: true },
+        );
+      }
+
+      function getFireScrollProgress() {
+        const section = document.querySelector("#fire-scrolly");
+        if (!section) return 0;
+
+        const start = section.offsetTop;
+        const scrollable = section.offsetHeight - window.innerHeight;
+        return Math.max(
+          0,
+          Math.min(1, (window.scrollY - start) / Math.max(scrollable, 1)),
+        );
       }
 
       function updateByProgress(progress) {
@@ -407,62 +415,112 @@
         if (i === currentIndex && fireLayer.selectAll("circle").size()) return;
 
         currentIndex = i;
-        updateMap(dates[i]);
+        pendingIndex = i;
+
+        if (!renderQueued) {
+          renderQueued = true;
+          requestAnimationFrame(() => {
+            updateMap(pendingIndex);
+            renderQueued = false;
+          });
+        }
       }
 
-      function updateMap(currentDate) {
-        const visibleFires = currentFires.filter((d) => d.date <= currentDate);
-        const todayFires = currentFires.filter(
-          (d) => +d.date === +currentDate,
-        ).length;
+      function buildFrames(rows, frameDates) {
+        return frameDates.map((date, index) => {
+          const recentStart = d3.timeDay.offset(date, -5);
+          const todayRows = rows.filter((d) => +d.date === +date);
+          const recentRows = rows.filter((d) => d.date >= recentStart && d.date <= date);
+          const cumulativeTotal = d3.sum(
+            rows.filter((d) => d.date <= date),
+            (d) => d.count,
+          );
+
+          const recentByCell = d3
+            .rollups(
+              recentRows,
+              (values) => ({
+                count: d3.sum(values, (d) => d.count),
+                frp: d3.sum(values, (d) => d.frp),
+                lon: values[0].lon,
+                lat: values[0].lat,
+                newest: d3.max(values, (d) => d.date),
+              }),
+              (d) => `${d.lon},${d.lat}`,
+            )
+            .map(([, value]) => {
+              const projected = projection([value.lon, value.lat]);
+              return {
+                ...value,
+                key: `${value.lon},${value.lat}`,
+                x: projected[0],
+                y: projected[1],
+                age: (date - value.newest) / (1000 * 60 * 60 * 24),
+              };
+            });
+
+          return {
+            date,
+            todayTotal: d3.sum(todayRows, (d) => d.count),
+            recentTotal: d3.sum(recentRows, (d) => d.count),
+            cumulativeTotal,
+            recentByCell,
+          };
+        });
+      }
+
+      function updateMap(index) {
+        const frame = frames[index];
+        const currentDate = frame.date;
 
         d3.select("#fire-date").text(formatDate(currentDate));
         d3.select("#fire-count").text(
-          `${todayFires.toLocaleString()} new fires · ${visibleFires.length.toLocaleString()} cumulative fires`,
+          `${frame.todayTotal.toLocaleString()} new fires | ${frame.recentTotal.toLocaleString()} in the last 6 days | ${frame.cumulativeTotal.toLocaleString()} cumulative`,
         );
 
         fireLayer
           .selectAll("circle")
-          .data(visibleFires, (d) => `${d.lat}-${d.lon}-${+d.date}-${d.frp}`)
+          .data(frame.recentByCell, (d) => d.key)
           .join(
             (enter) =>
               enter
                 .append("circle")
                 .attr("class", "fire-point")
-                .attr("cx", (d) => projection([d.lon, d.lat])[0])
-                .attr("cy", (d) => projection([d.lon, d.lat])[1])
+                .attr("cx", (d) => d.x)
+                .attr("cy", (d) => d.y)
                 .attr("r", 0)
-                .attr("fill", (d) => fireColor(d, currentDate))
-                .attr("opacity", (d) => fireOpacity(d, currentDate))
+                .attr("fill", (d) => fireColor(d))
+                .attr("opacity", (d) => fireOpacity(d))
                 .transition()
-                .duration(180)
-                .attr("r", (d) => Math.min(Math.sqrt(d.frp) * 0.55 + 1.1, 6.2)),
+                .duration(90)
+                .attr("r", (d) => fireRadius(d)),
             (update) =>
               update
                 .transition()
-                .duration(100)
-                .attr("fill", (d) => fireColor(d, currentDate))
-                .attr("opacity", (d) => fireOpacity(d, currentDate)),
-            (exit) => exit.remove(),
+                .duration(70)
+                .attr("r", (d) => fireRadius(d))
+                .attr("fill", (d) => fireColor(d))
+                .attr("opacity", (d) => fireOpacity(d)),
+            (exit) => exit.transition().duration(70).attr("r", 0).remove(),
           );
       }
 
-      function fireAgeDays(d, currentDate) {
-        return (currentDate - d.date) / (1000 * 60 * 60 * 24);
+      function fireRadius(d) {
+        return Math.min(Math.sqrt(d.count) * 2.1 + Math.sqrt(d.frp) * 0.06, 18);
       }
 
-      function fireColor(d, currentDate) {
-        const age = fireAgeDays(d, currentDate);
+      function fireColor(d) {
+        const age = d.age;
         if (age <= 1) return "#ffe066";
-        if (age <= 7) return "#ff9f1c";
+        if (age <= 4) return "#ff9f1c";
         return "#c84f3a";
       }
 
-      function fireOpacity(d, currentDate) {
-        const age = fireAgeDays(d, currentDate);
-        if (age <= 1) return 0.95;
-        if (age <= 7) return 0.72;
-        return 0.32;
+      function fireOpacity(d) {
+        const age = d.age;
+        if (age <= 1) return 0.9;
+        if (age <= 4) return 0.68;
+        return 0.34;
       }
     
 })();
