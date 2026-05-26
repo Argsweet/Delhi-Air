@@ -1409,8 +1409,7 @@ body {
 }
 
 .intro-smoke {
-  position: sticky;
-  top: 0;
+  position: relative;
   height: 100vh;
   width: 100vw;
   display: grid;
@@ -1541,7 +1540,7 @@ body {
 }
 
 .intro-smoke + .after-space {
-  height: 30vh;
+  height: 0;
   background: rgb(56, 53, 47);
 }
 

@@ -10,6 +10,11 @@
       let height = 0;
       let lastPoint = null;
       let smokePatternReady = false;
+      let smokeCleared = false;
+      let smokeScrollProgress = 0;
+      let touchStartY = null;
+      const SCROLL_CLEAR_THRESHOLD = 0.45;
+      const SMOKE_SCROLL_DISTANCE = 420;
 
       function resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
@@ -20,7 +25,11 @@
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        drawSmokeLayer();
+        if (smokeCleared) {
+          clearSmokeLayer();
+        } else {
+          drawSmokeLayer();
+        }
       }
 
       function drawSmokeLayer() {
@@ -59,6 +68,59 @@
         }
         ctx.globalAlpha = 1;
         smokePatternReady = true;
+      }
+
+      function clearSmokeLayer() {
+        smokeCleared = true;
+        smokeScrollProgress = 1;
+        smokePatternReady = false;
+        ctx.globalCompositeOperation = "source-over";
+        ctx.clearRect(0, 0, width, height);
+        canvas.style.opacity = "0";
+        canvas.style.pointerEvents = "none";
+        cursor.style.opacity = "0";
+      }
+
+      function scrubSmokeWithScroll(deltaY) {
+        if (smokeCleared || deltaY <= 0 || window.scrollY > 2) return false;
+
+        const previousProgress = smokeScrollProgress;
+        smokeScrollProgress = Math.min(1, previousProgress + deltaY / SMOKE_SCROLL_DISTANCE);
+        canvas.style.opacity = String(1 - smokeScrollProgress);
+        cursor.style.opacity = "0";
+
+        if (smokeScrollProgress >= 1) {
+          const usedDelta = (1 - previousProgress) * SMOKE_SCROLL_DISTANCE;
+          const extraDelta = Math.max(0, deltaY - usedDelta);
+          clearSmokeLayer();
+          if (extraDelta > 0) {
+            window.scrollBy(0, extraDelta);
+          }
+        }
+
+        return true;
+      }
+
+      function handleSmokeWheel(event) {
+        if (scrubSmokeWithScroll(event.deltaY)) {
+          event.preventDefault();
+        }
+      }
+
+      function handleSmokeTouchStart(event) {
+        touchStartY = event.touches[0]?.clientY ?? null;
+      }
+
+      function handleSmokeTouchMove(event) {
+        if (touchStartY === null) return;
+
+        const currentY = event.touches[0]?.clientY ?? touchStartY;
+        const deltaY = touchStartY - currentY;
+        touchStartY = currentY;
+
+        if (scrubSmokeWithScroll(deltaY)) {
+          event.preventDefault();
+        }
       }
 
       function eraseAt(x, y) {
@@ -105,6 +167,16 @@
       }
 
       function handleScrollFade() {
+        if (smokeCleared) {
+          canvas.style.opacity = "0";
+          return;
+        }
+
+        if (window.scrollY >= window.innerHeight * SCROLL_CLEAR_THRESHOLD) {
+          clearSmokeLayer();
+          return;
+        }
+
         const progress = Math.min(
           window.scrollY / (window.innerHeight * 0.72),
           1,
@@ -119,6 +191,9 @@
       });
 
       window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("wheel", handleSmokeWheel, { passive: false });
+      window.addEventListener("touchstart", handleSmokeTouchStart, { passive: true });
+      window.addEventListener("touchmove", handleSmokeTouchMove, { passive: false });
       window.addEventListener("scroll", handleScrollFade, { passive: true });
 
       resizeCanvas();
