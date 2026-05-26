@@ -313,34 +313,79 @@
       <div class="cig-layout">
         <article class="cig-copy">
           <p class="kicker">Feel the scale</p>
-          <h1>How many cigarettes is one severe Delhi air day?</h1>
-          <p>
-            PM2.5 is hard to feel as a number. This interaction translates a
-            peak pollution day into a cigarette-equivalent estimate, then
-            compares your guess with the benchmark used in the prototype.
-          </p>
+          <h1>
+            Daily exposure to pollution in Delhi during peak season is
+            equivalent to
+          </h1>
+          <div class="sentence-guess">
+            <label class="guess-label" for="guess-input">Your estimate</label>
+            <div class="guess-input-row">
+              <input
+                aria-label="Estimated cigarettes per day"
+                id="guess-input"
+                inputmode="numeric"
+                max="100"
+                min="0"
+                step="1"
+                type="number"
+                value="25"
+              />
+              <div class="guess-buttons" aria-label="Adjust guess">
+                <button
+                  aria-label="Increase guess"
+                  class="guess-step"
+                  data-delta="1"
+                  type="button"
+                >
+                  ^
+                </button>
+                <button
+                  aria-label="Decrease guess"
+                  class="guess-step"
+                  data-delta="-1"
+                  type="button"
+                >
+                  v
+                </button>
+              </div>
+              <span>cigarettes/day</span>
+            </div>
+          </div>
+          <button class="guess-confirm" id="guess-confirm" type="button">
+            Confirm my guess
+          </button>
           <div aria-hidden="true" class="cigarette-illustration">
-            <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="-36 -72 376 226" xmlns="http://www.w3.org/2000/svg">
               <path
-                d="M276 32 C250 16 270 5 248 -8"
+                d="M273 -8 C265 -20 281 -26 275 -39 C271 -48 282 -54 279 -64"
                 fill="none"
-                stroke="#4d4d4d"
+                stroke="#55524d"
                 stroke-linecap="round"
-                stroke-width="5"
+                stroke-width="4"
+                opacity="0.72"
               ></path>
               <path
-                d="M292 38 C270 24 288 12 270 0"
+                d="M286 -6 C278 -19 295 -27 289 -41 C285 -51 298 -57 295 -68"
                 fill="none"
-                stroke="#4d4d4d"
+                stroke="#55524d"
                 stroke-linecap="round"
                 stroke-width="3"
+                opacity="0.58"
+              ></path>
+              <path
+                d="M263 -5 C257 -15 270 -21 266 -32 C264 -39 271 -45 269 -53"
+                fill="none"
+                stroke="#55524d"
+                stroke-linecap="round"
+                stroke-width="2.4"
+                opacity="0.46"
               ></path>
               <g transform="rotate(-32 160 62)">
                 <rect
                   fill="#e3912d"
                   height="34"
                   rx="9"
-                  width="82"
+                  width="96"
                   x="18"
                   y="45"
                 ></rect>
@@ -348,8 +393,8 @@
                   fill="#efe8d8"
                   height="38"
                   rx="6"
-                  width="170"
-                  x="92"
+                  width="158"
+                  x="106"
                   y="43"
                 ></rect>
                 <rect
@@ -357,49 +402,23 @@
                   height="38"
                   rx="6"
                   width="38"
-                  x="250"
+                  x="252"
                   y="43"
                 ></rect>
                 <circle
-                  cx="279"
+                  cx="281"
                   cy="62"
-                  fill="#ff3c25"
-                  opacity="0.7"
-                  r="7"
+                  fill="#ff4a2c"
+                  opacity="0.78"
+                  r="6"
                 ></circle>
               </g>
             </svg>
           </div>
-          <div class="guess-control">
-            <button
-              aria-label="Decrease guess"
-              class="guess-step"
-              data-delta="-1"
-              type="button"
-            >
-              ▼
-            </button>
-            <div class="guess-number" id="guess-number">25</div>
-            <button
-              aria-label="Increase guess"
-              class="guess-step"
-              data-delta="1"
-              type="button"
-            >
-              ▲
-            </button>
-            <span>cigarettes/day</span>
-          </div>
-          <button class="guess-confirm" id="guess-confirm" type="button">
-            Confirm my guess
-          </button>
         </article>
         <aside class="cig-reveal">
-          <div class="before-guess" id="before-guess">
-            <p>
-              Make your guess on the left. The reveal will show the benchmark, a
-              cigarette grid, and how your guess compares.
-            </p>
+          <div class="live-guess" id="live-guess">
+            <div class="cig-grid live-grid" id="guess-cig-grid"></div>
           </div>
           <div class="after-guess" id="after-guess" hidden>
             <p class="reveal-label">The real amount is</p>

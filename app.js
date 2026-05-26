@@ -209,29 +209,49 @@
   let guess = 25;
 
   const guessEl = root.querySelector("#guess-number");
-  const beforeEl = root.querySelector("#before-guess");
+  const guessInput = root.querySelector("#guess-input");
+  const liveEl = root.querySelector("#live-guess");
   const afterEl = root.querySelector("#after-guess");
+  const liveGridEl = root.querySelector("#guess-cig-grid");
   const gridEl = root.querySelector("#cig-grid");
   const commentEl = root.querySelector("#guess-comment");
   const canvas = root.querySelector("#guess-histogram");
 
   function setGuess(nextGuess) {
-    guess = Math.max(1, Math.min(100, nextGuess));
-    guessEl.textContent = guess;
+    guess = Math.max(0, Math.min(100, Number(nextGuess) || 0));
+    if (guessEl) guessEl.textContent = guess;
+    guessInput.value = guess;
+    renderCigaretteGrid(liveGridEl, guess);
+    liveGridEl.style.setProperty("--cig-count", Math.max(guess, 1));
+
+    if (!afterEl.hidden) drawHistogram();
   }
 
-  function buildCigaretteGrid() {
-    gridEl.innerHTML = "";
+  function renderCigaretteGrid(target, count) {
+    target.innerHTML = "";
+    target.classList.toggle("is-empty", count === 0);
+    const columns = Math.min(10, Math.max(6, Math.ceil(Math.sqrt(count * 1.1))));
+    const rows = Math.max(1, Math.ceil(count / columns));
+    target.style.setProperty("--cig-columns", columns);
+    target.style.setProperty("--cig-rows", rows);
 
-    for (let i = 0; i < ACTUAL_CIGARETTES; i++) {
+    if (count === 0) {
+      target.innerHTML = `<p class="empty-grid-note">0 cigarettes/day</p>`;
+      return;
+    }
+
+    for (let i = 0; i < count; i++) {
       const icon = document.createElement("div");
       icon.className = "cig-icon";
-      icon.innerHTML = `<svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="0" y="3" width="8" height="8" rx="2" fill="#C8872A"></rect>
-        <rect x="8" y="1" width="18" height="12" rx="2" fill="#EDE8DC"></rect>
-        <rect x="25" y="2" width="5" height="10" rx="1" fill="#CC3A10"></rect>
+      icon.innerHTML = `<svg viewBox="0 0 46 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g transform="rotate(-24 21 8)">
+          <rect x="2" y="6" width="14" height="4" rx="1.1" fill="#E4A23A"></rect>
+          <rect x="15" y="5.2" width="22" height="5.6" rx="1.4" fill="#F1E9D8"></rect>
+          <rect x="36" y="5.2" width="6.5" height="5.6" rx="1.1" fill="#D8673F"></rect>
+          <path d="M41.4 4.5 C43.5 2.9 42.1 1.5 44 0.5" fill="none" stroke="#60605C" stroke-width="0.9" stroke-linecap="round"></path>
+        </g>
       </svg>`;
-      gridEl.appendChild(icon);
+      target.appendChild(icon);
     }
   }
 
@@ -299,9 +319,9 @@
   }
 
   function revealGuess() {
-    beforeEl.hidden = true;
+    liveEl.hidden = true;
     afterEl.hidden = false;
-    buildCigaretteGrid();
+    renderCigaretteGrid(gridEl, ACTUAL_CIGARETTES);
     drawHistogram();
 
     const diff = guess - ACTUAL_CIGARETTES;
@@ -317,8 +337,11 @@
   root.querySelectorAll(".guess-step").forEach((button) => {
     button.addEventListener("click", () => {
       setGuess(guess + Number(button.dataset.delta));
-      if (!afterEl.hidden) drawHistogram();
     });
+  });
+
+  guessInput.addEventListener("input", () => {
+    setGuess(guessInput.value);
   });
 
   root.querySelector("#guess-confirm").addEventListener("click", revealGuess);
