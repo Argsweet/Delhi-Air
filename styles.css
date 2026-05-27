@@ -3273,3 +3273,250 @@ body {
 .cigarette-interactive .cig-smoke-top {
   display: none;
 }
+
+/* Draft Delhi effects section */
+.delhi-effects-draft {
+  --effects-bg: #3f3f3f;
+  --effects-panel: #eee6dc;
+  --effects-ink: #252525;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(18rem, 0.58fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+  min-height: 125vh;
+  padding: clamp(6rem, 10vw, 9rem) clamp(1.5rem, 7vw, 6rem) clamp(7rem, 10vw, 9rem);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #3f3f3f 0%, #3f3f3f 72%, #6b5848 91%, #e2b579 100%);
+  color: var(--effects-ink);
+}
+
+.effects-haze-stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+.effects-haze-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 35% 26%, rgba(226, 181, 121, 0.16), transparent 26rem),
+    linear-gradient(180deg, rgba(63, 63, 63, 0.2), rgba(226, 181, 121, 0.18));
+}
+
+.effects-skyline {
+  position: absolute;
+  left: -4vw;
+  right: -4vw;
+  bottom: 0;
+  height: 42%;
+}
+
+.effects-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.effects-layer.back {
+  height: 72%;
+  opacity: 0.22;
+  background:
+    linear-gradient(to top, #252525 0 48%, transparent 74%),
+    repeating-linear-gradient(to right, transparent 0 2.6rem, #2c2c2a 2.6rem 3.4rem, transparent 3.4rem 5rem);
+}
+
+.effects-layer.front {
+  height: 48%;
+  opacity: 0.42;
+  background:
+    linear-gradient(to top, #242422 0 52%, transparent 76%),
+    repeating-linear-gradient(to right, #242422 0 2.1rem, transparent 2.1rem 3.2rem);
+}
+
+.effects-smog {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(238, 230, 220, 0.06), rgba(226, 181, 121, 0.28));
+  mix-blend-mode: screen;
+}
+
+.effects-text-panel {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  padding: clamp(2rem, 4vw, 3.2rem) clamp(2rem, 5vw, 4rem);
+  background: rgba(238, 230, 220, 0.96);
+  box-shadow: 0 18px 36px rgba(24, 24, 22, 0.24);
+}
+
+.effects-text-panel .kicker {
+  margin: 0 0 0.75rem;
+  color: #9f4f35;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.effects-text-panel h1 {
+  margin: 0 0 1.35rem;
+  color: #252525;
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  line-height: 0.98;
+}
+
+.effects-text-panel p {
+  color: rgba(37, 37, 37, 0.8);
+  font-size: clamp(1.02rem, 1.45vw, 1.24rem);
+  line-height: 1.58;
+}
+
+.effects-text-panel strong {
+  color: #111;
+}
+
+.effects-viz-placeholder {
+  position: relative;
+  z-index: 1;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 30rem;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border: 1px solid rgba(238, 230, 220, 0.18);
+  background: rgba(37, 37, 37, 0.34);
+  color: rgba(238, 230, 220, 0.82);
+}
+
+.placeholder-label {
+  margin: 0 0 1rem;
+  color: rgba(238, 230, 220, 0.68);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.placeholder-chart {
+  display: flex;
+  align-items: end;
+  gap: 0.5rem;
+  height: 16rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(238, 230, 220, 0.28);
+  background: rgba(24, 24, 22, 0.16);
+}
+
+.placeholder-chart span {
+  flex: 1;
+  min-width: 0;
+  background: linear-gradient(180deg, #df6f35, rgba(223, 111, 53, 0.38));
+}
+
+.effects-viz-placeholder p:last-child {
+  margin: 1rem 0 0;
+  color: rgba(238, 230, 220, 0.76);
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .delhi-effects-draft {
+    grid-template-columns: 1fr;
+  }
+
+  .effects-viz-placeholder {
+    min-height: 22rem;
+  }
+}
+
+/* Text-only Delhi effects draft */
+.delhi-effects-draft {
+  display: block;
+  min-height: 112vh;
+  padding: clamp(6rem, 11vw, 9rem) clamp(1.5rem, 7vw, 6rem);
+  background: #3f3f3f;
+  color: #eee6dc;
+}
+
+.delhi-effects-draft .effects-haze-stage,
+.delhi-effects-draft .effects-viz-placeholder {
+  display: none;
+}
+
+.delhi-effects-draft .effects-text-panel {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #eee6dc;
+}
+
+.delhi-effects-draft .effects-text-panel .kicker {
+  color: #d2a36e;
+}
+
+.delhi-effects-draft .effects-text-panel h1 {
+  color: #eee6dc;
+  font-size: clamp(3rem, 7vw, 5.8rem);
+  line-height: 0.98;
+}
+
+.delhi-effects-draft .effects-text-panel p {
+  color: rgba(238, 230, 220, 0.72);
+  font-size: clamp(1.12rem, 1.55vw, 1.34rem);
+  line-height: 1.6;
+}
+
+.delhi-effects-draft .effects-text-panel strong {
+  color: #f5efe6;
+}
+
+/* Delhi effects dark tan backdrop */
+.delhi-effects-draft {
+  background: #b77940;
+}
+
+.delhi-effects-draft .effects-text-panel .kicker {
+  color: #7a5232;
+}
+
+.delhi-effects-draft .effects-text-panel h1 {
+  color: #252525;
+}
+
+.delhi-effects-draft .effects-text-panel p {
+  color: rgba(37, 37, 37, 0.74);
+}
+
+.delhi-effects-draft .effects-text-panel strong {
+  color: #111;
+}
+
+/* Delhi effects warm tan backdrop */
+.delhi-effects-draft {
+  background: #e2b579;
+}
+
+/* Match Delhi effects type scale to intro problem section */
+.delhi-effects-draft .effects-text-panel h1 {
+  max-width: 720px;
+  margin: 0 0 2.1rem;
+  font-size: clamp(2.35rem, 4.6vw, 4.35rem);
+  line-height: 1.07;
+  letter-spacing: -0.035em;
+}
+
+.delhi-effects-draft .effects-text-panel p {
+  font-size: clamp(1.15rem, 1.55vw, 1.44rem);
+  line-height: 1.62;
+}
