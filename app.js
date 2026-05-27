@@ -352,6 +352,254 @@
   setGuess(guess);
 })();
 
+// Component script 4
+(() => {
+  const root = document.querySelector("#fire-counts-section");
+  if (!root) return;
+
+  const svg = d3.select("#fire-counts-chart");
+  const percentEl = root.querySelector("#fire-window-percent");
+  const copyEl = root.querySelector("#fire-window-copy");
+  const DATA_PATH = "data/final/fire_season_2020_2024.csv";
+  const WINDOW_DAYS = 10;
+
+  let rows = [];
+
+  d3.csv(DATA_PATH, (d) => ({
+    year: +d.year,
+    seasonDay: +d.season_day,
+    total: +d.total_fires,
+  })).then((data) => {
+    rows = data;
+    drawFireCounts();
+    window.addEventListener("resize", drawFireCounts);
+  });
+
+  function drawFireCounts() {
+    if (!rows.length) return;
+
+    const wrap = root.querySelector(".fire-counts-chart-wrap");
+    const width = Math.max(520, wrap.clientWidth);
+    const height = Math.max(360, Math.min(520, width * 0.48));
+    const margin = { top: 46, right: 28, bottom: 42, left: 62 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.selectAll("*").remove();
+    const clipId = `fire-counts-clip-${Math.round(width)}-${Math.round(height)}`;
+
+    const years = Array.from(new Set(rows.map((d) => d.year))).sort();
+    const byYear = d3.group(rows, (d) => d.year);
+    const byDay = d3.rollups(
+      rows,
+      (values) => d3.mean(values, (d) => d.total),
+      (d) => d.seasonDay,
+    );
+    const averageRows = byDay
+      .map(([seasonDay, total]) => ({ seasonDay, total }))
+      .sort((a, b) => a.seasonDay - b.seasonDay);
+
+    const yearSummaries = years.map((year) => {
+      const yearRows = byYear.get(year).slice().sort((a, b) => a.seasonDay - b.seasonDay);
+      const total = d3.sum(yearRows, (d) => d.total);
+      const best = bestWindow(yearRows);
+      return { year, total, best, pct: best.sum / total };
+    });
+    const avgPct = d3.mean(yearSummaries, (d) => d.pct);
+    const avgBest = bestWindow(averageRows);
+
+    const x = d3.scaleLinear().domain([1, 61]).range([0, innerWidth]);
+    const yMax = Math.ceil(d3.max(rows, (d) => d.total) / 1000) * 1000;
+    const yTicks = d3.range(0, yMax + 1, 2000);
+    const y = d3.scaleLinear().domain([0, yMax]).nice().range([innerHeight, 0]);
+
+    const g = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    svg
+      .append("defs")
+      .append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", innerWidth)
+      .attr("height", innerHeight);
+
+    const plotG = g.append("g").attr("clip-path", `url(#${clipId})`);
+
+    plotG
+      .append("rect")
+      .attr("class", "fire-window-band")
+      .attr("x", x(avgBest.start))
+      .attr("y", 0)
+      .attr("width", x(avgBest.end + 1) - x(avgBest.start))
+      .attr("height", innerHeight);
+
+    g.append("text")
+      .attr("class", "fire-window-label")
+      .attr("x", x(avgBest.start) + 12)
+      .attr("y", 20)
+      .text("Peak 10-day window");
+
+    const grid = g.append("g").attr("class", "fire-grid-lines");
+    grid
+      .selectAll("line")
+      .data(yTicks)
+      .join("line")
+      .attr("x1", 0)
+      .attr("x2", innerWidth)
+      .attr("y1", (d) => y(d))
+      .attr("y2", (d) => y(d));
+
+    const line = d3
+      .line()
+      .x((d) => x(d.seasonDay))
+      .y((d) => y(d.total))
+      .curve(d3.curveMonotoneX);
+
+    years.forEach((year) => {
+      const yearRows = byYear.get(year).slice().sort((a, b) => a.seasonDay - b.seasonDay);
+      const peak = yearRows.reduce((best, d) => (d.total > best.total ? d : best), yearRows[0]);
+      const labelX = Math.min(x(peak.seasonDay) + 10, innerWidth - 120);
+      const labelY = Math.max(y(peak.total) - 36, 8);
+      const yearGroup = plotG
+        .append("g")
+        .attr("class", "year-fire-series")
+        .attr("data-year", year);
+
+      yearGroup.append("path").datum(yearRows).attr("class", "year-fire-line").attr("d", line);
+      const label = yearGroup
+        .append("g")
+        .attr("class", "year-fire-label")
+        .attr("transform", `translate(${labelX},${labelY})`);
+      label.append("rect").attr("rx", 3).attr("width", 118).attr("height", 31);
+      label
+        .append("text")
+        .attr("x", 9)
+        .attr("y", 20)
+        .text(`${year}: ${d3.format(",")(peak.total)}`);
+      yearGroup.append("path").datum(yearRows).attr("class", "year-fire-hit").attr("d", line);
+    });
+
+    plotG.append("path").datum(averageRows).attr("class", "avg-fire-line").attr("d", line);
+
+    plotG
+      .selectAll(".avg-fire-dot")
+      .data(averageRows.filter((d) => d.seasonDay % 5 === 1))
+      .join("circle")
+      .attr("class", "avg-fire-dot")
+      .attr("cx", (d) => x(d.seasonDay))
+      .attr("cy", (d) => y(d.total))
+      .attr("r", 3.7);
+
+    const yAxis = g.append("g").attr("class", "fire-axis y-axis");
+    yAxis
+      .append("line")
+      .attr("class", "axis-baseline")
+      .attr("x1", 0)
+      .attr("x2", 0)
+      .attr("y1", 0)
+      .attr("y2", innerHeight);
+    yAxis
+      .selectAll("text")
+      .data(yTicks)
+      .join("text")
+      .attr("x", -12)
+      .attr("y", (d) => y(d) + 4)
+      .attr("text-anchor", "end")
+      .text((d) => d3.format(",")(d));
+
+    const xTicks = [1, 16, 32, 47, 61];
+    const xAxis = g.append("g").attr("class", "fire-axis x-axis");
+    xAxis
+      .append("line")
+      .attr("class", "axis-baseline")
+      .attr("x1", 0)
+      .attr("x2", innerWidth)
+      .attr("y1", innerHeight)
+      .attr("y2", innerHeight);
+    xAxis
+      .selectAll("text")
+      .data(xTicks)
+      .join("text")
+      .attr("x", (d) => x(d))
+      .attr("y", innerHeight + 24)
+      .attr("text-anchor", (d) => (d === 1 ? "start" : d === 61 ? "end" : "middle"))
+      .text((d) => seasonLabel(d));
+
+    const legend = g.append("g").attr("class", "fire-counts-legend");
+    legend.append("line").attr("x1", 0).attr("x2", 26).attr("y1", -24).attr("y2", -24);
+    legend.append("text").attr("x", 34).attr("y", -20).text("2020-2024 daily average");
+    legend
+      .append("text")
+      .attr("x", innerWidth)
+      .attr("y", innerHeight + 34)
+      .attr("text-anchor", "end")
+      .text("Oct 1 - Nov 30");
+
+    percentEl.textContent = `${Math.round(avgPct * 100)}%`;
+    copyEl.textContent = `On average, each year's strongest ${WINDOW_DAYS}-day run captured this share of seasonal detections. For the average curve, that window falls around ${seasonLabel(avgBest.start)}-${seasonLabel(avgBest.end)}.`;
+  }
+
+  function highlightYear(year, yearRows) {
+    const svgNode = svg.node();
+    const activePath = svg.select(`.year-fire-line[data-year="${year}"]`);
+    svg.selectAll(".year-fire-line").classed("is-muted", true).classed("is-active", false);
+    activePath.classed("is-muted", false).classed("is-active", true).raise();
+    svg.select(".avg-fire-line").raise();
+    svg.selectAll(".avg-fire-dot").raise();
+    svg.selectAll(".year-fire-hit").raise();
+
+    const peak = yearRows.reduce((best, d) => (d.total > best.total ? d : best), yearRows[0]);
+    const g = svg.select("g");
+    const transform = d3.zoomTransform(g.node());
+    const pathNode = activePath.node();
+    const bbox = pathNode.getBBox();
+    const labelX = Math.min(bbox.x + bbox.width + 8, svgNode.viewBox.baseVal.width - 150);
+    const labelY = Math.max(bbox.y - 8, 8);
+    const label = svg.select(".fire-hover-label").style("display", null);
+    const text = `${year}: peak ${d3.format(",")(peak.total)} fires`;
+    label.attr("transform", `translate(${labelX},${labelY})`);
+    label.select("text").text(text);
+    const textWidth = label.select("text").node().getComputedTextLength();
+    label.select("rect").attr("width", textWidth + 18);
+  }
+
+  function resetYearHighlight() {
+    svg.selectAll(".year-fire-line").classed("is-muted", false).classed("is-active", false);
+    svg.select(".fire-hover-label").style("display", "none");
+  }
+
+  function bestWindow(values) {
+    let best = { start: values[0].seasonDay, end: values[0].seasonDay, sum: 0 };
+
+    values.forEach((d) => {
+      const end = d.seasonDay + WINDOW_DAYS - 1;
+      const windowRows = values.filter(
+        (candidate) => candidate.seasonDay >= d.seasonDay && candidate.seasonDay <= end,
+      );
+      const sum = d3.sum(windowRows, (candidate) => candidate.total);
+      if (sum > best.sum) {
+        best = {
+          start: d.seasonDay,
+          end: windowRows[windowRows.length - 1].seasonDay,
+          sum,
+        };
+      }
+    });
+
+    return best;
+  }
+
+  function seasonLabel(seasonDay) {
+    if (seasonDay <= 31) return `Oct ${seasonDay}`;
+    return `Nov ${seasonDay - 31}`;
+  }
+})();
+
 // Component script 2
 (() => {
 
