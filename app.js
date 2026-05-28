@@ -617,7 +617,7 @@
         .geoMercator()
         .center([76.2, 29.45])
         .scale(6100)
-        .translate([mapWidth / 2, mapHeight / 2]);
+        .translate([mapWidth / 2 - 115, mapHeight / 2]);
 
       const path = d3.geoPath(projection);
       const parseDate = d3.timeParse("%Y-%m-%d");
@@ -678,7 +678,7 @@
           { name: "PUNJAB", coords: [75.4, 31.0] },
           { name: "HARYANA", coords: [76.25, 29.25] },
           { name: "RAJASTHAN", coords: [74.25, 28.35] },
-          { name: "UTTAR PRADESH", coords: [78.15, 28.65] },
+          { name: "UTTAR PRADESH", coords: [78.45, 28.95] },
         ];
 
         labelLayer
@@ -693,16 +693,28 @@
         const delhi = projection([77.209, 28.6139]);
         labelLayer
           .append("circle")
+          .attr("class", "delhi-ring delhi-ring-outer")
           .attr("cx", delhi[0])
           .attr("cy", delhi[1])
-          .attr("r", 4.5)
-          .attr("fill", "white");
+          .attr("r", 18);
+        labelLayer
+          .append("circle")
+          .attr("class", "delhi-ring delhi-ring-inner")
+          .attr("cx", delhi[0])
+          .attr("cy", delhi[1])
+          .attr("r", 10);
+        labelLayer
+          .append("circle")
+          .attr("class", "delhi-marker")
+          .attr("cx", delhi[0])
+          .attr("cy", delhi[1])
+          .attr("r", 6.5);
         labelLayer
           .append("text")
           .attr("class", "delhi-label")
-          .attr("x", delhi[0] + 11)
-          .attr("y", delhi[1] + 5)
-          .text("Delhi");
+          .attr("x", delhi[0] + 24)
+          .attr("y", delhi[1] + 6)
+          .text("DELHI");
       }
 
       function getStateName(feature) {
