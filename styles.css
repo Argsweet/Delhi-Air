@@ -970,7 +970,7 @@ h1 {
   right: -8vw;
   bottom: 0;
   height: 12rem;
-  z-index: 2;
+  z-index: 1;
   background: var(--sand);
   clip-path: polygon(
     0 58%,
@@ -1098,7 +1098,7 @@ body {
 .sticky-card-wrap {
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: 60;
   min-height: 0vh;
   display: grid;
   place-items: center;
@@ -1113,6 +1113,8 @@ body {
   color: var(--ink);
   box-shadow: 0 18px 36px rgba(72, 45, 26, 0.24);
   margin-top: -6rem;
+  transform: translateY(-6rem);
+  z-index: 80;
 }
 
 .text-card p {
@@ -1633,6 +1635,7 @@ body {
   color: var(--farmer-ink);
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 
 .farmer-window .smoke-top span {
@@ -1687,6 +1690,9 @@ body {
 }
 .farmer-window .hill {
   background: #d6a269;
+  left: 0;
+  right: 0;
+  overflow: hidden;
 }
 .farmer-window > .grain {
   z-index: 20;
@@ -1698,19 +1704,80 @@ body {
   --fire-card: #ffd8ad;
   --fire-ink: #252525;
   --fire-charcoal: #343434;
+  min-height: 98vh;
   background: var(--fire-charcoal);
   color: var(--fire-ink);
+  overflow: visible;
+  padding-top: clamp(1rem, 4vh, 3rem);
+}
+.fire-transition .background-scene svg {
+  height: 112%;
+  transform: translateY(-10%);
+}
+.stubble-photo-clips {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  pointer-events: none;
+}
+.stubble-photo {
+  position: absolute;
+  display: block;
+  width: clamp(12rem, 20vw, 20rem);
+  height: clamp(8rem, 13vw, 13rem);
+  object-fit: cover;
+  border: 8px solid rgba(255, 216, 173, 0.82);
+  box-shadow: 0 1.35rem 2.5rem rgba(72, 45, 26, 0.26);
+  filter: sepia(0.14) saturate(0.92) contrast(0.96);
+  opacity: 0.9;
+}
+.stubble-photo-left {
+  left: clamp(-4rem, 3vw, 4rem);
+  top: 28%;
+  transform: rotate(-7deg);
+}
+.stubble-photo-right {
+  right: clamp(-4rem, 3vw, 4rem);
+  top: 22%;
+  transform: rotate(6deg);
+}
+.stubble-photo-low {
+  right: clamp(5rem, 17vw, 20rem);
+  bottom: 6%;
+  width: clamp(13rem, 22vw, 23rem);
+  transform: rotate(-3deg);
+  opacity: 0.82;
+}
+.fire-transition .sticky-card-wrap {
+  position: sticky;
+  top: -1.25rem;
+  align-items: start;
+  min-height: 100vh;
+  padding-top: 0;
+  padding-bottom: clamp(3rem, 8vh, 5rem);
+  margin-top: clamp(-15rem, -20vh, -9rem);
+  transform: none;
 }
 .fire-transition .text-card {
+  position: relative;
+  z-index: 35;
   background: rgba(255, 216, 173, 0.96);
   color: var(--fire-ink);
   box-shadow: 0 18px 36px rgba(72, 45, 26, 0.24);
+  margin-top: 0;
+  transform: none;
 }
 .fire-transition .text-card p {
   color: var(--fire-ink);
 }
 .fire-transition .text-card strong {
   color: #111;
+}
+
+@media (max-width: 900px) {
+  .stubble-photo-clips {
+    display: none;
+  }
 }
 .fire-transition > .grain {
   z-index: 8;
@@ -1726,8 +1793,37 @@ body {
   --map-yellow: #ffe066;
   --map-orange: #ff9f1c;
   --map-red: #c84f3a;
+  position: relative;
+  min-height: 620vh;
   background: var(--map-bg);
   color: white;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.fire-scrolly .scrolly-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.fire-scrolly .steps {
+  position: relative;
+  z-index: 5;
+  width: min(1420px, 100vw);
+  margin: -100vh auto 0;
+  padding-top: 36vh;
+  padding-right: clamp(1rem, 3vw, 3.25rem);
+  padding-bottom: 120vh;
+  pointer-events: none;
+}
+
+.fire-scrolly .step {
+  min-height: 96vh;
 }
 .fire-scrolly .state {
   fill: var(--map-state);
@@ -3623,6 +3719,34 @@ body {
 .delhi-effects-draft .effects-text-panel p {
   font-size: clamp(1.15rem, 1.55vw, 1.44rem);
   line-height: 1.62;
+}
+
+.story-section {
+  min-height: auto;
+  padding-top: clamp(5rem, 9vw, 7.5rem);
+  padding-bottom: clamp(5rem, 9vw, 7.5rem);
+}
+
+.story-section .visual-placeholder {
+  margin-top: 2rem;
+  padding: 1.1rem 1.2rem;
+  border-left: 4px solid rgba(122, 82, 50, 0.55);
+  background: rgba(37, 37, 37, 0.06);
+  color: rgba(37, 37, 37, 0.66);
+  font-style: italic;
+}
+
+.visual-only-section {
+  padding-top: clamp(3rem, 6vw, 4.5rem);
+}
+
+.closing-section {
+  padding-bottom: clamp(7rem, 11vw, 10rem);
+}
+
+html,
+body {
+  overflow-x: clip;
 }
 
 /* Clickable article clippings around the Delhi effects text */
