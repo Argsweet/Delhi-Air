@@ -1948,6 +1948,17 @@ body {
   text-transform: uppercase;
 }
 
+.cig-copy .source-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.cig-copy .source-link:hover,
+.cig-copy .source-link:focus-visible {
+  color: #252525;
+}
+
 .cig-copy h1 {
   margin: 0 0 1rem;
   color: #252525;
