@@ -609,9 +609,14 @@
       const svg = d3
         .select("#fire-map")
         .attr("viewBox", `0 0 ${mapWidth} ${mapHeight}`);
+      const windSvg = d3
+        .select("#wind-overlay")
+        .attr("viewBox", `0 0 ${mapWidth} ${mapHeight}`);
       const mapLayer = svg.append("g");
       const fireLayer = svg.append("g");
       const labelLayer = svg.append("g");
+      const windLayer = windSvg.append("g").attr("class", "wind-layer");
+      const dimLayer = d3.select(".smoke-screen-dim");
 
       const projection = d3
         .geoMercator()
@@ -690,6 +695,8 @@
           .attr("y", (d) => projection(d.coords)[1])
           .text((d) => d.name);
 
+        drawWindFlow();
+
         const delhi = projection([77.209, 28.6139]);
         labelLayer
           .append("circle")
@@ -715,6 +722,91 @@
           .attr("x", delhi[0] + 24)
           .attr("y", delhi[1] + 6)
           .text("DELHI");
+      }
+
+      function drawWindFlow() {
+        const routes = [
+          {
+            id: "smoke-to-delhi",
+            points: [
+              [75.15, 30.85],
+              [75.95, 30.15],
+              [76.55, 29.3],
+              [77.18, 28.63],
+            ],
+          },
+        ];
+
+        const line = d3
+          .line()
+          .curve(d3.curveBasis)
+          .x((d) => projection(d)[0])
+          .y((d) => projection(d)[1]);
+
+        const defs = windSvg.append("defs");
+        defs
+          .append("marker")
+          .attr("id", "wind-arrowhead")
+          .attr("viewBox", "0 -5 12 10")
+          .attr("refX", 10)
+          .attr("refY", 0)
+          .attr("markerWidth", 7)
+          .attr("markerHeight", 7)
+          .attr("orient", "auto")
+          .append("path")
+          .attr("d", "M0,-5L12,0L0,5")
+          .attr("class", "wind-arrowhead");
+        defs
+          .append("marker")
+          .attr("id", "wind-vector-arrowhead")
+          .attr("viewBox", "0 -3 7 6")
+          .attr("refX", 6)
+          .attr("refY", 0)
+          .attr("markerWidth", 5)
+          .attr("markerHeight", 5)
+          .attr("orient", "auto")
+          .append("path")
+          .attr("d", "M0,-3L7,0L0,3")
+          .attr("class", "wind-vector-arrowhead");
+
+        const vectors = [];
+        for (let lon = 74.5; lon <= 78.2; lon += 0.45) {
+          for (let lat = 28.2; lat <= 31.4; lat += 0.42) {
+            const start = projection([lon, lat]);
+            const end = projection([lon + 0.18, lat - 0.12]);
+            vectors.push({ x1: start[0], y1: start[1], x2: end[0], y2: end[1] });
+          }
+        }
+
+        windLayer
+          .append("g")
+          .attr("class", "wind-vector-field")
+          .selectAll("line")
+          .data(vectors)
+          .join("line")
+          .attr("class", "wind-vector")
+          .attr("x1", (d) => d.x1)
+          .attr("y1", (d) => d.y1)
+          .attr("x2", (d) => d.x2)
+          .attr("y2", (d) => d.y2)
+          .attr("marker-end", "url(#wind-vector-arrowhead)");
+
+        const routeGroup = windLayer
+          .selectAll(".wind-route-group")
+          .data(routes)
+          .join("g")
+          .attr("class", (d, i) => `wind-route-group wind-route-group-${i + 1}`);
+
+        routeGroup
+          .append("path")
+          .attr("class", "wind-route-halo")
+          .attr("d", (d) => line(d.points));
+
+        routeGroup
+          .append("path")
+          .attr("class", (d, i) => `wind-route wind-route-${i + 1}`)
+          .attr("d", (d) => line(d.points))
+          .attr("marker-end", "url(#wind-arrowhead)");
       }
 
       function getStateName(feature) {
@@ -757,14 +849,19 @@
 
         const start = section.offsetTop;
         const scrollable = section.offsetHeight - window.innerHeight;
-        return Math.max(
+        const rawProgress = Math.max(
           0,
           Math.min(1, (window.scrollY - start) / Math.max(scrollable, 1)),
         );
+        return Math.max(0, Math.min(1, rawProgress * 1.12));
       }
 
       function updateByProgress(progress) {
         if (!dates.length) return;
+
+        const smokeStepFocus = getSmokeStepFocus();
+        dimLayer.style("opacity", smokeStepFocus * 0.28);
+        windLayer.style("opacity", smokeStepFocus * 0.88);
 
         const i = Math.max(
           0,
@@ -861,6 +958,17 @@
                 .attr("opacity", (d) => fireOpacity(d)),
             (exit) => exit.transition().duration(70).attr("r", 0).remove(),
           );
+      }
+
+      function getSmokeStepFocus() {
+        const smokeStep = document.querySelector(".smoke-route-step");
+        if (!smokeStep) return 0;
+
+        const rect = smokeStep.getBoundingClientRect();
+        const viewportMid = window.innerHeight * 0.5;
+        const distance = Math.abs(rect.top + rect.height * 0.5 - viewportMid);
+        const range = window.innerHeight * 0.55;
+        return Math.max(0, Math.min(1, 1 - distance / range));
       }
 
       function fireRadius(d) {

@@ -1207,6 +1207,7 @@ body {
 #fire-map {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 100vw;
   height: 100vh;
   display: block;
@@ -1257,6 +1258,7 @@ body {
   position: absolute;
   left: 1.1rem;
   top: 1.1rem;
+  z-index: 5;
   padding: 0.75rem 0.95rem;
   background: rgba(20, 20, 20, 0.32);
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -1279,6 +1281,7 @@ body {
   position: absolute;
   left: 1.1rem;
   bottom: 1.1rem;
+  z-index: 5;
   display: grid;
   gap: 0.45rem;
   padding: 0.75rem 0.9rem;
@@ -1334,7 +1337,7 @@ body {
 }
 
 .fire-scrolly .step:last-child {
-  margin-top: 34vh;
+  margin-top: 0;
 }
 
 .annotation {
@@ -1818,7 +1821,7 @@ body {
   margin: -100vh auto 0;
   padding-top: 36vh;
   padding-right: clamp(1rem, 3vw, 3.25rem);
-  padding-bottom: 120vh;
+  padding-bottom: 24vh;
   pointer-events: none;
 }
 
@@ -1852,6 +1855,70 @@ body {
   filter: drop-shadow(0 0 8px rgba(91, 214, 255, 0.72));
   vector-effect: non-scaling-stroke;
 }
+.fire-scrolly .smoke-screen-dim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: #111;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms linear;
+}
+.fire-scrolly #wind-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+.fire-scrolly .wind-layer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms linear;
+}
+.fire-scrolly .wind-vector {
+  stroke: rgba(238, 230, 220, 0.54);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.46));
+  vector-effect: non-scaling-stroke;
+}
+.fire-scrolly .wind-vector-field {
+  opacity: 0.72;
+  animation: windVectorPulse 2.4s ease-in-out infinite;
+}
+.fire-scrolly .wind-vector-arrowhead {
+  fill: rgba(238, 230, 220, 0.62);
+  stroke: rgba(0, 0, 0, 0.38);
+  stroke-width: 0.5;
+}
+.fire-scrolly .wind-route-halo {
+  fill: none;
+  stroke: rgba(255, 236, 184, 0.34);
+  stroke-width: 11;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: blur(1.4px);
+  vector-effect: non-scaling-stroke;
+}
+.fire-scrolly .wind-route {
+  fill: none;
+  stroke: #ffe7a8;
+  stroke-width: 5.2;
+  stroke-linecap: round;
+  stroke-dasharray: 28 18;
+  filter:
+    drop-shadow(0 0 3px rgba(0, 0, 0, 0.85))
+    drop-shadow(0 0 10px rgba(255, 226, 157, 0.62));
+  vector-effect: non-scaling-stroke;
+  animation: windFlow 1.35s linear infinite;
+}
+.fire-scrolly .wind-arrowhead {
+  fill: #ffe7a8;
+  stroke: rgba(8, 10, 10, 0.78);
+  stroke-width: 1;
+}
 .fire-scrolly .annotation {
   color: #f2f2f2;
   width: min(520px, 38vw);
@@ -1861,6 +1928,18 @@ body {
   box-shadow: 0 1rem 2.6rem rgba(0, 0, 0, 0.28);
   backdrop-filter: blur(6px);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.88);
+}
+
+@keyframes windFlow {
+  to {
+    stroke-dashoffset: -34;
+  }
+}
+
+@keyframes windVectorPulse {
+  50% {
+    opacity: 0.48;
+  }
 }
 .fire-scrolly .annotation h2 {
   color: white;
