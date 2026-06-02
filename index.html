@@ -593,63 +593,136 @@
             Confirm my guess
           </button>
           <div aria-hidden="true" class="cigarette-illustration">
-            <svg viewBox="-36 -72 376 226" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 420 360" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="filterShade" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#f0b45f"></stop>
+                  <stop offset="0.45" stop-color="#d99035"></stop>
+                  <stop offset="1" stop-color="#b96c21"></stop>
+                </linearGradient>
+                <linearGradient id="paperShade" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#fff9ed"></stop>
+                  <stop offset="0.5" stop-color="#efe7d8"></stop>
+                  <stop offset="1" stop-color="#d7cbb8"></stop>
+                </linearGradient>
+                <linearGradient id="ashShade" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color="#161616"></stop>
+                  <stop offset="0.45" stop-color="#080808"></stop>
+                  <stop offset="1" stop-color="#000000"></stop>
+                </linearGradient>
+                <radialGradient id="emberGlow" cx="50%" cy="50%" r="58%">
+                  <stop offset="0" stop-color="#111111"></stop>
+                  <stop offset="0.5" stop-color="#050505"></stop>
+                  <stop offset="1" stop-color="#000000"></stop>
+                </radialGradient>
+                <filter id="softShadow" x="-20%" y="-30%" width="140%" height="170%">
+                  <feDropShadow
+                    dx="0"
+                    dy="18"
+                    flood-color="#5f3a1d"
+                    flood-opacity="0.22"
+                    stdDeviation="10"
+                  ></feDropShadow>
+                </filter>
+              </defs>
+              <ellipse
+                cx="145"
+                cy="315"
+                fill="#6f441f"
+                opacity="0.18"
+                rx="98"
+                ry="13"
+              ></ellipse>
               <path
-                d="M273 -8 C265 -20 281 -26 275 -39 C271 -48 282 -54 279 -64"
+                d="M336 70 C319 36 360 31 342 0"
                 fill="none"
-                stroke="#55524d"
+                opacity="0.35"
+                stroke="#7b7469"
                 stroke-linecap="round"
                 stroke-width="4"
-                opacity="0.72"
               ></path>
               <path
-                d="M286 -6 C278 -19 295 -27 289 -41 C285 -51 298 -57 295 -68"
+                d="M358 83 C340 47 382 36 363 5"
                 fill="none"
-                stroke="#55524d"
+                opacity="0.28"
+                stroke="#7b7469"
+                stroke-linecap="round"
+                stroke-width="4"
+              ></path>
+              <path
+                d="M316 80 C303 53 331 43 319 18"
+                fill="none"
+                opacity="0.24"
+                stroke="#7b7469"
                 stroke-linecap="round"
                 stroke-width="3"
-                opacity="0.58"
               ></path>
-              <path
-                d="M263 -5 C257 -15 270 -21 266 -32 C264 -39 271 -45 269 -53"
-                fill="none"
-                stroke="#55524d"
-                stroke-linecap="round"
-                stroke-width="2.4"
-                opacity="0.46"
-              ></path>
-              <g transform="rotate(-32 160 62)">
+              <g filter="url(#softShadow)" transform="rotate(-38 196 209)">
                 <rect
-                  fill="#e3912d"
-                  height="34"
-                  rx="9"
-                  width="96"
-                  x="18"
-                  y="45"
+                  fill="url(#filterShade)"
+                  height="58"
+                  rx="18"
+                  width="122"
+                  x="42"
+                  y="180"
                 ></rect>
                 <rect
-                  fill="#efe8d8"
-                  height="38"
-                  rx="6"
-                  width="158"
-                  x="106"
-                  y="43"
+                  fill="url(#paperShade)"
+                  height="58"
+                  width="188"
+                  x="148"
+                  y="180"
                 ></rect>
                 <rect
-                  fill="#de5932"
-                  height="38"
-                  rx="6"
-                  width="38"
-                  x="252"
-                  y="43"
+                  fill="#f6efe3"
+                  height="58"
+                  opacity="0.32"
+                  width="22"
+                  x="166"
+                  y="180"
                 ></rect>
-                <circle
-                  cx="281"
-                  cy="62"
-                  fill="#ff4a2c"
-                  opacity="0.78"
-                  r="6"
-                ></circle>
+                <rect
+                  fill="#caa36d"
+                  height="58"
+                  opacity="0.48"
+                  width="20"
+                  x="326"
+                  y="180"
+                ></rect>
+                <ellipse
+                  cx="346"
+                  cy="209"
+                  fill="url(#ashShade)"
+                  rx="21"
+                  ry="29"
+                ></ellipse>
+                <path
+                  d="M332 190 C342 199 351 190 362 201 C353 202 355 211 364 216 C352 220 342 216 335 225 C334 214 323 207 332 190Z"
+                  fill="url(#emberGlow)"
+                ></path>
+                <path
+                  d="M339 188 C348 194 353 189 361 197 M334 203 C344 206 351 205 360 212 M333 220 C343 216 353 220 361 216"
+                  fill="none"
+                  opacity="0.65"
+                  stroke="#272421"
+                  stroke-linecap="round"
+                  stroke-width="5"
+                ></path>
+                <g opacity="0.28" stroke-linecap="round">
+                  <path d="M60 193 l7 -3" stroke="#ffd48a" stroke-width="2"></path>
+                  <path d="M79 221 l5 -4" stroke="#ffd48a" stroke-width="2"></path>
+                  <path d="M101 198 l4 3" stroke="#8c541d" stroke-width="2"></path>
+                  <path d="M127 225 l7 -2" stroke="#ffd48a" stroke-width="2"></path>
+                  <path d="M84 205 l3 3" stroke="#8c541d" stroke-width="2"></path>
+                  <path d="M117 190 l5 2" stroke="#ffd48a" stroke-width="2"></path>
+                </g>
+                <g opacity="0.18" stroke="#b7aa98" stroke-width="1.3">
+                  <path d="M176 184 C170 199 171 215 178 235"></path>
+                  <path d="M201 183 C194 201 196 221 205 236"></path>
+                  <path d="M230 183 C224 200 225 219 233 236"></path>
+                  <path d="M260 183 C252 203 257 221 264 236"></path>
+                  <path d="M292 183 C284 200 287 221 294 236"></path>
+                </g>
               </g>
             </svg>
           </div>

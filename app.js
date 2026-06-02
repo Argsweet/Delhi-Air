@@ -585,10 +585,10 @@
       icon.className = "cig-icon";
       icon.innerHTML = `<svg viewBox="0 0 46 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <g transform="rotate(-24 21 8)">
-          <rect x="2" y="6" width="14" height="4" rx="1.1" fill="#E4A23A"></rect>
-          <rect x="15" y="5.2" width="22" height="5.6" rx="1.4" fill="#F1E9D8"></rect>
-          <rect x="36" y="5.2" width="6.5" height="5.6" rx="1.1" fill="#D8673F"></rect>
-          <path d="M41.4 4.5 C43.5 2.9 42.1 1.5 44 0.5" fill="none" stroke="#60605C" stroke-width="0.9" stroke-linecap="round"></path>
+          <rect x="2" y="6" width="14" height="4" rx="1.1" fill="#d4956a"></rect>
+          <rect x="15" y="5.2" width="22" height="5.6" rx="1.4" fill="#f7eadb"></rect>
+          <rect x="36" y="5.2" width="6.5" height="5.6" rx="1.1" fill="#b84020"></rect>
+          <path d="M41.4 4.5 C43.5 2.9 42.1 1.5 44 0.5" fill="none" stroke="#555" stroke-width="0.9" stroke-linecap="round"></path>
         </g>
       </svg>`;
       target.appendChild(icon);
@@ -618,17 +618,17 @@
       const barHeight = (value / maxValue) * chartHeight;
       const x = pad.left + index * barWidth;
       const y = pad.top + chartHeight - barHeight;
-      ctx.fillStyle = "rgba(74, 67, 59, 0.66)";
+      ctx.fillStyle = "rgba(46, 46, 46, 0.9)";
       ctx.fillRect(x + 2, y, Math.max(2, barWidth - 4), barHeight);
     });
 
-    ctx.strokeStyle = "rgba(95, 78, 60, 0.32)";
+    ctx.strokeStyle = "rgba(184, 64, 32, 0.46)";
     ctx.beginPath();
     ctx.moveTo(pad.left, pad.top + chartHeight);
     ctx.lineTo(width - pad.right, pad.top + chartHeight);
     ctx.stroke();
 
-    ctx.fillStyle = "rgba(80, 65, 48, 0.8)";
+    ctx.fillStyle = "rgba(46, 46, 46, 0.88)";
     ctx.font = "10px Arial, Helvetica, sans-serif";
     ctx.textAlign = "center";
     for (let label = 0; label <= 100; label += 20) {
@@ -636,7 +636,7 @@
       ctx.fillText(label, x, height - 7);
     }
 
-    drawMarker(ctx, pad, chartWidth, chartHeight, guess, "#4a6fa5", "YOUR GUESS");
+    drawMarker(ctx, pad, chartWidth, chartHeight, guess, "#555", "YOUR GUESS");
     drawMarker(ctx, pad, chartWidth, chartHeight, ACTUAL_CIGARETTES, "#B84020", "ACTUAL: 44");
   }
 
@@ -666,11 +666,11 @@
 
     const diff = guess - ACTUAL_CIGARETTES;
     if (Math.abs(diff) < 5) {
-      commentEl.textContent = "Impressive. You were very close.";
+      commentEl.innerHTML = "<span>Impressive.</span><strong>You were very close.</strong>";
     } else if (diff < 0) {
-      commentEl.textContent = `You underestimated by ${Math.abs(diff)} cigarettes. Most people do.`;
+      commentEl.innerHTML = `<span>You underestimated by ${Math.abs(diff)} cigarettes.</span><strong>Most people do.</strong>`;
     } else {
-      commentEl.textContent = `You overestimated by ${diff} cigarettes. Still, the exposure is staggering.`;
+      commentEl.innerHTML = `<span>You overestimated by ${diff} cigarettes.</span><strong>Still, the exposure is staggering.</strong>`;
     }
   }
 
