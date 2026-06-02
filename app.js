@@ -213,19 +213,20 @@
 
   const steps = [
     {
-      title: "United States average PM2.5 is 8.2 µg/m³.",
+      title:
+        "PM2.5 is microscopic air pollution—about 30 times smaller than a human hair—that can travel deep into your lungs and even enter your bloodstream when you breathe.",
       body:
-        "PM2.5 is fine particulate matter small enough to enter the lungs ... the U.S. annual average is 8.2 µg/m³.",
+        "The U.S. average concentration is 8.2 micrograms of these particles per cubic meter (8.2 µg/m³).",
     },
     {
-      title: "WHO labels the 24-hour safety level at 15 µg/m³.",
-      body:
-        "The World Health Organization recommends PM2.5 not exceed 15 µg/m³ over a 24-hour average ... the clean-air benchmark is already above the U.S. mean.",
+      title:
+        "The World Health Organization (WHO) labels the 24-hour safety level at 15 µg/m³, less than double the U.S. average ...",
+      body: "",
     },
     {
-      title: "The EPA hazardous threshold begins at 225.5 µg/m³.",
-      body:
-        "On the U.S. AQI scale, 24-hour PM2.5 reaches the hazardous category at 225.5 µg/m³ ... far beyond the WHO guideline.",
+      title:
+        "By 225.5, the U.S. Environmental Protection Agency labels the air as hazardous ...",
+      body: "",
     },
     {
       title: "Delhi's PM2.5 levels are far higher.",
@@ -259,6 +260,7 @@
   let height = 0;
   let latestProgress = 0;
   let targetProgress = 0;
+  let lastRawProgress = 0;
   let latestStep = -1;
 
   function clamp(value, min = 0, max = 1) {
@@ -508,10 +510,17 @@
     const rect = section.getBoundingClientRect();
     const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
     const rawProgress = clamp(-rect.top / scrollable) * (steps.length - 1);
-    if (rawProgress < 0.45) targetProgress = 0;
-    else if (rawProgress < 1.22) targetProgress = 1;
-    else if (rawProgress < 2.02) targetProgress = 2;
+    const scrollingDown = rawProgress >= lastRawProgress;
+    const thresholds = scrollingDown
+      ? [0.45, 1.22, 2.02]
+      : [0.25, 0.95, 1.72];
+
+    if (rawProgress < thresholds[0]) targetProgress = 0;
+    else if (rawProgress < thresholds[1]) targetProgress = 1;
+    else if (rawProgress < thresholds[2]) targetProgress = 2;
     else targetProgress = 3;
+
+    lastRawProgress = rawProgress;
   }
 
   function tick(time) {
