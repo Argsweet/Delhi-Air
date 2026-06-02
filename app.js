@@ -200,6 +200,337 @@
     
 })();
 
+// PM2.5 comparison scrollytelling
+(() => {
+  const section = document.querySelector("#pm25-comparison");
+  const svgEl = document.querySelector("#pm25-scrolly-viz");
+  if (!section || !svgEl || !window.d3) return;
+
+  const svg = d3.select(svgEl);
+  const copyPanel = document.querySelector(".pm25-copy");
+  const copyTitle = document.querySelector("#pm25-copy-title");
+  const copyBody = document.querySelector("#pm25-copy-body");
+
+  const steps = [
+    {
+      title: "United States average PM2.5 is 8.2 µg/m³.",
+      body:
+        "PM2.5 is fine particulate matter small enough to enter the lungs ... the U.S. annual average is 8.2 µg/m³.",
+    },
+    {
+      title: "WHO labels the 24-hour safety level at 15 µg/m³.",
+      body:
+        "The World Health Organization recommends PM2.5 not exceed 15 µg/m³ over a 24-hour average ... the clean-air benchmark is already above the U.S. mean.",
+    },
+    {
+      title: "The EPA hazardous threshold begins at 225.5 µg/m³.",
+      body:
+        "On the U.S. AQI scale, 24-hour PM2.5 reaches the hazardous category at 225.5 µg/m³ ... far beyond the WHO guideline.",
+    },
+    {
+      title: "Delhi's PM2.5 levels are far higher.",
+      body:
+        "Delhi averaged 377 µg/m³ in winter from 2020 to early 2023 ... even the rest-of-year average was 154.6 µg/m³.",
+    },
+  ];
+
+  const red = "#b84020";
+  const blue = "#3a3a3a";
+  const mutedBlue = "#555";
+  const rng = d3.randomLcg(0.42);
+  const usParticles = d3.range(8).map(() => ({
+    dx: rng() * 2 - 1,
+    dy: rng() * 2 - 1,
+    phase: rng() * Math.PI * 2,
+    speed: 0.55 + rng() * 0.45,
+  }));
+  const delhiParticles = d3.range(377).map((_, index) => {
+    const value = index + 0.5 + (rng() - 0.5) * 0.65;
+    return {
+      value,
+      lane: rng() * 2 - 1,
+      jitter: rng() * 2 - 1,
+      phase: rng() * Math.PI * 2,
+      speed: 0.35 + rng() * 0.35,
+    };
+  });
+
+  let width = 0;
+  let height = 0;
+  let latestProgress = 0;
+  let targetProgress = 0;
+  let latestStep = -1;
+
+  function clamp(value, min = 0, max = 1) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function ease(value) {
+    return d3.easeCubicInOut(clamp(value));
+  }
+
+  function between(progress, start, end) {
+    return clamp((progress - start) / (end - start));
+  }
+
+  function setCopy(progress) {
+    const index = Math.min(steps.length - 1, Math.max(0, Math.round(progress)));
+    if (index === latestStep) return;
+    latestStep = index;
+    copyTitle.textContent = steps[index].title;
+    copyBody.textContent = steps[index].body;
+  }
+
+  function markerGroup(root, options) {
+    const {
+      x,
+      y1,
+      y2,
+      color,
+      opacity,
+      value,
+      label,
+      anchor = "middle",
+      labelY = y1 - 56,
+    } = options;
+    const group = root.append("g").attr("opacity", opacity);
+
+    group
+      .append("line")
+      .attr("class", "pm25-marker-line")
+      .attr("x1", x)
+      .attr("x2", x)
+      .attr("y1", y1)
+      .attr("y2", y2)
+      .attr("stroke", color);
+    group.append("circle").attr("cx", x).attr("cy", y1).attr("r", 4.8).attr("fill", color);
+    group
+      .append("text")
+      .attr("class", "pm25-marker-value")
+      .attr("x", x)
+      .attr("y", labelY)
+      .attr("fill", color)
+      .attr("text-anchor", anchor)
+      .text(value);
+    group
+      .append("text")
+      .attr("class", "pm25-marker-label")
+      .attr("x", x)
+      .attr("y", labelY + 20)
+      .attr("fill", color)
+      .attr("text-anchor", anchor)
+      .text(label);
+  }
+
+  function draw(time = 0) {
+    const progress = latestProgress;
+    setCopy(targetProgress);
+
+    const rect = svgEl.getBoundingClientRect();
+    width = Math.max(320, rect.width);
+    height = Math.max(420, rect.height);
+    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.selectAll("*").remove();
+
+    const midY = height * 0.53;
+    const markerTop = Math.max(126, height * 0.24);
+    const markerBottom = Math.min(height - 150, height * 0.74);
+    const tWho = ease(between(progress, 0.45, 1));
+    const tHazard = ease(between(progress, 1.42, 2));
+    const roomShift = ease(between(progress, 1.94, 2.46));
+    const delhiMotion = ease(between(progress, 2.03, 2.86));
+    const tDelhi = ease(between(progress, 2.1, 2.92));
+    const stageA = ease(between(progress, 0, 1));
+    const stageB = ease(between(progress, 1, 2));
+    const stageC = roomShift;
+    const baseUsX = d3.interpolate(width * 0.5, width * 0.62)(stageA);
+    const preDelhiUsX = d3.interpolate(baseUsX, width * 0.7)(stageB);
+    const dividerX = width * 0.36;
+    const rightMin = dividerX + 62;
+    const rightMax = width * 0.96;
+    const rightXScale = d3
+      .scaleLinear()
+      .domain([0, 15, 154.6, 225.5, 377, 400])
+      .range([
+        rightMin,
+        rightMin + (rightMax - rightMin) * 0.13,
+        rightMin + (rightMax - rightMin) * 0.36,
+        rightMin + (rightMax - rightMin) * 0.68,
+        rightMin + (rightMax - rightMin) * 0.9,
+        rightMax,
+      ]);
+    const finalUsWhoX = dividerX - (rightXScale(15) - dividerX);
+    const usClusterX = d3.interpolate(preDelhiUsX, width * 0.27)(stageC);
+    const whoPreX = d3.interpolate(usClusterX - width * 0.12, usClusterX - width * 0.14)(stageB);
+    const whoX = d3.interpolate(whoPreX, finalUsWhoX)(stageC);
+    const hazardX = d3.interpolate(width * 0.09, width * 0.075)(stageC);
+    const delhiEnterOffset = d3.interpolate(width * 0.5, 0)(delhiMotion);
+    const rightX = (value) => rightXScale(value) + delhiEnterOffset;
+    const usSpreadBeforeDelhi = d3.interpolate(
+      Math.min(135, width * 0.14),
+      Math.min(58, width * 0.07),
+    )(Math.max(stageA, stageB));
+    const usSpread = d3.interpolate(usSpreadBeforeDelhi, Math.min(28, width * 0.035))(stageC);
+    const usRadius = d3.interpolate(8.6, 4.2)(Math.max(stageA, stageB));
+    const finalUsRadius = d3.interpolate(usRadius, 3.5)(stageC);
+    const markerLabelY = markerTop - 58;
+    const copyDistance = Math.min(0.5, Math.abs(progress - Math.round(progress)));
+    const copyFade = 0.38 + 0.62 * (1 - copyDistance / 0.5);
+
+    if (copyPanel) {
+      copyPanel.style.opacity = String(clamp(copyFade, 0.42, 1));
+    }
+
+    const background = svg.append("g");
+    background
+      .append("line")
+      .attr("class", "pm25-center-line")
+      .attr("x1", dividerX)
+      .attr("x2", dividerX)
+      .attr("y1", height * 0.12)
+      .attr("y2", height * 0.84)
+      .attr("opacity", tDelhi * 0.95);
+
+    markerGroup(background, {
+      x: whoX,
+      y1: markerTop,
+      y2: markerBottom,
+      color: red,
+      opacity: tWho,
+      value: "15",
+      label: "WHO",
+      labelY: markerLabelY,
+    });
+    if (tHazard > 0.01) {
+      markerGroup(background, {
+        x: hazardX,
+        y1: markerTop,
+        y2: markerBottom,
+        color: red,
+        opacity: tHazard,
+        value: "225.5",
+        label: "EPA hazardous",
+        anchor: "start",
+        labelY: markerLabelY,
+      });
+    }
+    markerGroup(background, {
+      x: rightX(15),
+      y1: markerTop,
+      y2: markerBottom,
+      color: mutedBlue,
+      opacity: tDelhi,
+      value: "15",
+      label: "WHO",
+      labelY: markerLabelY,
+    });
+    markerGroup(background, {
+      x: rightX(225.5),
+      y1: markerTop,
+      y2: markerBottom,
+      color: mutedBlue,
+      opacity: tDelhi,
+      value: "225.5",
+      label: "EPA hazardous",
+      labelY: markerLabelY,
+    });
+    markerGroup(background, {
+      x: rightX(154.6),
+      y1: markerTop,
+      y2: markerBottom,
+      color: mutedBlue,
+      opacity: tDelhi,
+      value: "154.6",
+      label: "Rest of year",
+      labelY: markerLabelY,
+    });
+    markerGroup(background, {
+      x: rightX(377),
+      y1: markerTop,
+      y2: markerBottom,
+      color: blue,
+      opacity: tDelhi,
+      value: "377",
+      label: "Winter",
+      labelY: markerLabelY,
+    });
+
+    const labelLayer = svg.append("g");
+    labelLayer
+      .append("text")
+      .attr("class", "pm25-country-label")
+      .attr("x", usClusterX)
+      .attr("y", markerTop - 86)
+      .attr("text-anchor", "middle")
+      .attr("fill", red)
+      .text("United States");
+
+    if (tDelhi > 0.02) {
+      labelLayer
+        .append("text")
+        .attr("class", "pm25-country-label")
+        .attr("x", (rightMin + rightMax) / 2 + delhiEnterOffset)
+        .attr("y", markerTop - 86)
+        .attr("text-anchor", "middle")
+        .attr("fill", blue)
+        .attr("opacity", tDelhi)
+        .text("Delhi");
+    }
+
+    const particles = svg.append("g");
+    particles
+      .selectAll("circle.us")
+      .data(usParticles)
+      .join("circle")
+      .attr("class", "pm25-particle us")
+      .attr("cx", (d) => usClusterX + d.dx * usSpread + Math.sin(time * 0.001 * d.speed + d.phase) * 4)
+      .attr("cy", (d) => midY + d.dy * usSpread * 0.62 + Math.cos(time * 0.0011 * d.speed + d.phase) * 4)
+      .attr("r", finalUsRadius)
+      .attr("fill", red)
+      .attr("opacity", 0.95);
+
+    particles
+      .selectAll("circle.delhi")
+      .data(delhiParticles)
+      .join("circle")
+      .attr("class", "pm25-particle delhi")
+      .attr("cx", (d) => {
+        const base = rightX(d.value);
+        return base + d.jitter * 12 + Math.sin(time * 0.001 * d.speed + d.phase) * 2.4;
+      })
+      .attr("cy", (d) => midY + d.lane * Math.min(88, height * 0.12) + Math.cos(time * 0.001 * d.speed + d.phase) * 2.4)
+      .attr("r", 3.6)
+      .attr("fill", blue)
+      .attr("opacity", 0.74 * tDelhi);
+  }
+
+  function updateProgress() {
+    const rect = section.getBoundingClientRect();
+    const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
+    const rawProgress = clamp(-rect.top / scrollable) * (steps.length - 1);
+    if (rawProgress < 0.45) targetProgress = 0;
+    else if (rawProgress < 1.22) targetProgress = 1;
+    else if (rawProgress < 2.02) targetProgress = 2;
+    else targetProgress = 3;
+  }
+
+  function tick(time) {
+    updateProgress();
+    const distance = targetProgress - latestProgress;
+    if (Math.abs(distance) < 0.018) {
+      latestProgress = targetProgress;
+    } else {
+      latestProgress += distance * 0.12;
+    }
+    draw(time);
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener("resize", updateProgress, { passive: true });
+  updateProgress();
+  requestAnimationFrame(tick);
+})();
+
 // Component script 3
 (() => {
   const root = document.querySelector("#cigarette-interactive");

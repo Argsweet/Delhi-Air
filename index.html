@@ -498,29 +498,35 @@
     </section>
 
     <section
-      aria-label="How polluted is Delhi"
-      class="delhi-effects-draft story-section pollution-section"
-      id="how-polluted-delhi"
+      aria-label="PM2.5 comparison between the United States and Delhi"
+      class="pm25-scrolly"
+      id="pm25-comparison"
     >
-      <article class="effects-text-panel">
-        <p class="kicker">How polluted is Delhi?</p>
-        <h1>Delhi is regularly ranked among the most polluted major cities in the world.</h1>
-        <div class="body-copy">
-          <p>
-            In 2023, average PM2.5 concentrations in the city reached roughly
-            <strong>100 micrograms per cubic meter</strong> -- more than
-            <strong>20 times higher</strong> than the World Health
-            Organization's recommended annual limit. During severe winter smog
-            events, pollution levels can rise several times higher still.
+      <div class="pm25-sticky">
+        <article class="pm25-copy" aria-live="polite">
+          <h1 id="pm25-copy-title">United States average PM2.5 is 8.2 µg/m³.</h1>
+          <p id="pm25-copy-body">
+            PM2.5 refers to fine particulate matter 2.5 microns or smaller in
+            diameter. The U.S. annual average is 8.2 µg/m³.
           </p>
-          <p class="visual-placeholder">
-            PM2.5 comparison graphic: a horizontal scale moving from the WHO
-            safe guideline to the U.S. hazardous AQI threshold, an average Delhi
-            winter day, and a severe smog day in Delhi, with color shifting from
-            blue to orange to dark red and maroon.
+        </article>
+        <div class="pm25-stage">
+          <svg
+            aria-label="Animated PM2.5 particle comparison between the United States and Delhi"
+            id="pm25-scrolly-viz"
+          ></svg>
+          <p class="pm25-source-note">
+            Values shown in micrograms per cubic meter. Sources: WHO, EPA AQI,
+            IQAir, Delhi PM2.5 dataset summary.
           </p>
         </div>
-      </article>
+      </div>
+      <div class="pm25-scroll-steps" aria-hidden="true">
+        <div class="pm25-step"></div>
+        <div class="pm25-step"></div>
+        <div class="pm25-step"></div>
+        <div class="pm25-step"></div>
+      </div>
     </section>
 
     <section
