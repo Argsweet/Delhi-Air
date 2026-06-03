@@ -1664,6 +1664,17 @@ body {
 .farmer-window .days-note p {
   color: var(--farmer-ink);
 }
+.farmer-window .residue-note {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: clamp(-1.2rem, -2vw, -0.5rem) auto clamp(-5.5rem, -8vw, -3.25rem);
+  color: var(--farmer-muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.05rem, 1.45vw, 1.32rem);
+  line-height: 1.55;
+  text-align: center;
+}
 .farmer-window .days-note .big,
 .farmer-window .days-note .label {
   color: var(--farmer-burn);
@@ -1702,20 +1713,25 @@ body {
   opacity: 0.16;
 }
 
+.farmer-window .content {
+  padding-bottom: 13rem;
+}
+
 /* Fire transition scope */
 .fire-transition {
   --fire-card: #ffd8ad;
   --fire-ink: #252525;
   --fire-charcoal: #343434;
-  min-height: auto;
+  min-height: clamp(28rem, 48vw, 42rem);
+  margin-top: clamp(-6.5rem, -9vw, -3.8rem);
   background: #d6a269;
   color: var(--fire-ink);
-  overflow: visible;
-  padding: clamp(1rem, 3vh, 2rem) 0 clamp(2rem, 5vh, 3.5rem);
+  overflow: hidden;
+  padding: 0;
 }
 .fire-transition .background-scene svg {
-  height: 112%;
-  transform: translateY(-7%);
+  height: 150%;
+  transform: translateY(-34%);
 }
 
 .fire-transition .background-scene {
@@ -1725,37 +1741,47 @@ body {
 }
 .stubble-photo-clips {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  right: auto;
+  top: clamp(3rem, 6vw, 5rem);
+  bottom: auto;
   z-index: 18;
+  width: min(1080px, 94vw);
+  height: clamp(10rem, 16vw, 16rem);
+  transform: translateX(-50%);
   pointer-events: none;
 }
 .stubble-photo {
   position: absolute;
   display: block;
-  width: clamp(12rem, 20vw, 20rem);
-  height: clamp(8rem, 13vw, 13rem);
+  width: clamp(16rem, 26vw, 27rem);
+  height: clamp(9.5rem, 14.5vw, 15.5rem);
   object-fit: cover;
   border: 8px solid rgba(255, 216, 173, 0.82);
   box-shadow: 0 1.35rem 2.5rem rgba(72, 45, 26, 0.26);
   filter: sepia(0.14) saturate(0.92) contrast(0.96);
-  opacity: 0.9;
+  opacity: 0.92;
 }
 .stubble-photo-left {
-  left: clamp(-4rem, 3vw, 4rem);
-  top: 34%;
-  transform: rotate(-7deg);
+  left: 0;
+  bottom: 0.2rem;
+  z-index: 1;
+  transform: none;
 }
 .stubble-photo-right {
-  right: clamp(-4rem, 3vw, 4rem);
-  top: 30%;
-  transform: rotate(6deg);
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  transform: none;
 }
 .stubble-photo-low {
-  right: clamp(5rem, 17vw, 20rem);
-  bottom: -4rem;
-  width: clamp(13rem, 22vw, 23rem);
-  transform: rotate(-3deg);
-  opacity: 0.82;
+  left: 50%;
+  bottom: 1.1rem;
+  z-index: 3;
+  width: clamp(18rem, 30vw, 31rem);
+  height: clamp(10.5rem, 16vw, 17rem);
+  transform: translateX(-50%);
+  opacity: 0.94;
 }
 .fire-transition .sticky-card-wrap {
   position: relative;
@@ -1802,8 +1828,10 @@ body {
   --map-red: #c84f3a;
   position: relative;
   min-height: 620vh;
+  margin-top: clamp(-16rem, -18vw, -10rem);
   background: var(--map-bg);
   color: white;
+  z-index: 25;
   isolation: isolate;
   overflow: visible;
 }
