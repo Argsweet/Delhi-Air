@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Breathing Smoke</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%26%23x1F637%3B%3C/text%3E%3C/svg%3E"
+    />
     <link rel="stylesheet" href="styles.css" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
@@ -296,10 +301,6 @@
               opacity="0.38"
             ></path>
           </g>
-          <path
-            d="M0 1770 C118 1738 205 1785 320 1764 C448 1740 520 1788 662 1765 C785 1746 852 1788 975 1760 C1100 1732 1190 1768 1308 1755 C1365 1748 1402 1748 1440 1755 L1440 1900 L0 1900 Z"
-            fill="#2f302e"
-          ></path>
         </svg>
       </div>
       <div class="stubble-photo-clips" aria-hidden="true">
@@ -322,19 +323,17 @@
       <div class="sticky-card-wrap">
         <article class="text-card">
           <p>
-            Punjab and Haryana are regions of India north-west of Delhi. They
-            are among India’s largest producers of rice and wheat, feeding
-            millions across the country. But after rice is harvested in late
-            October, farmers have only a very small window — often just
-            <strong>7 to 10 days</strong> — to clear their fields before wheat
-            sowing begins in early November.
+            Punjab and Haryana are agricultural regions northwest of Delhi and
+            among India’s largest producers of rice and wheat. But after rice is
+            harvested in late October, farmers have only a very small window to
+            clear their fields before wheat sowing begins in early November.
           </p>
           <p>
-            Clearing crop residue quickly manually takes time and money that
-            many farmers cannot afford. Missing the sowing window can reduce
-            yields dramatically, cutting into already thin profits. For many
-            farmers, burning the leftover stubble becomes the fastest and
-            cheapest way to prepare fields in time.
+            Manual removal requires labor, machinery, and money that many
+            farmers cannot easily afford. As a result, burning stubble is often
+            the fast and cheap way to clear fields and stay on schedule for the
+            next planting season. Missing the sowing window can reduce yields
+            dramatically, cutting into already thin profits.
           </p>
         </article>
       </div>
@@ -364,17 +363,14 @@
         <section class="step" data-progress="0.08">
           <article class="annotation">
             <p>
-              At the beginning of the season, fire detections remain relatively
-              scattered across northern India. The MODIS satellite data captures
-              all thermal anomalies -- not every fire is confirmed crop burning
-              -- but large clusters have not yet formed across Punjab and
+              In early season, fire detections remain scattered across northern
+              India, large clusters have not yet formed across Punjab and
               Haryana.
             </p>
             <p>
               The region is entering the dry post-monsoon season, when harvested
-              fields begin clearing and vegetation moisture drops. Smoke exists,
-              but the landscape has not yet shifted into the concentrated burn
-              period tied to wheat preparation.
+              fields clear and moisture drops. The landscape has not yet shifted
+              into the concentrated burn period tied to wheat preparation.
             </p>
           </article>
         </section>
@@ -382,7 +378,7 @@
           <article class="annotation">
             <p>
               As the rice harvest finishes and farmers rush to plant wheat,
-              fires begin appearing more frequently across Punjab and Haryana.
+              fires begin appearing more frequently.
             </p>
             <p>
               At the same time, northwesterly winds begin pushing smoke
@@ -408,8 +404,8 @@
             <p>
               Daily detections climb above 3,400 fires with more than 10,000
               fires already recorded within the six days prior. The
-              concentration of activity across Punjab and Haryana becomes one of
-              the largest seasonal fire bursts visible in the region each year.
+              concentration of activity becomes one of the largest seasonal fire
+              bursts visible in the region each year.
             </p>
           </article>
         </section>
@@ -428,12 +424,11 @@
               almost as quickly as they rose.
             </p>
             <p>
-              The MODIS dataset still captures many kinds of fires across
-              northern India, but the intense concentration visible during the
-              peak period rapidly weakens. What remains is a clear seasonal
-              pattern: a short, explosive burst of fire activity that appears
-              irregular compared to surrounding weeks and repeats during the
-              post-harvest transition into winter.
+              The MODIS dataset still captures many kinds of fires -- not just
+              stubble burning -- but the intense concentration visible during
+              the period weakens. There is an undeniable short, explosive burst
+              of fire activity that appears irregular compared to surrounding
+              weeks.
             </p>
           </article>
         </section>
@@ -539,6 +534,21 @@
       id="cigarette-interactive"
     >
       <div aria-hidden="true" class="cig-smoke-top"></div>
+      <div aria-hidden="true" class="smoke-cap cigarette-smoke-cap">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div
+        aria-hidden="true"
+        class="smoke-cap cigarette-smoke-cap cigarette-smoke-cap-back"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
       <div class="cig-layout">
         <article class="cig-copy">
           <p class="kicker">
@@ -615,7 +625,13 @@
                   <stop offset="0.5" stop-color="#050505"></stop>
                   <stop offset="1" stop-color="#000000"></stop>
                 </radialGradient>
-                <filter id="softShadow" x="-20%" y="-30%" width="140%" height="170%">
+                <filter
+                  id="softShadow"
+                  x="-20%"
+                  y="-30%"
+                  width="140%"
+                  height="170%"
+                >
                   <feDropShadow
                     dx="0"
                     dy="18"
@@ -709,12 +725,36 @@
                   stroke-width="5"
                 ></path>
                 <g opacity="0.28" stroke-linecap="round">
-                  <path d="M60 193 l7 -3" stroke="#ffd48a" stroke-width="2"></path>
-                  <path d="M79 221 l5 -4" stroke="#ffd48a" stroke-width="2"></path>
-                  <path d="M101 198 l4 3" stroke="#8c541d" stroke-width="2"></path>
-                  <path d="M127 225 l7 -2" stroke="#ffd48a" stroke-width="2"></path>
-                  <path d="M84 205 l3 3" stroke="#8c541d" stroke-width="2"></path>
-                  <path d="M117 190 l5 2" stroke="#ffd48a" stroke-width="2"></path>
+                  <path
+                    d="M60 193 l7 -3"
+                    stroke="#ffd48a"
+                    stroke-width="2"
+                  ></path>
+                  <path
+                    d="M79 221 l5 -4"
+                    stroke="#ffd48a"
+                    stroke-width="2"
+                  ></path>
+                  <path
+                    d="M101 198 l4 3"
+                    stroke="#8c541d"
+                    stroke-width="2"
+                  ></path>
+                  <path
+                    d="M127 225 l7 -2"
+                    stroke="#ffd48a"
+                    stroke-width="2"
+                  ></path>
+                  <path
+                    d="M84 205 l3 3"
+                    stroke="#8c541d"
+                    stroke-width="2"
+                  ></path>
+                  <path
+                    d="M117 190 l5 2"
+                    stroke="#ffd48a"
+                    stroke-width="2"
+                  ></path>
                 </g>
                 <g opacity="0.18" stroke="#b7aa98" stroke-width="1.3">
                   <path d="M176 184 C170 199 171 215 178 235"></path>
@@ -747,19 +787,27 @@
     </section>
 
     <section
-      aria-label="Future Delhi skyline comparison"
-      class="delhi-effects-draft story-section visual-only-section"
-      id="delhi-skyline-placeholder"
+      aria-label="The air we breathe"
+      class="smoke-city-section story-section"
+      id="city-wrapped-in-smoke"
     >
-      <article class="effects-text-panel">
-        <div class="body-copy">
-          <p class="visual-placeholder">
-            Skyline/photo comparison slider: clear skyline on one side, severe
-            smog day on the other, showing the horizon disappearing as haze
-            thickens.
-          </p>
-        </div>
-      </article>
+      <div aria-hidden="true" class="smoke-cap smoke-city-cap">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="smoke-city-copy">
+        <h2>Why the Smog Doesn't Disappear</h2>
+        <p>
+          Geography, Weather, and Other Factors<br />
+          Contribute to the Smog.
+        </p>
+      </div>
+      <div class="smoke-scroll-cue" aria-hidden="true">
+        <span></span>
+        <p>Scroll</p>
+      </div>
     </section>
 
     <section
@@ -768,34 +816,30 @@
       id="why-winter-makes-it-worse"
     >
       <article class="effects-text-panel">
-        <p class="kicker">Why winter makes it worse</p>
-        <h1>Winter turns Delhi into a basin for trapped air.</h1>
+        <p class="kicker">Why Winter Makes It Worse</p>
+        <h1>Why Winter Makes It Worse</h1>
         <div class="body-copy">
           <p>
-            During colder months, cool dense air settles near the ground while
-            warmer air forms a layer above it -- a phenomenon known as
-            temperature inversion. Instead of rising and dispersing, pollutants
-            become trapped close to breathing height.
+            Delhi sits in the Indo-Gangetic Plain, with the Himalayas to the
+            north limiting air circulation. During winter, cold air becomes
+            trapped near the ground beneath a layer of warmer air above -- a
+            phenomenon known as a temperature inversion.
           </p>
           <p>
-            Fog makes the problem even worse. Moist winter air combines with
-            pollutants to create dense smog capable of covering entire sections
-            of the city for days.
+            Instead of dispersing, pollutants accumulate close to breathing
+            height. Moist winter air mixes with these pollutants, creating the
+            thick smog that frequently blankets the city.
           </p>
           <p>
-            Delhi's geography compounds the effect. The city sits within the
-            Indo-Gangetic Plain, with the Himalayas to the north acting as a
-            partial barrier that limits air circulation and slows dispersal.
+            Horizons disappear into haze. Schools close. Flights are delayed.
+            Masks return to crowded streets. More than thirty million people
+            continue daily life beneath air that health experts routinely
+            classify as unsafe to breathe.
           </p>
-          <p class="visual-placeholder">
-            Atmospheric cross-section visualization: cold air trapped below, a
-            warm inversion layer above, smoke compressed near the ground, and
-            the Himalayas in the background limiting circulation.
-          </p>
-          <p class="visual-placeholder">
-            Seasonal comparison graphic: summer versus winter, comparing
-            stronger winds, weaker winds, PM2.5 differences, and a 59% higher
-            winter pollution callout.
+          <p>
+            What begins as smoke hundreds of kilometers away can remain trapped
+            over Delhi for days, turning pollution from an invisible statistic
+            into a visible part of daily life.
           </p>
         </div>
       </article>
@@ -823,88 +867,6 @@
           <p>
             During winter, these sources combine together beneath the same
             stagnant air.
-          </p>
-          <p class="visual-placeholder">
-            Layered emissions visualization: vehicles, coal plants, construction
-            dust, landfill fires, and agricultural smoke all feeding into the
-            same haze layer over Delhi.
-          </p>
-        </div>
-      </article>
-    </section>
-
-    <section
-      aria-label="Delhi winter pollution closing"
-      class="delhi-effects-draft story-section closing-section"
-      id="winter-visible-close"
-    >
-      <article class="effects-text-panel">
-        <h1>During winter, the numbers become visible.</h1>
-        <div class="body-copy">
-          <p>
-            For much of the year, Delhi's pollution exists as statistics: PM2.5
-            readings, satellite detections, mortality estimates, air quality
-            indexes.
-          </p>
-          <p>
-            But during winter, the numbers become visible. Horizons disappear
-            into haze. Schools close. Flights are delayed. Masks return to
-            crowded streets. More than thirty million people continue daily life
-            beneath air that health experts routinely classify as unsafe to
-            breathe.
-          </p>
-          <p>
-            What begins as smoke over harvested fields hundreds of kilometers
-            away eventually settles into the atmosphere of an entire city.
-          </p>
-        </div>
-      </article>
-    </section>
-
-    <section
-      aria-label="Effects of seasonal smoke on Delhi air"
-      class="delhi-effects-draft"
-      id="delhi-effects-draft"
-    >
-      <div aria-hidden="true" class="effects-haze-stage">
-        <div class="effects-skyline">
-          <div class="effects-layer back"></div>
-          <div class="effects-layer front"></div>
-        </div>
-        <div class="effects-smog"></div>
-      </div>
-      <article class="effects-text-panel">
-        <h1>Writeup</h1>
-        <div class="body-copy">
-          <p>1. What have you done so far?</p>
-          <p>
-            So far, we have spent time designing our webpage in Figma, primarily
-            based on articles by <em>The Pudding</em>, implementing many of our
-            early ideas such as scrollytelling through the fires and our intro
-            smoke screen section. We plan to revisit the text to create a more
-            cohesive article and develop more of the second half of the article
-            soon, focusing more on our Delhi air quality dataset and mentioning
-            the reprecussions of the aforementioned fires. Our work so far
-            reflects the first parts of our story -- the what, the why, and the
-            how. We explain a basic idea of the issue, reasons for it's
-            existence, and how it gets trapped in Delhi. We wish to visit more
-            of the effects and the consequences before finishing our submission
-          </p>
-          <p>
-            2. What will be the most challenging of your project to design and
-            why?
-          </p>
-          <p>
-            The most challenging part of our project to design will be our main
-            interactive visualization on the Delhi air quality dataset. We are
-            still brainstorming this visualization and how we can effectively
-            show information in a way that cannot be conveyed in simple static
-            plots. One of the biggest difficulties is balancing visual clarity
-            with the large amount of environmental data we want to include.
-            Currently, we are drafting and brainstorming multiple ideas before
-            we come to our conclusion on what we wish to move forward with and
-            how we can design it to reflect the principles we learned in this
-            class.
           </p>
         </div>
       </article>

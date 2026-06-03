@@ -262,6 +262,7 @@
   let targetProgress = 0;
   let lastRawProgress = 0;
   let latestStep = -1;
+  let finalStepDrawn = false;
 
   function clamp(value, min = 0, max = 1) {
     return Math.max(min, Math.min(max, value));
@@ -531,11 +532,25 @@
     } else {
       latestProgress += distance * 0.12;
     }
-    draw(time);
+
+    const isFinalSettled = targetProgress === steps.length - 1 && latestProgress === targetProgress;
+    if (!isFinalSettled || !finalStepDrawn) {
+      draw(time);
+      finalStepDrawn = isFinalSettled;
+    }
+    if (!isFinalSettled) finalStepDrawn = false;
+
     requestAnimationFrame(tick);
   }
 
-  window.addEventListener("resize", updateProgress, { passive: true });
+  window.addEventListener(
+    "resize",
+    () => {
+      finalStepDrawn = false;
+      updateProgress();
+    },
+    { passive: true },
+  );
   updateProgress();
   requestAnimationFrame(tick);
 })();

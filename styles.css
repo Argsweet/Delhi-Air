@@ -1707,15 +1707,21 @@ body {
   --fire-card: #ffd8ad;
   --fire-ink: #252525;
   --fire-charcoal: #343434;
-  min-height: 98vh;
-  background: var(--fire-charcoal);
+  min-height: auto;
+  background: #d6a269;
   color: var(--fire-ink);
   overflow: visible;
-  padding-top: clamp(1rem, 4vh, 3rem);
+  padding: clamp(1rem, 3vh, 2rem) 0 clamp(2rem, 5vh, 3.5rem);
 }
 .fire-transition .background-scene svg {
   height: 112%;
-  transform: translateY(-10%);
+  transform: translateY(-7%);
+}
+
+.fire-transition .background-scene {
+  inset: 0;
+  height: 100%;
+  overflow: hidden;
 }
 .stubble-photo-clips {
   position: absolute;
@@ -1736,29 +1742,27 @@ body {
 }
 .stubble-photo-left {
   left: clamp(-4rem, 3vw, 4rem);
-  top: 28%;
+  top: 34%;
   transform: rotate(-7deg);
 }
 .stubble-photo-right {
   right: clamp(-4rem, 3vw, 4rem);
-  top: 22%;
+  top: 30%;
   transform: rotate(6deg);
 }
 .stubble-photo-low {
   right: clamp(5rem, 17vw, 20rem);
-  bottom: 6%;
+  bottom: -4rem;
   width: clamp(13rem, 22vw, 23rem);
   transform: rotate(-3deg);
   opacity: 0.82;
 }
 .fire-transition .sticky-card-wrap {
-  position: sticky;
-  top: -1.25rem;
-  align-items: start;
-  min-height: 100vh;
-  padding-top: 0;
-  padding-bottom: clamp(3rem, 8vh, 5rem);
-  margin-top: clamp(-15rem, -20vh, -9rem);
+  position: relative;
+  top: auto;
+  min-height: auto;
+  padding: clamp(1.5rem, 3.5vh, 2.5rem) 2rem clamp(6rem, 12vh, 8rem);
+  margin-top: clamp(-5rem, -8vh, -2.5rem);
   transform: none;
 }
 .fire-transition .text-card {
@@ -3500,7 +3504,7 @@ body {
       rgba(223, 111, 53, 0.12),
       transparent 26rem
     ),
-    linear-gradient(180deg, #3f3f3f 0%, #3f3f3f 66%, #6b5848 84%, #e2b579 100%);
+    linear-gradient(180deg, #3f3f3f 0%, #3f3f3f 62%, #6b5848 82%, #f0c89a 100%);
 }
 
 .fire-counts-section::after {
@@ -3511,7 +3515,7 @@ body {
   bottom: 0;
   height: 8rem;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(226, 181, 121, 0), #e2b579 88%);
+  background: linear-gradient(180deg, rgba(240, 200, 154, 0), #f0c89a 88%);
 }
 
 .fire-to-delhi-bridge {
@@ -3523,6 +3527,38 @@ body {
   font-size: clamp(1.35rem, 2.2vw, 2.15rem);
   line-height: 1.32;
   text-align: center;
+}
+
+#what-reaches-delhi {
+  background:
+    radial-gradient(circle at 18% 28%, rgba(232, 180, 138, 0.32), transparent 24rem),
+    radial-gradient(circle at 82% 34%, rgba(85, 85, 85, 0.08), transparent 26rem),
+    linear-gradient(180deg, #f0c89a 0%, #f0c89a 100%);
+  color: #2e2e2e;
+}
+
+#what-reaches-delhi .effects-text-panel {
+  background: transparent;
+  box-shadow: none;
+  color: #2e2e2e;
+}
+
+#what-reaches-delhi .effects-text-panel .kicker {
+  color: #b84020;
+}
+
+#what-reaches-delhi .effects-text-panel h1 {
+  color: #2e2e2e;
+}
+
+#what-reaches-delhi .effects-text-panel p {
+  color: rgba(46, 46, 46, 0.78);
+}
+
+#what-reaches-delhi .visual-placeholder {
+  border-left-color: rgba(184, 64, 32, 0.48);
+  background: rgba(46, 46, 46, 0.06);
+  color: rgba(46, 46, 46, 0.66);
 }
 
 .pm25-scrolly {
@@ -3664,7 +3700,7 @@ body {
 }
 
 .pm25-particle {
-  filter: drop-shadow(0 4px 6px rgba(139, 104, 64, 0.16));
+  filter: none;
 }
 
 .pm25-center-line {
@@ -3747,7 +3783,68 @@ body {
   color: var(--dark);
 }
 
+.cigarette-interactive::before {
+  content: none;
+}
+
+.cigarette-interactive::after {
+  content: none;
+}
+
+.cigarette-interactive .cigarette-smoke-cap {
+  z-index: 1;
+  top: auto;
+  bottom: -13rem;
+  left: -10vw;
+  right: -10vw;
+  height: 31rem;
+  transform: rotate(180deg);
+  transform-origin: center center;
+}
+
+.cigarette-interactive .cigarette-smoke-cap span {
+  background: rgb(43, 41, 34);
+  box-shadow: 0 -24px 52px rgba(0, 0, 0, 0.24);
+}
+
+.cigarette-interactive .cigarette-smoke-cap span:nth-child(1) {
+  width: 48vw;
+  height: 22rem;
+}
+
+.cigarette-interactive .cigarette-smoke-cap span:nth-child(2) {
+  width: 42vw;
+  height: 24rem;
+  left: 18vw;
+}
+
+.cigarette-interactive .cigarette-smoke-cap span:nth-child(3) {
+  width: 40vw;
+  height: 24rem;
+  left: 46vw;
+}
+
+.cigarette-interactive .cigarette-smoke-cap span:nth-child(4) {
+  width: 44vw;
+  height: 22rem;
+}
+
+.cigarette-interactive .cigarette-smoke-cap-back {
+  z-index: 0;
+  bottom: -8.5rem;
+  left: -14vw;
+  right: -6vw;
+  opacity: 0.46;
+}
+
+.cigarette-interactive .cigarette-smoke-cap-back span {
+  background: rgb(43, 41, 34);
+  box-shadow: 0 -18px 44px rgba(0, 0, 0, 0.18);
+}
+
 .cigarette-interactive .cig-layout {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: minmax(21rem, 0.9fr) minmax(30rem, 1.1fr);
   gap: clamp(2rem, 5vw, 5.4rem);
@@ -4234,6 +4331,98 @@ body {
   }
 }
 
+/* Smoke city transition section */
+.smoke-city-section {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #6f5d42 url("assets/generated/india-gate-smoke-clean.png") center center / cover no-repeat;
+  color: #f4eee4;
+}
+
+.smoke-city-section::before {
+  content: none;
+}
+
+.smoke-city-section::after {
+  content: none;
+}
+
+.smoke-city-section .smoke-city-cap {
+  z-index: 1;
+  top: -15rem;
+  height: 28rem;
+}
+
+.smoke-city-section .smoke-city-cap span {
+  background: rgba(43, 41, 34, 0.92);
+  box-shadow: 0 28px 56px rgba(0, 0, 0, 0.24);
+}
+
+.smoke-city-copy {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  width: min(42rem, calc(100% - 2rem));
+  margin-left: clamp(1.4rem, 8.8vw, 8.5rem);
+  margin-top: clamp(-2rem, -3vw, -1rem);
+}
+
+.smoke-city-kicker {
+  margin: 0 0 1.25rem;
+  color: #d9a33d;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.78rem, 1vw, 0.95rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.smoke-city-copy h2 {
+  max-width: 37rem;
+  margin: 0 0 1.35rem;
+  color: #fff8eb;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3rem, 5.1vw, 5rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.04;
+  text-shadow: 0 0.1rem 0.7rem rgba(0, 0, 0, 0.34);
+}
+
+.smoke-city-copy p:not(.smoke-city-kicker) {
+  margin: 0;
+  color: rgba(255, 248, 235, 0.86);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1rem, 1.35vw, 1.22rem);
+  letter-spacing: 0;
+  line-height: 1.55;
+  text-shadow: 0 0.08rem 0.5rem rgba(0, 0, 0, 0.34);
+}
+
+.smoke-scroll-cue {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .smoke-city-section {
+    min-height: 92vh;
+    background-position: 54% center;
+  }
+
+  .smoke-city-copy {
+    align-self: center;
+    width: min(31rem, calc(100% - 2rem));
+    margin-left: 1.25rem;
+  }
+
+  .smoke-city-copy h2 {
+    font-size: clamp(2.55rem, 13vw, 4.2rem);
+  }
+}
+
 /* Draft Delhi effects section */
 .delhi-effects-draft {
   --effects-bg: #3f3f3f;
@@ -4485,9 +4674,31 @@ body {
   color: #111;
 }
 
-/* Delhi effects warm tan backdrop */
+/* Delhi effects backdrop after the India Gate section */
 .delhi-effects-draft {
-  background: #e2b579;
+  background: #23201c;
+  color: #f4eee6;
+}
+
+.delhi-effects-draft .effects-text-panel {
+  background: rgba(35, 32, 28, 0.82);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+}
+
+.delhi-effects-draft .effects-text-panel .kicker {
+  color: #d2a36e;
+}
+
+.delhi-effects-draft .effects-text-panel h1 {
+  color: #f4eee6;
+}
+
+.delhi-effects-draft .effects-text-panel p {
+  color: rgba(244, 238, 230, 0.78);
+}
+
+.delhi-effects-draft .effects-text-panel strong {
+  color: #fff8eb;
 }
 
 /* Match Delhi effects type scale to intro problem section */
@@ -4521,6 +4732,11 @@ body {
 
 .visual-only-section {
   padding-top: clamp(3rem, 6vw, 4.5rem);
+}
+
+.smoke-city-section.story-section {
+  min-height: 100vh;
+  padding: 0;
 }
 
 .closing-section {
@@ -4833,6 +5049,70 @@ body {
 
 .delhi-effects-draft .article-clippings {
   display: none;
+}
+
+@media (max-width: 1440px) {
+  .problem-section {
+    min-height: max(145vh, 96rem);
+  }
+
+  .problem-section .article-clip {
+    width: clamp(14rem, 20vw, 22rem);
+    height: clamp(9rem, 15vw, 15.5rem);
+    opacity: 0.82;
+  }
+
+  .problem-section .clip-cnn,
+  .problem-section .clip-bbc,
+  .problem-section .clip-bbc-cap,
+  .problem-section .clip-geo {
+    left: clamp(-13.5rem, -9vw, -7.5rem);
+  }
+
+  .problem-section .clip-chicago,
+  .problem-section .clip-nyt,
+  .problem-section .clip-nih,
+  .problem-section .clip-bbc-500 {
+    right: clamp(-13.5rem, -9vw, -7.5rem);
+  }
+
+  .problem-section .clip-nyt {
+    width: clamp(16rem, 23vw, 25rem);
+    height: clamp(10rem, 16vw, 17rem);
+  }
+}
+
+@media (max-width: 1250px) {
+  .problem-section {
+    min-height: max(132vh, 84rem);
+  }
+
+  .problem-section .article-clip {
+    width: clamp(12rem, 18vw, 17rem);
+    height: clamp(8rem, 13vw, 12rem);
+    opacity: 0.62;
+  }
+
+  .problem-section .clip-cnn,
+  .problem-section .clip-bbc,
+  .problem-section .clip-bbc-cap,
+  .problem-section .clip-geo {
+    left: -12.5rem;
+  }
+
+  .problem-section .clip-chicago,
+  .problem-section .clip-nyt,
+  .problem-section .clip-nih,
+  .problem-section .clip-bbc-500 {
+    right: -12.5rem;
+  }
+
+  .problem-section .clip-bbc-cap,
+  .problem-section .clip-geo,
+  .problem-section .clip-nih,
+  .problem-section .clip-bbc-500 {
+    display: none;
+  }
 }
 
 @media (max-width: 1050px) {
