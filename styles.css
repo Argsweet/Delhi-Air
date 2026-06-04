@@ -1940,8 +1940,7 @@ body {
   stroke-width: 5.2;
   stroke-linecap: round;
   stroke-dasharray: 28 18;
-  filter:
-    drop-shadow(0 0 3px rgba(0, 0, 0, 0.85))
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.85))
     drop-shadow(0 0 10px rgba(255, 226, 157, 0.62));
   vector-effect: non-scaling-stroke;
   animation: windFlow 1.35s linear infinite;
@@ -3559,8 +3558,16 @@ body {
 
 #what-reaches-delhi {
   background:
-    radial-gradient(circle at 18% 28%, rgba(232, 180, 138, 0.32), transparent 24rem),
-    radial-gradient(circle at 82% 34%, rgba(85, 85, 85, 0.08), transparent 26rem),
+    radial-gradient(
+      circle at 18% 28%,
+      rgba(232, 180, 138, 0.32),
+      transparent 24rem
+    ),
+    radial-gradient(
+      circle at 82% 34%,
+      rgba(85, 85, 85, 0.08),
+      transparent 26rem
+    ),
     linear-gradient(180deg, #f0c89a 0%, #f0c89a 100%);
   color: #2e2e2e;
 }
@@ -3607,8 +3614,16 @@ body {
   background:
     linear-gradient(rgba(46, 46, 46, 0.12) 1px, transparent 1px),
     linear-gradient(90deg, rgba(46, 46, 46, 0.12) 1px, transparent 1px),
-    radial-gradient(circle at 18% 28%, rgba(232, 180, 138, 0.32), transparent 24rem),
-    radial-gradient(circle at 82% 34%, rgba(85, 85, 85, 0.08), transparent 26rem),
+    radial-gradient(
+      circle at 18% 28%,
+      rgba(232, 180, 138, 0.32),
+      transparent 24rem
+    ),
+    radial-gradient(
+      circle at 82% 34%,
+      rgba(85, 85, 85, 0.08),
+      transparent 26rem
+    ),
     linear-gradient(180deg, var(--peach-pale) 0%, var(--peach-pale) 100%);
   background-size:
     3rem 3rem,
@@ -3622,12 +3637,7 @@ body {
     center,
     center,
     center;
-  background-attachment:
-    fixed,
-    fixed,
-    scroll,
-    scroll,
-    scroll;
+  background-attachment: fixed, fixed, scroll, scroll, scroll;
   color: var(--dark);
 }
 
@@ -3827,7 +3837,11 @@ body {
   min-height: 100vh;
   padding: clamp(3.5rem, 7vw, 5.8rem) clamp(1.1rem, 5.4vw, 5.6rem);
   background:
-    radial-gradient(circle at 78% 88%, rgba(212, 149, 106, 0.24), transparent 26rem),
+    radial-gradient(
+      circle at 78% 88%,
+      rgba(212, 149, 106, 0.24),
+      transparent 26rem
+    ),
     var(--peach-pale);
   color: var(--dark);
 }
@@ -3990,7 +4004,9 @@ body {
   border-right: 0;
   border-radius: 999px 0 0 999px;
   background: rgba(255, 250, 244, 0.86);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 0.8rem 1.7rem rgba(92, 56, 28, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 0.8rem 1.7rem rgba(92, 56, 28, 0.08);
   color: var(--rust);
   font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(2.2rem, 3.4vw, 3.25rem);
@@ -4198,7 +4214,8 @@ body {
   flex: 0 0 auto;
   justify-items: center;
   min-height: clamp(15rem, 27vw, 23rem);
-  padding: clamp(1.15rem, 2.8vw, 2.1rem) clamp(1.35rem, 3vw, 2.35rem) clamp(1.8rem, 3.2vw, 2.55rem);
+  padding: clamp(1.15rem, 2.8vw, 2.1rem) clamp(1.35rem, 3vw, 2.35rem)
+    clamp(1.8rem, 3.2vw, 2.55rem);
 }
 
 .cigarette-interactive .after-guess .cig-grid {
@@ -4266,7 +4283,8 @@ body {
 
 .cigarette-interactive .guess-comment {
   position: relative;
-  margin: clamp(1rem, 2vw, 1.35rem) clamp(1.35rem, 3vw, 2.25rem) clamp(1.35rem, 3vw, 2rem);
+  margin: clamp(1rem, 2vw, 1.35rem) clamp(1.35rem, 3vw, 2.25rem)
+    clamp(1.35rem, 3vw, 2rem);
   padding: 1rem 1.2rem 1rem clamp(4.2rem, 6vw, 4.9rem);
   border: 1px solid rgba(212, 149, 106, 0.68);
   border-radius: 0.95rem;
@@ -4386,7 +4404,8 @@ body {
   display: grid;
   min-height: 100vh;
   overflow: hidden;
-  background: #6f5d42 url("assets/generated/india-gate-smoke-clean.png") center center / cover no-repeat;
+  background: #6f5d42 url("assets/generated/india-gate-smoke-clean.png") center
+    center / cover no-repeat;
   color: #f4eee4;
 }
 
@@ -4674,12 +4693,15 @@ body {
 }
 
 .delhi-effects-draft .effects-text-panel {
-  max-width: 760px;
-  margin: 0 auto;
+  width: min(42vw, 700px);
+
+  margin-left: auto;
+  margin-right: 6vw;
+
   padding: 0;
+
   background: transparent;
   box-shadow: none;
-  color: #eee6dc;
 }
 
 .delhi-effects-draft .effects-text-panel .kicker {
@@ -5381,4 +5403,169 @@ body {
   .section-navigator {
     display: none;
   }
+}
+
+.other-sources-chart {
+  width: 100%;
+  max-width: 420px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.source-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.source-label {
+  font-size: 0.78rem;
+  color: #f4eee6;
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+
+.source-bar {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.source-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.traffic {
+  width: 100%;
+  background: #d06451;
+}
+
+.dust {
+  width: 78%;
+  background: #bd914a;
+}
+
+.industry {
+  width: 58%;
+  background: #71544e;
+}
+
+.waste {
+  width: 38%;
+  background: #3f3f3f;
+}
+
+.crop {
+  width: 88%;
+  background: #c75c41;
+}
+.pollution-bars {
+  width: 100%;
+  max-width: 650px;
+  padding-left: 2rem;
+  padding-top: 2rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.pollution-item {
+  margin-bottom: 4rem;
+}
+
+.pollution-label {
+  color: #f4eee6;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.85rem;
+  font-weight: 500;
+}
+
+.pollution-bar {
+  height: 48px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.pollution-bar:hover {
+  transform: translateX(6px);
+}
+
+.traffic {
+  width: 420px;
+  background: #d06451;
+}
+
+.crop {
+  width: 360px;
+  background: #c75c41;
+}
+
+.dust {
+  width: 300px;
+  background: #bd914a;
+}
+
+.industry {
+  width: 220px;
+  background: #71544e;
+}
+
+.waste {
+  width: 150px;
+  background: #555555;
+}
+
+.tooltip {
+  position: absolute;
+  left: calc(100% + 16px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 240px;
+
+  background: rgba(35, 32, 28, 0.95);
+  color: #f4eee6;
+
+  padding: 0.85rem 1rem;
+  border-radius: 4px;
+
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+
+  border-left: 3px solid rgba(240, 200, 154, 0.5);
+}
+
+.pollution-bar:hover .tooltip {
+  opacity: 1;
+}
+
+#why-winter-makes-it-worse {
+  display: grid;
+  grid-template-columns: 46vw minmax(26rem, 42vw);
+  align-items: center;
+  gap: 4vw;
+  min-height: 100vh;
+}
+
+#why-winter-makes-it-worse .pollution-bars {
+  position: static;
+  transform: none;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  padding: 0;
+}
+
+#why-winter-makes-it-worse .effects-text-panel {
+  width: 100%;
+  max-width: 720px;
+  margin: 0;
+
+  transform: translateX(-120px);
 }
