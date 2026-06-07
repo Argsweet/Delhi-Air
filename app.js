@@ -889,6 +889,7 @@
   const WINDOW_DAYS = 10;
 
   let rows = [];
+  let chartHasEntered = false;
 
   d3.csv(DATA_PATH, (d) => ({
     year: +d.year,
@@ -898,15 +899,16 @@
     rows = data;
     drawFireCounts();
     window.addEventListener("resize", drawFireCounts);
+    setupFireCountsEntrance();
   });
 
   function drawFireCounts() {
     if (!rows.length) return;
 
     const wrap = root.querySelector(".fire-counts-chart-wrap");
-    const width = Math.max(520, wrap.clientWidth);
-    const height = Math.max(360, Math.min(520, width * 0.48));
-    const margin = { top: 46, right: 28, bottom: 42, left: 62 };
+    const width = Math.max(640, wrap.clientWidth);
+    const height = Math.max(360, Math.min(470, width * 0.45));
+    const margin = { top: 34, right: 30, bottom: 38, left: 64 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -966,10 +968,21 @@
       .attr("width", x(avgBest.end + 1) - x(avgBest.start))
       .attr("height", innerHeight);
 
+    plotG
+      .selectAll(".fire-window-boundary")
+      .data([avgBest.start, avgBest.end + 1])
+      .join("line")
+      .attr("class", "fire-window-boundary")
+      .attr("x1", (d) => x(d))
+      .attr("x2", (d) => x(d))
+      .attr("y1", 0)
+      .attr("y2", innerHeight);
+
     g.append("text")
       .attr("class", "fire-window-label")
-      .attr("x", x(avgBest.start) + 12)
-      .attr("y", 20)
+      .attr("x", (x(avgBest.start) + x(avgBest.end + 1)) / 2)
+      .attr("y", -8)
+      .attr("text-anchor", "middle")
       .text("Peak 10-day window");
 
     const grid = g.append("g").attr("class", "fire-grid-lines");
@@ -997,8 +1010,8 @@
         (best, d) => (d.total > best.total ? d : best),
         yearRows[0],
       );
-      const labelX = Math.min(x(peak.seasonDay) + 10, innerWidth - 120);
-      const labelY = Math.max(y(peak.total) - 36, 8);
+      const labelX = Math.min(x(peak.seasonDay) + 10, innerWidth - 54);
+      const labelY = Math.max(y(peak.total) - 28, 8);
       const yearGroup = plotG
         .append("g")
         .attr("class", "year-fire-series")
@@ -1013,12 +1026,13 @@
         .append("g")
         .attr("class", "year-fire-label")
         .attr("transform", `translate(${labelX},${labelY})`);
-      label.append("rect").attr("rx", 3).attr("width", 118).attr("height", 31);
+      label.append("rect").attr("rx", 10).attr("width", 48).attr("height", 24);
       label
         .append("text")
-        .attr("x", 9)
-        .attr("y", 20)
-        .text(`${year}: ${d3.format(",")(peak.total)}`);
+        .attr("x", 24)
+        .attr("y", 16)
+        .attr("text-anchor", "middle")
+        .text(year);
       yearGroup
         .append("path")
         .datum(yearRows)
@@ -1083,13 +1097,13 @@
       .append("line")
       .attr("x1", 0)
       .attr("x2", 26)
-      .attr("y1", -24)
-      .attr("y2", -24);
+      .attr("y1", -14)
+      .attr("y2", -14);
     legend
       .append("text")
       .attr("x", 34)
-      .attr("y", -20)
-      .text("2020-2024 daily average");
+      .attr("y", -10)
+      .text("Red line: mean of all years");
     legend
       .append("text")
       .attr("x", innerWidth)
@@ -1098,7 +1112,59 @@
       .text("Oct 1 - Nov 30");
 
     percentEl.textContent = `${Math.round(avgPct * 100)}%`;
-    copyEl.textContent = `On average, each year's strongest ${WINDOW_DAYS}-day run captured this share of seasonal detections. For the average curve, that window falls around ${seasonLabel(avgBest.start)}-${seasonLabel(avgBest.end)}.`;
+    copyEl.textContent = `On average, the strongest ${WINDOW_DAYS}-day window captures ${Math.round(avgPct * 100)}% of seasonal fire detections, falling around ${seasonLabel(avgBest.start)}–${seasonLabel(avgBest.end)}.`;
+    prepareFireCountsEntrance();
+  }
+
+  function setupFireCountsEntrance() {
+    if (isFireCountsVisible()) {
+      chartHasEntered = true;
+      playFireCountsEntrance();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        chartHasEntered = true;
+        playFireCountsEntrance();
+        observer.disconnect();
+      },
+      { threshold: 0.28 },
+    );
+    observer.observe(root);
+  }
+
+  function isFireCountsVisible() {
+    const rect = root.getBoundingClientRect();
+    const visibleHeight =
+      Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+    return visibleHeight > Math.min(rect.height * 0.12, 160);
+  }
+
+  function prepareFireCountsEntrance() {
+    const lineNodes = svg
+      .selectAll(".year-fire-line, .avg-fire-line")
+      .nodes();
+
+    lineNodes.forEach((node) => {
+      const length = node.getTotalLength();
+      node.style.strokeDasharray = `${length}`;
+      node.style.strokeDashoffset = chartHasEntered ? "0" : `${length}`;
+    });
+
+    root.classList.toggle("is-chart-entered", chartHasEntered);
+  }
+
+  function playFireCountsEntrance() {
+    window.setTimeout(() => {
+      root.classList.add("is-chart-entered");
+      requestAnimationFrame(() => {
+        svg
+          .selectAll(".year-fire-line, .avg-fire-line")
+          .style("stroke-dashoffset", 0);
+      });
+    }, 450);
   }
 
   function highlightYear(year, yearRows) {
@@ -1123,11 +1189,11 @@
     const bbox = pathNode.getBBox();
     const labelX = Math.min(
       bbox.x + bbox.width + 8,
-      svgNode.viewBox.baseVal.width - 150,
+      svgNode.viewBox.baseVal.width - 58,
     );
-    const labelY = Math.max(bbox.y - 8, 8);
+    const labelY = Math.max(bbox.y - 6, 8);
     const label = svg.select(".fire-hover-label").style("display", null);
-    const text = `${year}: peak ${d3.format(",")(peak.total)} fires`;
+    const text = `${year}`;
     label.attr("transform", `translate(${labelX},${labelY})`);
     label.select("text").text(text);
     const textWidth = label.select("text").node().getComputedTextLength();

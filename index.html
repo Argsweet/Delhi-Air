@@ -221,52 +221,43 @@
         <div class="leaf"></div>
       </div>
       <div aria-hidden="true" class="hill"></div>
-      <main class="content">
-        <h1>A window that’s too small</h1>
-        <p class="lede">
-          After their rice harvest, farmers in Punjab and Haryana have only a
-          few weeks to prepare their fields and sow wheat. The gap leaves little
-          time — and for many farmers, little choice — to clear what is left
-          behind.
-        </p>
-        <p class="chart-title">
-          The time between rice harvest &amp; wheat sowing
-        </p>
-        <section
-          aria-label="Gauge showing the short 7 to 10 day window"
-          class="clock-row"
-        >
+      <main class="content farmer-window-layout">
+        <article class="farmer-text-panel">
+          <h1>A window that’s<br />too small</h1>
           <aside class="days-note">
             <div class="big">7–10</div>
             <div class="label">DAYS</div>
-            <p>The narrow window farmers have to prepare for wheat.</p>
+            <p>narrow prep window</p>
           </aside>
-          <div aria-hidden="true" class="gauge">
-            <div class="arc"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="tick"></div>
-            <div class="needle"></div>
-            <div class="hub"></div>
-            <div class="gauge-label zero">0<span>DAYS</span></div>
-            <div class="gauge-label thirty">30<span>DAYS</span></div>
-            <div class="gauge-label sixty">60<span>DAYS</span></div>
+          <p class="lede">
+After their rice harvest, farmers in Punjab and Haryana have only a few weeks to prepare their fields for wheat. The gap leaves little time to clear what is left behind
+          </p>
+          <p class="lede">
+
+            Clearing crop residue requires time, labor, and equipment that many cannot afford. Burning stubble is the fastest and cheapest way to prepare fields for the next planting season. 
+          </p>
+        </article>
+        <aside
+          aria-label="Daily fire counts across burning seasons"
+          class="fire-counts-panel"
+          id="fire-counts-section"
+        >
+          <div class="fire-counts-chart-wrap">
+            <p class="chart-kicker">Active fire counts (VIIRS via FIRMS)</p>
+            <p class="chart-subtitle">Daily fire detections, Oct 1-Nov 30</p>
+            <svg
+              aria-label="Daily fire counts during October and November, 2020 through 2024"
+              id="fire-counts-chart"
+            ></svg>
           </div>
-        </section>
-        <p class="residue-note">
-          Clearing crop residue requires time, labor, and equipment that many
-          farmers cannot afford. Burning stubble is often the fastest and
-          cheapest way to prepare fields for the next planting season.
-        </p>
+          <div class="fire-counts-callout">
+            <p class="callout-label">Peak window</p>
+            <div class="callout-number" id="fire-window-percent">Loading</div>
+            <p id="fire-window-copy">
+              Calculating the strongest 10-day fire window from 2020-2024.
+            </p>
+          </div>
+        </aside>
       </main>
       <div aria-hidden="true" class="grain"></div>
     </section>
@@ -312,23 +303,6 @@
             ></path>
           </g>
         </svg>
-      </div>
-      <div class="stubble-photo-clips" aria-hidden="true">
-        <img
-          class="stubble-photo stubble-photo-left"
-          src="assets/stubble/stubble burning 1.jpg"
-          alt=""
-        />
-        <img
-          class="stubble-photo stubble-photo-right"
-          src="assets/stubble/stubble burning 3.png"
-          alt=""
-        />
-        <img
-          class="stubble-photo stubble-photo-low"
-          src="assets/stubble/stubble burning 4.jpg"
-          alt=""
-        />
       </div>
       <div aria-hidden="true" class="grain"></div>
     </section>
@@ -428,28 +402,7 @@
       </div>
     </section>
 
-    <section
-      aria-label="Daily fire counts across burning seasons"
-      class="fire-counts-section"
-      id="fire-counts-section"
-    >
-      <div class="fire-counts-layout">
-        <div class="fire-counts-chart-wrap">
-          <p class="chart-kicker">Active fire counts (VIIRS via FIRMS)</p>
-          <p class="chart-subtitle">Daily fire detections, Oct 1-Nov 30</p>
-          <svg
-            aria-label="Daily fire counts during October and November, 2020 through 2024"
-            id="fire-counts-chart"
-          ></svg>
-        </div>
-        <aside class="fire-counts-callout">
-          <p class="callout-label">Peak window</p>
-          <div class="callout-number" id="fire-window-percent">Loading</div>
-          <p id="fire-window-copy">
-            Calculating the strongest 10-day fire window from 2020-2024.
-          </p>
-        </aside>
-      </div>
+    <section class="fire-counts-section">
       <p class="fire-to-delhi-bridge">
         When the burn window tightens, the smoke does not stay in the fields.
         Downwind, Delhi breathes the season as exposure.
