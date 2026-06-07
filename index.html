@@ -286,7 +286,7 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
           </defs>
           <rect fill="url(#pageBg)" height="1900" width="1440"></rect>
 
-          <g opacity="0.95">
+          <g class="flame-layer" opacity="0.95">
             <path
               d="M0 1900 L0 1340 C58 1260 35 1188 92 1118 C73 1260 160 1315 135 1438 C225 1300 190 1040 372 890 C325 1092 426 1185 396 1355 C490 1212 515 1028 662 910 C620 1118 725 1198 705 1382 C805 1230 810 1118 902 1048 C875 1198 980 1280 950 1435 C1040 1300 1045 1120 1198 958 C1160 1162 1292 1250 1260 1430 C1355 1308 1355 1132 1440 1015 L1440 1900 Z"
               fill="url(#flameFill)"
@@ -303,10 +303,17 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
             ></path>
           </g>
         </svg>
+        <div aria-hidden="true" class="fire-takeover-layer"></div>
       </div>
       <div aria-hidden="true" class="grain"></div>
     </section>
     <section class="fire-scrolly" id="fire-scrolly">
+      <div aria-hidden="true" class="smoke-cap fire-seam-cap" id="fire-seam-cap">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
       <div class="scrolly-sticky">
         <div class="map-wrap">
           <svg
@@ -835,6 +842,8 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
         </div>
     </section>
 
+    <div aria-hidden="true" class="map-reveal-veil" id="map-reveal-veil"></div>
+
     <nav
       aria-label="Section navigation"
       class="section-navigator"
@@ -855,6 +864,6 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
       </svg>
     </a>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=fire-takeover"></script>
   </body>
 </html>

@@ -1707,7 +1707,9 @@ body {
   background: #d6a269;
   left: 0;
   right: 0;
-  height: 12rem;
+  /* Taller dark-tan ground so the smoke-cap rises over the hill, but its crest
+     still rests below the text above it. */
+  height: 16rem;
   overflow: hidden;
 }
 .farmer-window > .grain {
@@ -1882,22 +1884,123 @@ body {
   --fire-card: #ffd8ad;
   --fire-ink: #252525;
   --fire-charcoal: #343434;
-  min-height: clamp(28rem, 48vw, 42rem);
-  margin-top: clamp(-6.5rem, -9vw, -3.8rem);
+  --fire-progress: 0;
+  --fire-veil: 0;
+  min-height: 285vh;
+  margin-top: 0;
   background: #d6a269;
   color: var(--fire-ink);
-  overflow: hidden;
+  overflow: clip;
   padding: 0;
 }
 .fire-transition .background-scene svg {
-  height: 150%;
-  transform: translateY(-34%);
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  transform: none;
 }
 
 .fire-transition .background-scene {
-  inset: 0;
-  height: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  isolation: isolate;
   overflow: hidden;
+}
+
+.fire-transition .background-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: #343434;
+  opacity: var(--fire-veil);
+  transition: opacity 80ms linear;
+}
+
+.fire-transition .fire-takeover-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(
+      ellipse at 8% 16%,
+      rgba(255, 195, 96, 0.82) 0 7%,
+      transparent 17%
+    ),
+    radial-gradient(
+      ellipse at 22% 10%,
+      rgba(202, 73, 42, 0.94) 0 10%,
+      transparent 22%
+    ),
+    radial-gradient(
+      ellipse at 38% 6%,
+      rgba(255, 155, 72, 0.9) 0 13%,
+      transparent 25%
+    ),
+    radial-gradient(
+      ellipse at 55% 12%,
+      rgba(181, 58, 42, 0.9) 0 11%,
+      transparent 23%
+    ),
+    radial-gradient(
+      ellipse at 74% 8%,
+      rgba(232, 107, 54, 0.94) 0 14%,
+      transparent 27%
+    ),
+    radial-gradient(
+      ellipse at 92% 16%,
+      rgba(255, 181, 86, 0.78) 0 9%,
+      transparent 21%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(238, 117, 55, 0.98) 0%,
+      rgba(205, 62, 38, 1) 34%,
+      rgba(110, 28, 25, 1) 100%
+    );
+  clip-path: polygon(
+    0 100%,
+    0 30%,
+    6% 16%,
+    12% 35%,
+    19% 9%,
+    27% 32%,
+    35% 4%,
+    43% 29%,
+    52% 12%,
+    61% 34%,
+    70% 7%,
+    79% 31%,
+    88% 13%,
+    100% 29%,
+    100% 100%
+  );
+  transform: translateY(68%) scaleY(0.6);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 80ms linear,
+    transform 80ms linear;
+}
+
+.fire-transition .flame-layer {
+  transform-box: view-box;
+  transform-origin: 50% 100%;
+  transition: transform 80ms linear;
+}
+
+.fire-transition > .grain {
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 .stubble-photo-clips {
   position: absolute;
@@ -1988,7 +2091,7 @@ body {
   --map-red: #c84f3a;
   position: relative;
   min-height: 620vh;
-  margin-top: clamp(-16rem, -18vw, -10rem);
+  margin-top: 0;
   background: var(--map-bg);
   color: white;
   z-index: 25;
@@ -5753,4 +5856,318 @@ body {
   margin: 0;
 
   transform: translateX(-120px);
+}
+
+/* ==========================================================
+   FINAL FIRE TRANSITION FIX
+   - keeps the existing SVG
+   - removes the long empty fire-scroll section
+   - overlaps fire on top of the farmer/chart viewport
+   - plays automatically from one scroll gesture
+   ========================================================== */
+html.fire-scroll-locked,
+body.fire-scroll-locked {
+  overflow: hidden !important;
+}
+
+.farmer-window {
+  position: relative;
+  z-index: 1;
+}
+
+.fire-transition {
+  --fire-veil: 0;
+  position: relative !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  margin-top: -100vh !important;
+  padding: 0 !important;
+  z-index: 30 !important;
+  overflow: hidden !important;
+  pointer-events: none;
+  background: transparent !important;
+  color: var(--fire-ink, #252525);
+  isolation: isolate;
+}
+
+.fire-transition .background-scene {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  /* Stay invisible so the farmer section shows through until the flames ignite. */
+  opacity: 0;
+}
+
+/* The tan page-background rect would paint over the farmer section, so drop it
+   entirely — only the flames should ever rise. */
+.fire-transition .background-scene > svg > rect {
+  display: none !important;
+}
+
+.fire-transition .background-scene svg {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important;
+  background: transparent !important;
+}
+
+.fire-transition .background-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: #343434;
+  opacity: 0;
+}
+
+.fire-transition .flame-layer {
+  transform-box: view-box;
+  transform-origin: 50% 100%;
+  transform: translateY(44%) scale(1, 0.72);
+}
+
+.fire-transition .fire-takeover-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(84%) scaleY(0.72);
+  transform-origin: 50% 100%;
+  background:
+    radial-gradient(
+      ellipse at 8% 16%,
+      rgba(255, 195, 96, 0.82) 0 7%,
+      transparent 17%
+    ),
+    radial-gradient(
+      ellipse at 22% 10%,
+      rgba(202, 73, 42, 0.94) 0 10%,
+      transparent 22%
+    ),
+    radial-gradient(
+      ellipse at 38% 6%,
+      rgba(255, 155, 72, 0.9) 0 13%,
+      transparent 25%
+    ),
+    radial-gradient(
+      ellipse at 55% 12%,
+      rgba(181, 58, 42, 0.9) 0 11%,
+      transparent 23%
+    ),
+    radial-gradient(
+      ellipse at 74% 8%,
+      rgba(232, 107, 54, 0.94) 0 14%,
+      transparent 27%
+    ),
+    radial-gradient(
+      ellipse at 92% 16%,
+      rgba(255, 181, 86, 0.78) 0 9%,
+      transparent 21%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(238, 117, 55, 0.98) 0%,
+      rgba(205, 62, 38, 1) 34%,
+      rgba(110, 28, 25, 1) 100%
+    );
+  clip-path: polygon(
+    0 100%,
+    0 30%,
+    6% 16%,
+    12% 35%,
+    19% 9%,
+    27% 32%,
+    35% 4%,
+    43% 29%,
+    52% 12%,
+    61% 34%,
+    70% 7%,
+    79% 31%,
+    88% 13%,
+    100% 29%,
+    100% 100%
+  );
+}
+
+.fire-transition > .grain {
+  position: absolute !important;
+  inset: 0 !important;
+  height: auto !important;
+  z-index: 8 !important;
+}
+
+.fire-transition.fire-armed .flame-layer,
+.fire-transition.fire-armed .fire-takeover-layer,
+.fire-transition.fire-armed .background-scene::after {
+  will-change: transform, opacity;
+}
+
+/* Reveal the overlay only once the user ignites the takeover. */
+.fire-transition.fire-armed .background-scene,
+.fire-transition.fire-playing .background-scene,
+.fire-transition.fire-finished .background-scene {
+  opacity: 1;
+}
+
+.fire-transition.fire-playing .flame-layer {
+  animation: oneScrollFlamesRise 2.2s cubic-bezier(0.33, 0, 0.2, 1) forwards;
+}
+
+.fire-transition.fire-playing .fire-takeover-layer {
+  animation: oneScrollFireTakeover 2.2s cubic-bezier(0.33, 0, 0.2, 1) forwards;
+}
+
+.fire-transition.fire-playing .background-scene::after {
+  animation: oneScrollFireDarken 2.2s cubic-bezier(0.33, 0, 0.2, 1) forwards;
+}
+
+.fire-transition.fire-finished .flame-layer {
+  transform: translateY(-18%) scale(1.12, 3.05);
+}
+
+.fire-transition.fire-finished .fire-takeover-layer {
+  opacity: 1;
+  transform: translateY(0) scaleY(1.12);
+}
+
+.fire-transition.fire-finished .background-scene::after {
+  opacity: 0.98;
+}
+
+/* The takeover is a one-time event. Once it has landed on the map, the fire
+   overlay is dismissed entirely and the smoke-cap below takes over as the
+   permanent divider between the farmer section and the map. */
+.fire-transition.fire-settled {
+  visibility: hidden;
+}
+
+/* Smoke divider at the farmer/map seam. It sits entirely above the seam so it
+   only billows into the farmer section, never down into the map. Hidden until
+   the one-time takeover has played, then it stays as the section divider for all
+   later up/down scrolling. */
+.fire-seam-cap {
+  position: absolute;
+  left: -8vw;
+  right: -8vw;
+  top: -10rem;
+  height: 30rem;
+  /* Below the sticky map (z-index 1) but, since #fire-scrolly sits above the
+     farmer section, still above the farmer — so the map occludes the lower half
+     and the smoke only reads in the farmer section. */
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+
+/* Solid map color (same as the map background), no shadow, so the smoke reads as
+   a clean extension of the map. Wide, overlapping blobs form one continuous
+   hill band instead of separate bubbles with bright gaps between them. */
+.fire-seam-cap span {
+  background: #343434;
+  box-shadow: none;
+}
+
+.fire-seam-cap span:nth-child(1) {
+  width: 52vw;
+  height: 27rem;
+  left: -6vw;
+  top: 6rem;
+}
+.fire-seam-cap span:nth-child(2) {
+  width: 52vw;
+  height: 29rem;
+  left: 20vw;
+  top: 4rem;
+}
+.fire-seam-cap span:nth-child(3) {
+  width: 52vw;
+  height: 29rem;
+  left: 46vw;
+  top: 4rem;
+}
+.fire-seam-cap span:nth-child(4) {
+  width: 52vw;
+  height: 27rem;
+  right: -6vw;
+  top: 6rem;
+}
+
+.fire-seam-cap.is-revealed {
+  opacity: 1;
+}
+
+.fire-scrolly {
+  position: relative;
+  z-index: 2;
+  margin-top: 0 !important;
+}
+
+/* Full-screen veil in the map tone: held solid at the cut to the map, then
+   faded out so the map section reveals in instead of hard-cutting. */
+.map-reveal-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: #343434;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 750ms ease,
+    visibility 0s linear 750ms;
+}
+
+.map-reveal-veil.is-covering {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+}
+
+@keyframes oneScrollFlamesRise {
+  0% {
+    transform: translateY(44%) scale(1, 0.72);
+  }
+
+  100% {
+    transform: translateY(-18%) scale(1.12, 3.05);
+  }
+}
+
+@keyframes oneScrollFireTakeover {
+  /* Only opacity has an intermediate stop, so the rising transform stays one
+     continuous motion (no fast-slow-fast stutter). */
+  0% {
+    opacity: 0;
+    transform: translateY(84%) scaleY(0.72);
+  }
+
+  22% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1.12);
+  }
+}
+
+@keyframes oneScrollFireDarken {
+  0%,
+  58% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.98;
+  }
 }

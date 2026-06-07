@@ -1143,9 +1143,7 @@
   }
 
   function prepareFireCountsEntrance() {
-    const lineNodes = svg
-      .selectAll(".year-fire-line, .avg-fire-line")
-      .nodes();
+    const lineNodes = svg.selectAll(".year-fire-line, .avg-fire-line").nodes();
 
     lineNodes.forEach((node) => {
       const length = node.getTotalLength();
@@ -1234,6 +1232,157 @@
     if (seasonDay <= 31) return `Oct ${seasonDay}`;
     return `Nov ${seasonDay - 31}`;
   }
+})();
+
+// Component script 5: one-scroll fire takeover
+(() => {
+  const transition = document.querySelector(".fire-transition");
+  const nextSection = document.querySelector("#fire-scrolly");
+  const mapVeil = document.querySelector("#map-reveal-veil");
+  const seamCap = document.querySelector("#fire-seam-cap");
+  if (!transition || !nextSection) return;
+
+  let hasPlayed = false;
+  let isPlaying = false;
+  let touchStartY = null;
+  let scrollAccum = 0;
+  const ANIMATION_MS = 2200;
+  // Require a deliberate downward scroll before igniting, so the takeover is
+  // not a hair trigger on the smallest trackpad nudge.
+  const TRIGGER_THRESHOLD = 320;
+
+  function lockScroll() {
+    document.documentElement.classList.add("fire-scroll-locked");
+    document.body.classList.add("fire-scroll-locked");
+  }
+
+  function unlockScroll() {
+    document.documentElement.classList.remove("fire-scroll-locked");
+    document.body.classList.remove("fire-scroll-locked");
+  }
+
+  function transitionIsReady() {
+    const rect = transition.getBoundingClientRect();
+    // Trigger once the overlapping fire layer is basically the current screen.
+    return (
+      rect.top <= window.innerHeight * 0.18 &&
+      rect.bottom > window.innerHeight * 0.35
+    );
+  }
+
+  function playFire() {
+    if (hasPlayed || isPlaying) return;
+    hasPlayed = true;
+    isPlaying = true;
+
+    // Snap to the overlapped transition viewport so the fire covers the farmer/chart screen.
+    const targetY = window.scrollY + transition.getBoundingClientRect().top;
+    window.scrollTo({ top: targetY, behavior: "auto" });
+
+    lockScroll();
+    transition.classList.add("fire-armed");
+
+    requestAnimationFrame(() => {
+      transition.classList.add("fire-playing");
+    });
+
+    window.setTimeout(() => {
+      transition.classList.add("fire-finished");
+      // Hold a solid map-tone veil over the viewport so the instant jump to the
+      // map is hidden, then fade it out to reveal the map instead of cutting.
+      mapVeil?.classList.add("is-covering");
+      nextSection.scrollIntoView({ behavior: "auto", block: "start" });
+      unlockScroll();
+      isPlaying = false;
+
+      // Once we've landed on the map, dismiss the fire overlay entirely and
+      // reveal the smoke-cap divider, which separates the two sections from now
+      // on. The takeover is one-time and never plays again.
+      window.setTimeout(() => {
+        transition.classList.remove("fire-playing", "fire-finished", "fire-armed");
+        transition.classList.add("fire-settled");
+        seamCap?.classList.add("is-revealed");
+      }, 80);
+
+      // Fade the veil out so the map reveals in. Double rAF lets the solid
+      // cover paint first, so removing the class animates 1 -> 0.
+      if (mapVeil) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            mapVeil.classList.remove("is-covering");
+          });
+        });
+      }
+    }, ANIMATION_MS);
+  }
+
+  function maybePlay(deltaY, event) {
+    if (hasPlayed || isPlaying) return;
+    // Scrolling up or out of the trigger zone resets intent.
+    if (deltaY <= 0 || !transitionIsReady()) {
+      scrollAccum = 0;
+      return;
+    }
+    // Hold the page at the farmer screen and build up intent. The flames only
+    // take over once the user keeps scrolling down past the threshold.
+    event?.preventDefault();
+    scrollAccum += deltaY;
+    if (scrollAccum >= TRIGGER_THRESHOLD) {
+      playFire();
+    }
+  }
+
+  window.addEventListener(
+    "wheel",
+    (event) => {
+      maybePlay(event.deltaY, event);
+    },
+    { passive: false },
+  );
+
+  window.addEventListener(
+    "touchstart",
+    (event) => {
+      touchStartY = event.touches[0]?.clientY ?? null;
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    "touchmove",
+    (event) => {
+      if (touchStartY === null) return;
+      const currentY = event.touches[0]?.clientY ?? touchStartY;
+      const deltaY = touchStartY - currentY;
+      touchStartY = currentY;
+      maybePlay(deltaY, event);
+    },
+    { passive: false },
+  );
+
+  window.addEventListener("keydown", (event) => {
+    const forwardKeys = ["ArrowDown", "PageDown", " ", "Spacebar"];
+    if (!forwardKeys.includes(event.key)) return;
+    // A single deliberate key press should ignite on its own.
+    maybePlay(TRIGGER_THRESHOLD, event);
+  });
+
+  // Safety net: if a fast scroll blows past the trigger zone without igniting
+  // (so the user would otherwise land on the map and miss the takeover), snap
+  // back to the farmer screen and play it. The takeover is one-time only.
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (hasPlayed || isPlaying) return;
+      const rect = transition.getBoundingClientRect();
+      // Fire while the seam is still near the bottom (map barely visible), so the
+      // user never sees the top of the map before the takeover plays.
+      if (rect.bottom <= window.innerHeight * 0.85) {
+        playFire();
+      }
+    },
+    { passive: true },
+  );
 })();
 
 // Component script 2
