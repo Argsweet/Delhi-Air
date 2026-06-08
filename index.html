@@ -322,15 +322,26 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
           ></svg>
           <div aria-hidden="true" class="smoke-screen-dim"></div>
           <svg aria-hidden="true" id="wind-overlay"></svg>
-          <div class="date-badge">
-            <div class="date" id="fire-date">Loading…</div>
-            <div class="count" id="fire-count">Loading fire detections</div>
+          <div class="map-hud-top">
+            <div class="date-badge">
+              <div class="date" id="fire-date">Loading…</div>
+              <div class="count" id="fire-count">Loading fire detections</div>
+            </div>
+            <div aria-hidden="true" class="legend">
+              <span><b class="dot new"></b> New fires</span>
+              <span><b class="dot week"></b> Recent fires</span>
+              <span><b class="dot old"></b> Older cumulative fires</span>
+            </div>
           </div>
-          <div aria-hidden="true" class="legend">
-            <span><b class="dot new"></b> New fires</span>
-            <span><b class="dot week"></b> Recent fires</span>
-            <span><b class="dot old"></b> Older cumulative fires</span>
-          </div>
+          <figure
+            class="fire-pm-mini"
+            aria-label="Indexed Punjab fire detections and Delhi PM2.5 across the season, growing with the map"
+          >
+            <figcaption class="fire-pm-mini-title">
+              Punjab fires &amp; Delhi PM2.5, relative levels
+            </figcaption>
+            <svg id="fire-pm-mini-chart" aria-hidden="true"></svg>
+          </figure>
         </div>
       </div>
       <div class="steps">

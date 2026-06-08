@@ -1277,6 +1277,27 @@ body {
   font-size: 0.82rem;
 }
 
+/* Top-left HUD stack: date badge with the color legend beneath it. */
+.map-hud-top {
+  position: absolute;
+  left: 1.1rem;
+  top: 1.1rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  max-width: min(48vw, 30rem);
+}
+
+.map-hud-top .date-badge,
+.map-hud-top .legend {
+  position: static;
+  left: auto;
+  top: auto;
+  bottom: auto;
+}
+
 .legend {
   position: absolute;
   left: 1.1rem;
@@ -1312,6 +1333,89 @@ body {
 }
 .dot.old {
   background: var(--red);
+}
+
+/* Indexed fire vs PM2.5 mini-chart, bottom-left of the map (where the legend
+   used to sit). Static like the map; its lines grow as the map advances. */
+.fire-pm-mini {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 1.1rem;
+  z-index: 5;
+  margin: 0;
+  width: min(24rem, 34vw);
+  padding: 0.7rem 0.85rem 0.55rem;
+  background: rgba(20, 20, 20, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(6px);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.fire-pm-mini-title {
+  margin: 0 0 0.3rem;
+  color: rgba(245, 245, 245, 0.9);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+#fire-pm-mini-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.fire-pm-mini .axis text {
+  fill: rgba(220, 220, 220, 0.7);
+  font-size: 9px;
+}
+
+.fire-pm-mini .mini-axis-title {
+  fill: rgba(220, 220, 220, 0.6);
+  font-size: 8.5px;
+  letter-spacing: 0.02em;
+}
+
+.fire-pm-mini .axis line,
+.fire-pm-mini .axis path {
+  stroke: rgba(255, 255, 255, 0.16);
+}
+
+.fire-pm-mini .mini-grid line {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.fire-pm-mini .mini-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fire-pm-mini .mini-line.fires {
+  stroke: var(--map-orange, #ff9f1c);
+}
+
+.fire-pm-mini .mini-line.pm25 {
+  stroke: #5aa9e6;
+  stroke-dasharray: 4 3;
+}
+
+.fire-pm-mini .mini-legend text {
+  fill: rgba(232, 232, 232, 0.92);
+  font-size: 9px;
+}
+
+.fire-pm-mini .mini-day-marker {
+  stroke: rgba(255, 255, 255, 0.32);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+@media (max-width: 720px) {
+  .fire-pm-mini {
+    display: none;
+  }
 }
 
 .steps {

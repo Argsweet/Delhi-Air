@@ -1414,6 +1414,7 @@
 
   const FIRE_CSV = "data/processed/fire_grid_2023.csv";
   const INDIA_GEOJSON = "data/geo/india_states.geojson";
+  const INDEXED_CSV = "data/processed/fire_pm25_indexed_2023.csv";
   const SELECTED_YEAR = 2023;
 
   let fireRows = [];
@@ -1422,6 +1423,16 @@
   let frames = [];
   let pendingIndex = null;
   let renderQueued = false;
+
+  // Indexed fire-vs-PM2.5 mini-chart state (grows with the map's current date).
+  let indexedRows = [];
+  let miniX = null;
+  let miniY = null;
+  let miniLineFires = null;
+  let miniLinePm = null;
+  let miniFiresPath = null;
+  let miniPmPath = null;
+  let miniDayMarker = null;
 
   Promise.all([
     d3.json(INDIA_GEOJSON),
@@ -1432,7 +1443,13 @@
       count: +d.count || 1,
       frp: +d.frp || 1,
     })),
-  ]).then(([india, rows]) => {
+    d3.csv(INDEXED_CSV, (d) => ({
+      seasonDay: +d.season_day,
+      date: parseDate(d.date),
+      fires: +d.fires_indexed,
+      pm25: +d.pm25_indexed,
+    })),
+  ]).then(([india, rows, indexed]) => {
     fireRows = rows
       .filter(
         (d) =>
@@ -1446,6 +1463,7 @@
     frames = buildFrames(fireRows, dates);
 
     drawMap(india);
+    buildMiniChart(indexed);
     updateByProgress(0);
     setupScroller();
   });
@@ -1640,6 +1658,49 @@
     return Math.max(0, Math.min(1, rawProgress * 1.12));
   }
 
+  // Freeze the day while the wind visualization is prominently on screen, then
+  // resume. We hold the date across the wind window and remap the rest of the
+  // scroll so it stays continuous (no jump when the wind fades away).
+  const FREEZE_FOCUS_THRESHOLD = 0.5;
+
+  function getWindFreezeWindow() {
+    const smokeStep = document.querySelector(".smoke-route-step");
+    const section = document.querySelector("#fire-scrolly");
+    if (!smokeStep || !section) return null;
+
+    const start = section.offsetTop;
+    const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
+    const scrollToProgress = (y) => {
+      const raw = Math.max(0, Math.min(1, (y - start) / scrollable));
+      return Math.max(0, Math.min(1, raw * 1.12));
+    };
+
+    const rect = smokeStep.getBoundingClientRect();
+    const stepCenterAbs = rect.top + window.scrollY + rect.height / 2;
+    // Scroll position where the wind focus peaks (step centered in viewport).
+    const scrollCenter = stepCenterAbs - window.innerHeight / 2;
+    const range = window.innerHeight * 0.55; // must match getSmokeStepFocus
+    // Freeze across the band where focus exceeds the threshold.
+    const half = range * (1 - FREEZE_FOCUS_THRESHOLD);
+    return {
+      a: scrollToProgress(scrollCenter - half),
+      b: scrollToProgress(scrollCenter + half),
+    };
+  }
+
+  function freezeAdjustedProgress(progress) {
+    const win = getWindFreezeWindow();
+    if (!win) return progress;
+    const span = win.b - win.a;
+    if (!(span > 0) || span >= 0.9) return progress;
+
+    let eff;
+    if (progress <= win.a) eff = progress;
+    else if (progress < win.b) eff = win.a; // held on the wind day
+    else eff = progress - span;
+    return eff / (1 - span);
+  }
+
   function updateByProgress(progress) {
     if (!dates.length) return;
 
@@ -1647,9 +1708,10 @@
     dimLayer.style("opacity", smokeStepFocus * 0.28);
     windLayer.style("opacity", smokeStepFocus * 0.88);
 
+    const eff = freezeAdjustedProgress(progress);
     const i = Math.max(
       0,
-      Math.min(dates.length - 1, Math.round(progress * (dates.length - 1))),
+      Math.min(dates.length - 1, Math.round(eff * (dates.length - 1))),
     );
     if (i === currentIndex && fireLayer.selectAll("circle").size()) return;
 
@@ -1719,6 +1781,8 @@
       `${frame.todayTotal.toLocaleString()} new fires | ${frame.recentTotal.toLocaleString()} in the last 6 days | ${frame.cumulativeTotal.toLocaleString()} cumulative`,
     );
 
+    updateMiniChart(currentDate);
+
     fireLayer
       .selectAll("circle")
       .data(frame.recentByCell, (d) => d.key)
@@ -1744,6 +1808,151 @@
             .attr("opacity", (d) => fireOpacity(d)),
         (exit) => exit.transition().duration(70).attr("r", 0).remove(),
       );
+  }
+
+  function buildMiniChart(data) {
+    indexedRows = (data || [])
+      .filter((d) => d.date && !isNaN(d.fires) && !isNaN(d.pm25))
+      .sort((a, b) => a.seasonDay - b.seasonDay);
+    if (!indexedRows.length) return;
+
+    const W = 300;
+    const H = 170;
+    const m = { top: 24, right: 10, bottom: 22, left: 34 };
+    const maxDay = d3.max(indexedRows, (d) => d.seasonDay);
+
+    const svgMini = d3
+      .select("#fire-pm-mini-chart")
+      .attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+    svgMini.selectAll("*").remove();
+
+    miniX = d3.scaleLinear().domain([1, maxDay]).range([m.left, W - m.right]);
+    miniY = d3.scaleLinear().domain([0, 1]).range([H - m.bottom, m.top]);
+
+    // Horizontal gridlines at 0 / 0.5 / 1.
+    svgMini
+      .append("g")
+      .attr("class", "mini-grid")
+      .selectAll("line")
+      .data([0, 0.5, 1])
+      .join("line")
+      .attr("x1", m.left)
+      .attr("x2", W - m.right)
+      .attr("y1", (d) => miniY(d))
+      .attr("y2", (d) => miniY(d));
+
+    // Y axis: domain line, ticks (0 / 0.5 / 1), and a rotated title.
+    const yAxis = svgMini.append("g").attr("class", "axis mini-yaxis");
+    yAxis
+      .append("line")
+      .attr("x1", m.left)
+      .attr("x2", m.left)
+      .attr("y1", miniY(0))
+      .attr("y2", miniY(1));
+    yAxis
+      .selectAll("text.tick")
+      .data([0, 0.5, 1])
+      .join("text")
+      .attr("class", "tick")
+      .attr("x", m.left - 5)
+      .attr("y", (d) => miniY(d))
+      .attr("text-anchor", "end")
+      .attr("dominant-baseline", "middle")
+      .text((d) => d);
+    yAxis
+      .append("text")
+      .attr("class", "mini-axis-title")
+      .attr("transform", `translate(9, ${(miniY(0) + miniY(1)) / 2}) rotate(-90)`)
+      .attr("text-anchor", "middle")
+      .text("Relative level (0–1)");
+
+    // X labels: Oct 1, Nov 1, Nov 30.
+    const xticks = [
+      { day: 1, label: "Oct 1", anchor: "start" },
+      { day: 32, label: "Nov 1", anchor: "middle" },
+      { day: maxDay, label: "Nov 30", anchor: "end" },
+    ];
+    svgMini
+      .append("g")
+      .attr("class", "axis")
+      .selectAll("text")
+      .data(xticks)
+      .join("text")
+      .attr("x", (d) => miniX(d.day))
+      .attr("y", H - m.bottom + 12)
+      .attr("text-anchor", (d) => d.anchor)
+      .text((d) => d.label);
+
+    // Vertical marker at the current day.
+    miniDayMarker = svgMini
+      .append("line")
+      .attr("class", "mini-day-marker")
+      .attr("y1", m.top)
+      .attr("y2", H - m.bottom)
+      .attr("x1", miniX(1))
+      .attr("x2", miniX(1))
+      .style("opacity", 0);
+
+    miniLineFires = d3
+      .line()
+      .x((d) => miniX(d.seasonDay))
+      .y((d) => miniY(d.fires))
+      .curve(d3.curveMonotoneX);
+    miniLinePm = d3
+      .line()
+      .x((d) => miniX(d.seasonDay))
+      .y((d) => miniY(d.pm25))
+      .curve(d3.curveMonotoneX);
+
+    miniPmPath = svgMini.append("path").attr("class", "mini-line pm25");
+    miniFiresPath = svgMini.append("path").attr("class", "mini-line fires");
+
+    // Compact legend in the top margin.
+    const legend = svgMini
+      .append("g")
+      .attr("class", "mini-legend")
+      .attr("transform", `translate(${m.left}, 11)`);
+    legend
+      .append("line")
+      .attr("class", "mini-line fires")
+      .attr("x1", 0)
+      .attr("x2", 14)
+      .attr("y1", 0)
+      .attr("y2", 0);
+    legend.append("text").attr("x", 18).attr("y", 3).text("Fires");
+    legend
+      .append("line")
+      .attr("class", "mini-line pm25")
+      .attr("x1", 56)
+      .attr("x2", 70)
+      .attr("y1", 0)
+      .attr("y2", 0);
+    legend.append("text").attr("x", 74).attr("y", 3).text("Delhi PM2.5 (2022)");
+
+    updateMiniChart(indexedRows[0].date);
+  }
+
+  function currentSeasonDay(date) {
+    if (!date || !indexedRows.length) return 1;
+    const seasonStart = new Date(date.getFullYear(), 9, 1); // Oct 1
+    const day = Math.round((date - seasonStart) / 86400000) + 1;
+    const maxDay = d3.max(indexedRows, (d) => d.seasonDay);
+    return Math.max(1, Math.min(maxDay, day));
+  }
+
+  function updateMiniChart(currentDate) {
+    if (!indexedRows.length || !miniFiresPath) return;
+    const day = currentSeasonDay(currentDate);
+    const visible = indexedRows.filter((d) => d.seasonDay <= day);
+    if (!visible.length) return;
+    miniFiresPath.attr("d", miniLineFires(visible));
+    miniPmPath.attr("d", miniLinePm(visible));
+    const last = visible[visible.length - 1];
+    miniDayMarker
+      .attr("x1", miniX(last.seasonDay))
+      .attr("x2", miniX(last.seasonDay))
+      .style("opacity", 1);
   }
 
   function getSmokeStepFocus() {
