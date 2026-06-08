@@ -210,6 +210,7 @@
     { id: "farmer-window", label: "Why Farmers Burn", type: "text" },
     { id: "fire-scrolly", label: "Fire Map", type: "interaction" },
     { id: "pm25-comparison", label: "AQI Visual", type: "interaction" },
+    { id: "what-this-means", label: "What It Means", type: "text" },
     {
       id: "cigarette-interactive",
       label: "Cigarette Equivalent",
@@ -1409,6 +1410,9 @@
   const dissolveLines = fadeVeil
     ? Array.from(fadeVeil.querySelectorAll(".dissolve-line"))
     : [];
+  const smokeLayer = fadeVeil
+    ? fadeVeil.querySelector(".dissolve-smoke")
+    : null;
 
   function fadeMapAtEnd() {
     const sectionEl = document.querySelector("#fire-scrolly");
@@ -1428,25 +1432,36 @@
     if (stepsEl) stepsEl.style.opacity = 1 - veilO;
 
     // 2. Each line: scrolling into its range toggles .is-visible, which plays a
-    //    timed CSS fade (animation), instead of opacity tracking scroll. Ranges
-    //    have blank gaps between them so each line fully fades out before the
-    //    next fades in.
+    //    timed CSS fade. Blank gaps between ranges; all done before the crossfade.
     const wins = [
-      [0.14, 0.32],
-      [0.44, 0.62],
-      [0.74, 0.9],
+      [0.1, 0.28],
+      [0.32, 0.5],
+      [0.54, 0.72],
     ];
     dissolveLines.forEach((line, i) => {
       const active = tp >= wins[i][0] && tp <= wins[i][1];
       line.classList.toggle("is-visible", active);
     });
 
-    // 3. Grey -> PM2.5 peach (#3f3f3f -> #f0c89a) for the hand-off.
-    const toPeach = clamp01((tp - 0.92) / 0.08);
+    // Smoke behind the text: builds across the lines, clears before the crossfade.
+    if (smokeLayer) {
+      const build = clamp01((tp - 0.1) / 0.45);
+      const clear = 1 - clamp01((tp - 0.62) / 0.1);
+      smokeLayer.style.opacity = build * clear;
+    }
+
+    // 3. Grey -> PM2.5 peach (#3f3f3f -> #f0c89a), done before the crossfade.
+    const toPeach = clamp01((tp - 0.64) / 0.08);
     const r = Math.round(63 + (240 - 63) * toPeach);
     const g = Math.round(63 + (200 - 63) * toPeach);
     const b = Math.round(63 + (154 - 63) * toPeach);
     fadeVeil.style.background = `rgb(${r}, ${g}, ${b})`;
+
+    // 4. Once the dissolve is done and the PM2.5 viz is pinned behind, dismiss the
+    //    whole fires layer — a class-triggered CSS fade (margin-top: -200vh puts the
+    //    viz underneath). Time-based, so it always completes; you can't get stuck
+    //    half-faded. Reveals the peach+viz in place (never the dark map).
+    sectionEl.classList.toggle("is-dismissed", window.scrollY >= releaseY - vh);
   }
 
   const projection = d3

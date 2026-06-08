@@ -1353,9 +1353,91 @@ body {
   padding: 0 8vw;
 }
 
+/* Soft smoke that drifts behind the text, building up as you scroll (opacity is
+   driven by scroll in fadeMapAtEnd). Subtle so the focus stays on the words. */
+.dissolve-smoke {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dissolve-smoke span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(216, 212, 206, 0.13),
+    rgba(216, 212, 206, 0) 70%
+  );
+  filter: blur(34px);
+  will-change: transform, opacity;
+}
+
+.dissolve-smoke span:nth-child(1) {
+  width: 48vw;
+  height: 48vw;
+  left: -6vw;
+  top: 6vh;
+  animation: dissolveSmokeA 27s ease-in-out infinite;
+}
+.dissolve-smoke span:nth-child(2) {
+  width: 38vw;
+  height: 38vw;
+  right: -4vw;
+  top: 20vh;
+  animation: dissolveSmokeB 33s ease-in-out infinite;
+}
+.dissolve-smoke span:nth-child(3) {
+  width: 54vw;
+  height: 54vw;
+  left: 16vw;
+  bottom: -10vh;
+  animation: dissolveSmokeA 31s ease-in-out infinite reverse;
+}
+.dissolve-smoke span:nth-child(4) {
+  width: 30vw;
+  height: 30vw;
+  left: 58vw;
+  top: 10vh;
+  animation: dissolveSmokeB 24s ease-in-out infinite;
+}
+.dissolve-smoke span:nth-child(5) {
+  width: 42vw;
+  height: 42vw;
+  left: 28vw;
+  top: 38vh;
+  animation: dissolveSmokeA 37s ease-in-out infinite;
+}
+
+@keyframes dissolveSmokeA {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(4vw, -3vh) scale(1.16);
+  }
+}
+
+@keyframes dissolveSmokeB {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.06);
+  }
+  50% {
+    transform: translate(-5vw, 2vh) scale(0.9);
+  }
+}
+
 /* Transition lines that fade in/out on the grey veil while the map is still
    pinned (no gap, no slide). Stacked in one cell; only opacity changes. */
 .dissolve-lines {
+  position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
   width: min(60rem, 86vw);
@@ -4050,6 +4132,14 @@ body {
    the PM2.5 section follows in the same peach — a pure dissolve, no slide. */
 .fire-scrolly {
   background: var(--peach-pale, #f0c89a);
+  transition: opacity 0.9s ease;
+}
+
+/* Once the dissolve is done, the whole fires layer fades itself away (revealing
+   the PM2.5 viz pinned behind it) on a timer — not tied to scroll — so you can't
+   get stuck half-faded. */
+.fire-scrolly.is-dismissed {
+  opacity: 0;
 }
 
 .fire-scrolly .scrolly-sticky {
@@ -4120,7 +4210,10 @@ body {
   --wheat-gold: #c8a070;
   position: relative;
   min-height: 420vh;
-  margin-top: -1px;
+  /* Sits behind the fires section's tail (no z-index, so it's under the z-2 fires
+     section). The dissolve fades the fires section out to reveal this viz already
+     pinned underneath — a true in-place crossfade, no slide and no empty gap. */
+  margin-top: -200vh;
   background:
     linear-gradient(rgba(46, 46, 46, 0.12) 1px, transparent 1px),
     linear-gradient(90deg, rgba(46, 46, 46, 0.12) 1px, transparent 1px),
@@ -4317,6 +4410,89 @@ body {
   }
 }
 
+/* "So what does this mean?" — centered chapter break after the PM2.5 visual. */
+.meaning-section {
+  position: relative;
+  z-index: 4;
+  padding: clamp(6rem, 13vw, 11rem) clamp(1.5rem, 6vw, 5rem);
+  background: var(--peach-pale, #f0c89a);
+  color: #2e2e2e;
+}
+
+.meaning-inner {
+  max-width: 62rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.meaning-title {
+  margin: 0 0 1.7rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.3rem, 5.5vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #1f1c1a;
+}
+
+.meaning-lede {
+  margin: 0 auto;
+  max-width: 46rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.12rem, 1.8vw, 1.55rem);
+  line-height: 1.6;
+  color: rgba(46, 46, 46, 0.85);
+}
+
+.meaning-sub {
+  margin: 1.2rem auto 0;
+  max-width: 42rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.55;
+  color: rgba(46, 46, 46, 0.62);
+}
+
+.meaning-effects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  gap: clamp(1.6rem, 3vw, 2.6rem);
+  margin-top: clamp(3.5rem, 7vw, 5.5rem);
+  text-align: left;
+}
+
+.meaning-effect {
+  padding-top: 1.1rem;
+  border-top: 2px solid rgba(184, 64, 32, 0.4);
+}
+
+.meaning-stat {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+  font-weight: 700;
+  color: #b84020;
+  line-height: 1;
+}
+
+.meaning-effect h3 {
+  margin: 0.6rem 0 0.5rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1f1c1a;
+}
+
+.meaning-effect p {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.92rem, 1.05vw, 1.02rem);
+  line-height: 1.55;
+  color: rgba(46, 46, 46, 0.74);
+}
+
 .cigarette-interactive {
   margin-top: -1px;
   background:
@@ -4468,7 +4644,7 @@ body {
   margin: 0 0 1.45rem;
   color: var(--charcoal);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.4rem, 3.35vw, 3.85rem);
+  font-size: clamp(2rem, 2.85vw, 3.2rem);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.1;
