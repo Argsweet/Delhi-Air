@@ -209,8 +209,6 @@
     { id: "problem-section", label: "Problem", type: "text" },
     { id: "farmer-window", label: "Why Farmers Burn", type: "text" },
     { id: "fire-scrolly", label: "Fire Map", type: "interaction" },
-    { id: "fire-counts-section", label: "Fire Counts", type: "interaction" },
-    { id: "what-reaches-delhi", label: "What Reaches Delhi", type: "text" },
     { id: "pm25-comparison", label: "AQI Visual", type: "interaction" },
     {
       id: "cigarette-interactive",
@@ -1401,6 +1399,55 @@
   const labelLayer = svg.append("g");
   const windLayer = windSvg.append("g").attr("class", "wind-layer");
   const dimLayer = d3.select(".smoke-screen-dim");
+  // End-of-scrollytelling dissolve + transition, all while the map is still
+  // pinned (no gap, no slide):
+  //   1. dissolve the map to a grey veil (and fade the annotations out)
+  //   2. fade the transition lines in/out on the grey veil, one at a time
+  //   3. turn the veil to the PM2.5 peach, so it hands straight off into PM2.5.
+  const fadeVeil = document.querySelector("#fire-scrolly .map-fade-veil");
+  const stepsEl = document.querySelector("#fire-scrolly .steps");
+  const dissolveLines = fadeVeil
+    ? Array.from(fadeVeil.querySelectorAll(".dissolve-line"))
+    : [];
+
+  function fadeMapAtEnd() {
+    const sectionEl = document.querySelector("#fire-scrolly");
+    if (!sectionEl || !fadeVeil) return;
+
+    const vh = window.innerHeight;
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+    // Scroll position where the sticky map releases.
+    const releaseY = sectionEl.offsetTop + sectionEl.offsetHeight - vh;
+    // The whole sequence plays over this tail (in viewport units) before release.
+    const TAIL = vh * 4.0;
+    const tp = clamp01((window.scrollY - (releaseY - TAIL)) / TAIL);
+
+    // 1. Dissolve the map to grey; fade the annotations out.
+    const veilO = clamp01(tp / 0.12);
+    fadeVeil.style.opacity = veilO;
+    if (stepsEl) stepsEl.style.opacity = 1 - veilO;
+
+    // 2. Each line: scrolling into its range toggles .is-visible, which plays a
+    //    timed CSS fade (animation), instead of opacity tracking scroll. Ranges
+    //    have blank gaps between them so each line fully fades out before the
+    //    next fades in.
+    const wins = [
+      [0.14, 0.32],
+      [0.44, 0.62],
+      [0.74, 0.9],
+    ];
+    dissolveLines.forEach((line, i) => {
+      const active = tp >= wins[i][0] && tp <= wins[i][1];
+      line.classList.toggle("is-visible", active);
+    });
+
+    // 3. Grey -> PM2.5 peach (#3f3f3f -> #f0c89a) for the hand-off.
+    const toPeach = clamp01((tp - 0.92) / 0.08);
+    const r = Math.round(63 + (240 - 63) * toPeach);
+    const g = Math.round(63 + (200 - 63) * toPeach);
+    const b = Math.round(63 + (154 - 63) * toPeach);
+    fadeVeil.style.background = `rgb(${r}, ${g}, ${b})`;
+  }
 
   const projection = d3
     .geoMercator()
@@ -1416,6 +1463,22 @@
   const INDIA_GEOJSON = "data/geo/india_states.geojson";
   const INDEXED_CSV = "data/processed/fire_pm25_indexed_2023.csv";
   const SELECTED_YEAR = 2023;
+  // How much of the section tail is excluded from the date progress. It's less
+  // than the full hold region (.fire-outro-spacer), so the day-by-day animation
+  // spreads further into the section and keeps advancing right up to the
+  // dissolve — instead of finishing early and sitting frozen on the last day.
+  const OUTRO_SPACER_VH = 3.9;
+
+  function mapScrollable() {
+    const section = document.querySelector("#fire-scrolly");
+    if (!section) return 1;
+    return Math.max(
+      1,
+      section.offsetHeight -
+        window.innerHeight -
+        window.innerHeight * OUTRO_SPACER_VH,
+    );
+  }
 
   let fireRows = [];
   let dates = [];
@@ -1638,9 +1701,14 @@
       });
 
     window.addEventListener("resize", scroller.resize);
+    window.addEventListener("resize", fadeMapAtEnd);
+    fadeMapAtEnd();
     window.addEventListener(
       "scroll",
-      () => updateByProgress(getFireScrollProgress()),
+      () => {
+        updateByProgress(getFireScrollProgress());
+        fadeMapAtEnd();
+      },
       { passive: true },
     );
   }
@@ -1650,10 +1718,10 @@
     if (!section) return 0;
 
     const start = section.offsetTop;
-    const scrollable = section.offsetHeight - window.innerHeight;
+    const scrollable = mapScrollable();
     const rawProgress = Math.max(
       0,
-      Math.min(1, (window.scrollY - start) / Math.max(scrollable, 1)),
+      Math.min(1, (window.scrollY - start) / scrollable),
     );
     return Math.max(0, Math.min(1, rawProgress * 1.12));
   }
@@ -1669,7 +1737,7 @@
     if (!smokeStep || !section) return null;
 
     const start = section.offsetTop;
-    const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
+    const scrollable = mapScrollable();
     const scrollToProgress = (y) => {
       const raw = Math.max(0, Math.min(1, (y - start) / scrollable));
       return Math.max(0, Math.min(1, raw * 1.12));
