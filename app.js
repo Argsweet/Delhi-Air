@@ -668,7 +668,13 @@
   function updateProgress() {
     const rect = section.getBoundingClientRect();
     const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
-    const rawProgress = clamp(-rect.top / scrollable) * (steps.length - 1);
+    // The section overlaps the fires-dissolve by one viewport (margin-top), so
+    // hold the viz on its first step through that overlap — the transition can't
+    // scroll the PM2.5 intro out from under you.
+    const hold = window.innerHeight;
+    const rawProgress =
+      clamp((-rect.top - hold) / Math.max(1, scrollable - hold)) *
+      (steps.length - 1);
     const scrollingDown = rawProgress >= lastRawProgress;
     const thresholds = scrollingDown ? [0.45, 1.22, 2.02] : [0.25, 0.95, 1.72];
 
@@ -1426,10 +1432,11 @@
     const TAIL = vh * 4.0;
     const tp = clamp01((window.scrollY - (releaseY - TAIL)) / TAIL);
 
-    // 1. Dissolve the map to grey; fade the annotations out.
-    const veilO = clamp01(tp / 0.12);
-    fadeVeil.style.opacity = veilO;
-    if (stepsEl) stepsEl.style.opacity = 1 - veilO;
+    // 1. Dissolve the map to grey; fade the annotations out. Triggered (auto),
+    //    so it always completes — never stuck half-dimmed if you pause.
+    const dissolving = tp >= 0.04;
+    fadeVeil.classList.toggle("is-grey", dissolving);
+    if (stepsEl) stepsEl.classList.toggle("is-faded", dissolving);
 
     // 2. Each line: scrolling into its range toggles .is-visible, which plays a
     //    timed CSS fade. Blank gaps between ranges; all done before the crossfade.
@@ -1450,12 +1457,8 @@
       smokeLayer.style.opacity = build * clear;
     }
 
-    // 3. Grey -> PM2.5 peach (#3f3f3f -> #f0c89a), done before the crossfade.
-    const toPeach = clamp01((tp - 0.64) / 0.08);
-    const r = Math.round(63 + (240 - 63) * toPeach);
-    const g = Math.round(63 + (200 - 63) * toPeach);
-    const b = Math.round(63 + (154 - 63) * toPeach);
-    fadeVeil.style.background = `rgb(${r}, ${g}, ${b})`;
+    // 3. Grey -> PM2.5 peach, also triggered (auto-completes, never stuck mid-blend).
+    fadeVeil.classList.toggle("is-peach", tp >= 0.74);
 
     // 4. Once the dissolve is done and the PM2.5 viz is pinned behind, dismiss the
     //    whole fires layer — a class-triggered CSS fade (margin-top: -200vh puts the
@@ -1700,32 +1703,35 @@
   }
 
   function setupScroller() {
-    const scroller = scrollama();
+    // Batch all scroll/step/resize work into one frame. Scroll events and
+    // scrollama's progress callback both fire many times per frame and each does
+    // layout reads (getBoundingClientRect) — coalescing to a single rAF removes
+    // the layout thrashing that makes the scrollytelling feel choppy.
+    let scrollScheduled = false;
+    function scheduleUpdate() {
+      if (scrollScheduled) return;
+      scrollScheduled = true;
+      requestAnimationFrame(() => {
+        scrollScheduled = false;
+        updateByProgress(getFireScrollProgress());
+        fadeMapAtEnd();
+      });
+    }
 
+    const scroller = scrollama();
     scroller
       .setup({
         step: ".step",
         offset: 0.58,
         progress: true,
       })
-      .onStepEnter((response) => {
-        updateByProgress(getFireScrollProgress());
-      })
-      .onStepProgress((response) => {
-        updateByProgress(getFireScrollProgress());
-      });
+      .onStepEnter(scheduleUpdate)
+      .onStepProgress(scheduleUpdate);
 
     window.addEventListener("resize", scroller.resize);
-    window.addEventListener("resize", fadeMapAtEnd);
-    fadeMapAtEnd();
-    window.addEventListener(
-      "scroll",
-      () => {
-        updateByProgress(getFireScrollProgress());
-        fadeMapAtEnd();
-      },
-      { passive: true },
-    );
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    scheduleUpdate();
   }
 
   function getFireScrollProgress() {

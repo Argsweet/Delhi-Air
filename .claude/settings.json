@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(awk -F, '$2==\"Punjab\" && $4==2023' data/processed/daily_fire_counts_by_state_2020_2024.csv)",
-      "Bash(awk -F, '$8==2023' data/processed/delhi_pm25_daily.csv)"
+      "Bash(awk -F, '$8==2023' data/processed/delhi_pm25_daily.csv)",
+      "Bash(node --check aqi-dashboard.js)",
+      "Bash(node --check app.js)",
+      "Bash(node --check aqi-bins.js)",
+      "Bash(F=\"C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl\"; grep -oE \"compared with breathing clean air[^\\\\\"]{0,400}\" \"$F\" | sort -u | head -3; echo \"=== card labels/snippets ===\"; grep -oE \"\\(Harder to breathe[^\\\\\"]{0,120}|Higher rates[^\\\\\"]{0,120}|Lungs[^\\\\\"]{0,90}|Heart[^\\\\\"]{0,90}\\)\" \"$F\" | sort -u | head -20)",
+      "Read(//c/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/**)",
+      "Bash(grep -oE 'Living in that air[^\"]{0,1600}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
+      "Bash(grep -oE 'class=\\\\\\\\+\"[a-z-]*effect[a-z-]*\\\\\\\\*\"' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
+      "Bash(grep -oE '[.][a-z-]*health-\\(card|effect\\)[a-z-]*[^{]{0,4}\\\\{[^}]{0,400}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
+      "Bash(grep -oE '<div class=\"meaning-effects\">.{40,1600}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
+      "Bash(grep -oE '[.]meaning-effect h3 ?\\\\{[^}]{0,300}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)"
     ]
   }
 }

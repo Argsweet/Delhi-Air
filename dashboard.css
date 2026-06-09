@@ -1,0 +1,1297 @@
+/* Scoped Delhi AQI dashboard — embedded in narrative.
+   Variables scoped to the dashboard section so they don't override the article. */
+.aqi-dashboard-section {
+  --bg: #d4734a;
+  --bg-deep: #b85f38;
+  --bg-panel: #3a3634;
+  --bg-card: #2e2b29;
+  --border: rgba(80, 75, 70, 0.35);
+  --text: #1c1c1c;
+  --text-on-dark: #e8eaed;
+  --muted: #4a4542;
+  --muted-on-dark: #a8adb4;
+  --accent: #c5c9cf;
+  --accent-strong: #9aa3ad;
+  --accent-dim: rgba(197, 201, 207, 0.14);
+  --accent-line: #d0d5db;
+  --accent-glow: rgba(180, 188, 198, 0.35);
+  --smoke: rgba(180, 188, 198, 0.5);
+  --smoke-bright: rgba(232, 235, 240, 0.95);
+  --font: "DM Sans", system-ui, sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+}
+
+#aqi-dashboard {
+  position: relative;
+  isolation: isolate;
+  font-family: var(--font);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--text);
+  line-height: 1.5;
+  min-height: auto;
+  overflow: visible;
+}
+
+#aqi-dashboard #app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+  overflow: visible;
+}
+
+#aqi-dashboard *,
+#aqi-dashboard *::before,
+#aqi-dashboard *::after {
+  box-sizing: border-box;
+}
+
+#aqi-dashboard .hidden {
+  display: none !important;
+}
+
+/* ─── Loader ─── */
+#aqi-dashboard .loader {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#aqi-dashboard .loader-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+#aqi-dashboard .loader-bar {
+  width: 220px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#aqi-dashboard .loader-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+/* ─── Layout ─── */
+#aqi-dashboard .app {
+  opacity: 0;
+  animation: aqi-fade-in 0.8s ease 0.2s forwards;
+}
+@keyframes aqi-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+#aqi-dashboard .view {
+  display: none;
+  min-height: auto;
+  padding: 0 2rem 4rem;
+}
+#aqi-dashboard .view-active {
+  display: block;
+}
+
+#aqi-dashboard .hero {
+  display: none;
+  padding: 0;
+  max-width: 720px;
+}
+
+#aqi-dashboard .eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+#aqi-dashboard .title {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+#aqi-dashboard .title em {
+  font-style: italic;
+  color: #5c636b;
+}
+
+#aqi-dashboard .subtitle {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+#aqi-dashboard .dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(560px, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+#aqi-dashboard .app.is-detail .dashboard-grid {
+  grid-template-columns: minmax(670px, 0.95fr) minmax(400px, 0.7fr);
+  gap: 1.25rem;
+}
+
+#aqi-dashboard .dashboard-detail-rail {
+  display: none;
+  gap: 1rem;
+  align-content: start;
+  min-width: 0;
+}
+
+#aqi-dashboard .app.is-detail .dashboard-detail-rail {
+  display: grid;
+}
+
+#aqi-dashboard .panel-radial {
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) minmax(150px, 190px);
+  gap: 0.7rem;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+#aqi-dashboard .app.is-detail .panel-radial {
+  grid-template-columns: minmax(430px, 1fr) 200px;
+  align-content: start;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+#aqi-dashboard .panel-radial .panel-head {
+  display: none;
+  grid-column: 1 / -1;
+}
+
+#aqi-dashboard .panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  color: var(--text-on-dark);
+}
+
+#aqi-dashboard .panel.panel-radial {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+#aqi-dashboard .panel-head h2 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-on-dark);
+}
+
+#aqi-dashboard .panel-hint {
+  font-size: 0.8rem;
+  color: var(--muted-on-dark);
+  margin-top: 0.35rem;
+}
+
+#aqi-dashboard .radial-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  padding: 0;
+}
+
+#aqi-dashboard .radial-chart-box {
+  position: relative;
+  width: min(760px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+#aqi-dashboard .app.is-detail .radial-chart-box {
+  width: min(500px, 100%);
+}
+
+#aqi-dashboard .radial-chart-box svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+#aqi-dashboard .radial-center-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+#aqi-dashboard .month-arc {
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    filter 0.2s;
+}
+
+#aqi-dashboard .month-arc.no-data {
+  cursor: default;
+  opacity: 0.35;
+}
+
+#aqi-dashboard .month-arc.has-data:hover {
+  filter: brightness(1.15);
+}
+
+#aqi-dashboard .month-label {
+  fill: var(--muted-on-dark);
+  font-size: 12px;
+  font-family: var(--font);
+  pointer-events: none;
+}
+
+#aqi-dashboard .month-label.burn {
+  fill: var(--accent);
+  font-weight: 600;
+}
+
+/* Year control */
+#aqi-dashboard .year-control label {
+  display: block;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-on-dark);
+  margin-bottom: 0.35rem;
+}
+
+#aqi-dashboard #year-slider {
+  width: 100%;
+  accent-color: var(--accent-strong);
+  margin-bottom: 0.35rem;
+}
+
+#aqi-dashboard .year-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#aqi-dashboard .year-big {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+#aqi-dashboard .btn-ghost {
+  font-family: var(--font);
+  font-size: 0.7rem;
+  padding: 0.28rem 0.5rem;
+  background: transparent;
+  border: 1px solid rgba(180, 188, 198, 0.35);
+  border-radius: 6px;
+  color: var(--muted-on-dark);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+
+#aqi-dashboard .btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#aqi-dashboard .legend-block {
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+#aqi-dashboard .legend-block h3 {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-on-dark);
+  margin-bottom: 0.2rem;
+}
+
+#aqi-dashboard .legend-note {
+  display: none;
+  font-size: 0.7rem;
+  color: var(--muted-on-dark);
+  margin-bottom: 0.75rem;
+}
+
+#aqi-dashboard .legend-bins {
+  list-style: none;
+}
+
+#aqi-dashboard .legend-bins li {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  font-size: 0.58rem;
+  color: var(--muted-on-dark);
+  margin-bottom: 0.2rem;
+  line-height: 1.25;
+}
+
+#aqi-dashboard .legend-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+#aqi-dashboard .stat-block {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+#aqi-dashboard .stat-block h3 {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-on-dark);
+  margin-bottom: 0.35rem;
+}
+
+#aqi-dashboard .stat-list div {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.05rem;
+  font-size: 0.56rem;
+  margin-bottom: 0.18rem;
+  line-height: 1.15;
+}
+
+#aqi-dashboard .stat-list dt {
+  color: var(--muted-on-dark);
+}
+#aqi-dashboard .stat-list dd {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+#aqi-dashboard .panel-side {
+  align-self: center;
+  background: var(--bg-card);
+  border-color: rgba(180, 188, 198, 0.18);
+  border-radius: 8px;
+  padding: 0.62rem;
+}
+
+#aqi-dashboard .app.is-detail .panel-side {
+  width: 200px;
+  justify-self: stretch;
+  align-self: center;
+  padding: 0.65rem;
+}
+
+/* ─── Detail side panel ─── */
+#aqi-dashboard #view-detail {
+  background: transparent;
+  color: var(--text-on-dark);
+  min-height: 0;
+  padding: 0;
+  position: relative;
+}
+
+#aqi-dashboard .detail-nav {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0;
+  margin-bottom: 0.45rem;
+}
+
+#aqi-dashboard .btn-back {
+  font-family: var(--font);
+  font-size: 0.7rem;
+  padding: 0.34rem 0.62rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#aqi-dashboard .btn-back:hover {
+  background: var(--accent-dim);
+}
+
+#aqi-dashboard .detail-badge {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-on-dark);
+}
+
+#aqi-dashboard .detail-hero {
+  display: none;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 0.65rem;
+  padding: 3.2rem 0.8rem 0.85rem;
+}
+
+#aqi-dashboard .detail-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+  color: var(--text-on-dark);
+}
+
+#aqi-dashboard .detail-sub {
+  color: var(--muted-on-dark);
+  font-size: 0.72rem;
+}
+
+#aqi-dashboard .detail-charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+#aqi-dashboard .chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.95rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+#aqi-dashboard .chart-primary {
+  grid-column: 1 / -1;
+}
+
+#aqi-dashboard .chart-narrow {
+  grid-column: 1 / -1;
+}
+
+#aqi-dashboard .chart-head h2 {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+#aqi-dashboard .chart-unit {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+#aqi-dashboard .chart-desc {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--muted-on-dark);
+  margin-top: 0.25rem;
+  margin-bottom: 0.65rem;
+}
+
+#aqi-dashboard .chart-body {
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+#aqi-dashboard .chart-tall {
+  min-height: 0;
+}
+
+/* D3 chart styles */
+#aqi-dashboard .chart-body svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+#aqi-dashboard .axis text {
+  fill: #4a3c2e;
+  font-size: 11px;
+  font-family: var(--font);
+}
+
+#aqi-dashboard .x-axis text {
+  text-anchor: middle;
+}
+
+#aqi-dashboard .y-axis text {
+  text-anchor: end;
+}
+
+#aqi-dashboard .axis line,
+#aqi-dashboard .axis path {
+  stroke: rgba(74, 60, 46, 0.6);
+}
+
+#aqi-dashboard .grid line {
+  stroke: rgba(140, 148, 158, 0.1);
+  stroke-width: 1;
+}
+
+#aqi-dashboard .line-aqi {
+  fill: none;
+  stroke: var(--accent-line);
+  stroke-width: 2.5;
+}
+
+#aqi-dashboard .area-aqi {
+  opacity: 0.85;
+}
+
+#aqi-dashboard .line-pollutant {
+  fill: none;
+  stroke-width: 1.8;
+  opacity: 0.9;
+}
+#aqi-dashboard .line-pm25 {
+  stroke: #aeb8c8;
+}
+#aqi-dashboard .line-no2 {
+  stroke: #9aa8b8;
+}
+#aqi-dashboard .line-o3 {
+  stroke: #b0bcc8;
+}
+#aqi-dashboard .line-so2 {
+  stroke: #c4ccd6;
+}
+
+#aqi-dashboard .dot-aqi {
+  fill: var(--accent-line);
+}
+
+#aqi-dashboard .line-actual {
+  fill: none;
+  stroke: var(--smoke-bright);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+
+#aqi-dashboard .line-prediction {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  opacity: 0.9;
+}
+
+/* ─── Predict section ─── */
+#aqi-dashboard .dashboard-predict-stage {
+  display: none;
+  width: min(980px, 100%);
+  margin: 1rem auto 0;
+}
+
+#aqi-dashboard .dashboard-predict-stage.is-active {
+  display: block;
+}
+
+#aqi-dashboard .predict-section {
+  padding: 0;
+  border-top: 0;
+}
+
+#aqi-dashboard .predict-header {
+  display: none;
+  max-width: 760px;
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+#aqi-dashboard .predict-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  margin-bottom: 0.45rem;
+}
+
+#aqi-dashboard .predict-header h2 {
+  color: var(--text-on-dark);
+}
+#aqi-dashboard .predict-header p {
+  color: var(--muted-on-dark);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+#aqi-dashboard .predict-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.15rem;
+}
+
+#aqi-dashboard .model-stats {
+  margin-bottom: 1rem;
+  padding: 1rem 1.15rem;
+  background: rgba(80, 85, 90, 0.25);
+  border: 1px solid rgba(180, 188, 198, 0.2);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+#aqi-dashboard .model-stats strong {
+  color: var(--accent);
+}
+
+#aqi-dashboard .model-stats .model-eq {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--accent-strong);
+  margin-top: 0.5rem;
+}
+
+#aqi-dashboard .line-ref {
+  fill: none;
+  stroke: var(--smoke);
+  stroke-width: 1.5;
+  stroke-dasharray: 5, 4;
+}
+
+#aqi-dashboard .line-forecast {
+  fill: none;
+  stroke: var(--smoke-bright);
+  stroke-width: 2.5;
+}
+
+#aqi-dashboard .ref-line-label line,
+#aqi-dashboard .ref-line-label rect {
+  stroke: rgba(160, 168, 178, 0.45);
+}
+#aqi-dashboard .ref-line-label text:first-of-type {
+  fill: var(--accent-strong);
+}
+#aqi-dashboard .fc-line-label rect {
+  fill: rgba(42, 40, 38, 0.92);
+  stroke: rgba(200, 205, 212, 0.4);
+}
+#aqi-dashboard .fc-line-label text:first-of-type {
+  fill: var(--accent-line);
+}
+
+#aqi-dashboard .predict-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+#aqi-dashboard .draw-hint {
+  font-size: 0.85rem;
+  color: var(--muted-on-dark);
+}
+
+#aqi-dashboard .compare-panel {
+  margin-top: 1.5rem;
+  padding: 1rem 1.15rem;
+  background: rgba(80, 85, 90, 0.25);
+  border: 1px solid rgba(180, 188, 198, 0.2);
+  border-radius: 8px;
+  animation: fade-in 0.5s ease;
+}
+
+#aqi-dashboard .compare-panel h3 {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+#aqi-dashboard .compare-note {
+  font-size: 0.9rem;
+  color: var(--muted-on-dark);
+  line-height: 1.6;
+}
+
+#aqi-dashboard .compare-note strong {
+  color: var(--text-on-dark);
+}
+
+#aqi-dashboard #predict-canvas.is-locked {
+  cursor: default;
+  opacity: 0.85;
+}
+
+#aqi-dashboard .predict-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  background: linear-gradient(180deg, #353230 0%, #2a2826 100%);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#aqi-dashboard .predict-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#aqi-dashboard #predict-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+#aqi-dashboard .predict-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  gap: 1rem;
+}
+
+#aqi-dashboard .btn-primary {
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent-strong);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+#aqi-dashboard .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+#aqi-dashboard .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#aqi-dashboard .reveal-panel {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  animation: fade-in 0.6s ease;
+}
+
+#aqi-dashboard .reveal-panel h3 {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  margin-bottom: 0.5rem;
+}
+
+#aqi-dashboard .reveal-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+  #aqi-dashboard .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  #aqi-dashboard .panel-radial {
+    grid-template-columns: 1fr;
+  }
+  #aqi-dashboard .dashboard-detail-rail {
+    grid-template-columns: 1fr;
+  }
+  #aqi-dashboard .detail-charts {
+    grid-template-columns: 1fr;
+  }
+  #aqi-dashboard .view {
+    padding: 0 1rem 3rem;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   WARM EDITORIAL RE-THEME — one peach scene, two cream cards
+   (radial+side+trend), draw-to-predict as its own card below.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Warm palette — overrides the dark-theme variables (same scope). */
+.aqi-dashboard-section {
+  --bg: #f0c89a;
+  --bg-deep: #e6b681;
+  --bg-panel: #fbf5ea;
+  --bg-card: #fbf5ea;
+  --border: rgba(120, 82, 50, 0.18);
+  --text: #2e2925;
+  --text-on-dark: #2e2925;
+  --muted: #7a6450;
+  --muted-on-dark: #8a7058;
+  --accent: #c2541f;
+  --accent-strong: #b1431b;
+  --accent-dim: rgba(194, 84, 31, 0.12);
+  --accent-line: #c2541f;
+  --accent-glow: rgba(194, 84, 31, 0.16);
+  --smoke: rgba(120, 82, 50, 0.4);
+  --smoke-bright: rgba(46, 41, 37, 0.9);
+  --font: Arial, Helvetica, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
+}
+
+/* The section as a warm editorial scene. */
+.aqi-dashboard-section {
+  position: relative;
+  z-index: 4;
+  overflow: hidden;
+  padding: clamp(3rem, 7vw, 6rem) clamp(1.4rem, 6vw, 5rem) clamp(4rem, 9vw, 7rem);
+  background:
+    radial-gradient(circle at 86% 20%, rgba(255, 247, 228, 0.85), transparent 32%),
+    linear-gradient(180deg, #f4d2a4 0%, #efc695 55%, #ecbf8b 100%);
+  color: #2e2925;
+}
+
+/* Heading block — upper-left, never centered. */
+.aqi-dashboard-section .aqi-dashboard-intro {
+  position: relative;
+  z-index: 1;
+  max-width: 660px;
+  margin: 0 0 clamp(2.2rem, 5vw, 3.6rem);
+  text-align: left;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.aqi-dashboard-section .aqi-dashboard-intro .kicker {
+  margin: 0 0 0.85rem;
+  color: #b1431b;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.aqi-dashboard-section .aqi-dashboard-intro h1 {
+  margin: 0 0 1.2rem;
+  max-width: 15ch;
+  color: #2b2620;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.4rem, 5.6vw, 4.3rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-align: left;
+}
+.aqi-dashboard-section .aqi-dashboard-intro .body-copy {
+  max-width: 560px;
+  margin: 0;
+  color: rgba(58, 46, 36, 0.82);
+}
+.aqi-dashboard-section .aqi-dashboard-intro .body-copy p {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.02rem, 1.4vw, 1.22rem);
+  line-height: 1.62;
+  color: rgba(58, 46, 36, 0.82);
+}
+.aqi-dashboard-section .aqi-dashboard-intro .body-copy strong {
+  color: #b1431b;
+}
+/* Load status — short rust rule + line. */
+.aqi-dashboard-section .aqi-load-status {
+  display: none;
+}
+
+/* ── The dashboard as cards (not a dark app) ── */
+.aqi-dashboard-section #aqi-dashboard #app {
+  max-width: 1240px;
+  padding: 0;
+  background: transparent;
+}
+
+/* Card 1: radial + side + trend, one cream rounded panel. */
+.aqi-dashboard-section #aqi-dashboard .dashboard-grid {
+  position: relative;
+  z-index: 1;
+  background: #fbf5ea;
+  border: 1px solid rgba(120, 82, 50, 0.16);
+  border-radius: 1.4rem;
+  box-shadow: 0 30px 64px rgba(96, 58, 28, 0.16);
+  padding: clamp(1.3rem, 2.6vw, 2.2rem);
+  gap: clamp(1rem, 2vw, 1.6rem);
+}
+
+/* Panels inside become transparent so it reads as one card. */
+.aqi-dashboard-section #aqi-dashboard .panel,
+.aqi-dashboard-section #aqi-dashboard .panel-side,
+.aqi-dashboard-section #aqi-dashboard .chart-card {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+/* Faint vertical dividers between the columns. */
+.aqi-dashboard-section #aqi-dashboard .app.is-detail .panel-side,
+.aqi-dashboard-section #aqi-dashboard .app.is-detail .dashboard-detail-rail {
+  border-left: 1px solid rgba(120, 82, 50, 0.16);
+  padding-left: clamp(0.9rem, 2vw, 1.5rem);
+}
+
+/* Card 2: draw-to-predict — its own separate cream card below. */
+.aqi-dashboard-section #aqi-dashboard .dashboard-predict-stage {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: clamp(1.6rem, 3.5vw, 3rem) auto 0;
+  background: #fbf5ea;
+  border: 1px solid rgba(120, 82, 50, 0.16);
+  border-radius: 1.4rem;
+  box-shadow: 0 30px 64px rgba(96, 58, 28, 0.16);
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+}
+.aqi-dashboard-section #aqi-dashboard .dashboard-predict-stage .predict-card {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Buttons / accents stay rust on cream. */
+.aqi-dashboard-section #aqi-dashboard .btn-ghost {
+  border-color: rgba(120, 82, 50, 0.3);
+  color: #7a6450;
+}
+.aqi-dashboard-section #aqi-dashboard .btn-primary {
+  background: #c2541f;
+  color: #fff;
+  border: 0;
+}
+.aqi-dashboard-section #aqi-dashboard .btn-primary:hover {
+  background: #a8431a;
+}
+.aqi-dashboard-section #aqi-dashboard .panel-side {
+  border-color: rgba(120, 82, 50, 0.16);
+}
+
+/* Chart axes / gridlines / predict canvas — recolor the cool greys to warm. */
+.aqi-dashboard-section #aqi-dashboard .chart-body svg text {
+  fill: #8a7058;
+}
+.aqi-dashboard-section #aqi-dashboard .chart-body svg .domain,
+.aqi-dashboard-section #aqi-dashboard .chart-body svg .tick line,
+.aqi-dashboard-section #aqi-dashboard .predict-svg line,
+.aqi-dashboard-section #aqi-dashboard .predict-svg path {
+  stroke: rgba(120, 82, 50, 0.22);
+}
+.aqi-dashboard-section #aqi-dashboard .predict-svg text {
+  fill: #8a7058;
+}
+.aqi-dashboard-section #aqi-dashboard .predict-canvas-wrap {
+  background:
+    linear-gradient(180deg, #fdf8ef 0%, #f6ead7 100%);
+  border-color: rgba(120, 82, 50, 0.18);
+  border-radius: 0.8rem;
+}
+
+/* ── Photo-exact refinements ── */
+
+/* Same peach cream as the meaning + PM2.5 sections — no sun-ray glow. */
+.aqi-dashboard-section {
+  background: var(--peach-pale, #f0c89a);
+}
+.aqi-dashboard-section #aqi-dashboard .dashboard-grid,
+.aqi-dashboard-section #aqi-dashboard .dashboard-predict-stage {
+  background: #f4e4ca;
+  border-color: rgba(120, 82, 50, 0.16);
+}
+
+/* AQI categories legend — flush left, its own block. */
+.aqi-dashboard-section #aqi-dashboard .legend-block,
+.aqi-dashboard-section #aqi-dashboard .legend-block h3,
+.aqi-dashboard-section #aqi-dashboard .legend-bins,
+.aqi-dashboard-section #aqi-dashboard .legend-bins li {
+  text-align: left;
+  justify-content: flex-start;
+}
+
+/* Year prev/next clickers under the radial calendar. */
+.aqi-dashboard-section #aqi-dashboard .radial-wrap {
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.aqi-dashboard-section #aqi-dashboard .radial-year-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.4rem;
+}
+.aqi-dashboard-section #aqi-dashboard .year-arrow {
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.15rem;
+  color: #7a6450;
+  background: transparent;
+  border: 1px solid rgba(120, 82, 50, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+.aqi-dashboard-section #aqi-dashboard .year-arrow:hover {
+  border-color: #c2541f;
+  color: #c2541f;
+}
+
+/* The app is held permanently in detail mode (set in JS), so the 3-column card
+   and the radial size never change. The detail rail's content is always present;
+   the right column swaps placeholder text -> trend via .has-month, so a selected
+   month renders in the right column exactly like the reference photo. */
+.aqi-dashboard-section #aqi-dashboard .dashboard-detail-rail #view-detail {
+  display: block;
+}
+.aqi-dashboard-section #aqi-dashboard #view-detail .detail-nav,
+.aqi-dashboard-section #aqi-dashboard #view-detail .detail-hero,
+.aqi-dashboard-section #aqi-dashboard #view-detail .detail-charts {
+  display: none;
+}
+.aqi-dashboard-section #aqi-dashboard .app.has-month .detail-placeholder {
+  display: none;
+}
+.aqi-dashboard-section
+  #aqi-dashboard
+  .app.has-month
+  #view-detail
+  .detail-charts {
+  display: block;
+}
+.aqi-dashboard-section #aqi-dashboard .app.has-month #view-detail .detail-nav {
+  display: flex;
+}
+.aqi-dashboard-section #aqi-dashboard .detail-placeholder {
+  max-width: 33rem;
+}
+.aqi-dashboard-section #aqi-dashboard .detail-placeholder h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+  font-weight: 700;
+  color: #2e2925;
+  margin: 0 0 1rem;
+}
+.aqi-dashboard-section #aqi-dashboard .detail-placeholder p {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.94rem, 1.15vw, 1.05rem);
+  line-height: 1.6;
+  color: rgba(58, 46, 36, 0.82);
+  margin: 0 0 1.05em;
+}
+/* Quieter emphasis so the bold doesn't scatter the eye. */
+.aqi-dashboard-section #aqi-dashboard .detail-placeholder strong {
+  font-weight: 600;
+  color: #463a2c;
+}
+/* The "pick a year" line reads as a soft instruction, set apart. */
+.aqi-dashboard-section #aqi-dashboard .detail-placeholder p:last-child {
+  margin-bottom: 0;
+  font-size: clamp(0.86rem, 1vw, 0.95rem);
+  color: rgba(58, 46, 36, 0.58);
+}
+
+/* Year selector as a dropdown; hide the old slider meta + play button. */
+.aqi-dashboard-section #aqi-dashboard .year-control label {
+  color: #8a7058;
+  font-weight: 700;
+}
+.aqi-dashboard-section #aqi-dashboard .year-select {
+  width: 100%;
+  margin: 0.3rem 0 0;
+  padding: 0.35rem 1.9rem 0.4rem 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2e2925;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1.5px solid rgba(120, 82, 50, 0.3);
+  border-radius: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2012%208'%3E%3Cpath%20d='M1%201l5%205%205-5'%20fill='none'%20stroke='%237a6450'%20stroke-width='1.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.25rem center;
+  background-size: 0.85rem;
+}
+.aqi-dashboard-section #aqi-dashboard .year-control .year-meta {
+  display: none;
+}
+
+/* Year snapshot — everything flush left. */
+.aqi-dashboard-section #aqi-dashboard .stat-block,
+.aqi-dashboard-section #aqi-dashboard .stat-block h3,
+.aqi-dashboard-section #aqi-dashboard .stat-list,
+.aqi-dashboard-section #aqi-dashboard .stat-list div,
+.aqi-dashboard-section #aqi-dashboard .stat-list dt,
+.aqi-dashboard-section #aqi-dashboard .stat-list dd {
+  text-align: left;
+  margin-left: 0;
+  padding-left: 0;
+}
+.aqi-dashboard-section #aqi-dashboard .stat-list div {
+  justify-items: start;
+}
+
+/* Warm the chart axes + gridlines (override the hard-coded cool greys). */
+.aqi-dashboard-section #aqi-dashboard .axis text {
+  fill: #8a7058;
+}
+.aqi-dashboard-section #aqi-dashboard .axis line,
+.aqi-dashboard-section #aqi-dashboard .axis path,
+.aqi-dashboard-section #aqi-dashboard .grid line {
+  stroke: rgba(120, 82, 50, 0.22);
+}
+
+/* ── Draw-to-predict: its own always-visible independent section ── */
+.aqi-dashboard-section #aqi-dashboard .dashboard-predict-stage {
+  display: block;
+}
+.aqi-dashboard-section #aqi-dashboard .predict-month-control {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+.aqi-dashboard-section #aqi-dashboard .predict-month-control label {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a7058;
+  font-weight: 700;
+}
+.aqi-dashboard-section #aqi-dashboard #predict-month {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2e2925;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1.5px solid rgba(120, 82, 50, 0.3);
+  padding: 0.2rem 1.6rem 0.25rem 0.2rem;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2012%208'%3E%3Cpath%20d='M1%201l5%205%205-5'%20fill='none'%20stroke='%237a6450'%20stroke-width='1.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.2rem center;
+  background-size: 0.75rem;
+}
+
+/* ── Trend chart: visible warm x/y axes, and NO card around it ── */
+.aqi-dashboard-section #aqi-dashboard .axis text {
+  fill: #5a4a3a;
+  font-size: 11px;
+}
+.aqi-dashboard-section #aqi-dashboard .axis line,
+.aqi-dashboard-section #aqi-dashboard .axis path {
+  stroke: rgba(90, 74, 58, 0.6);
+  stroke-width: 1;
+}
+.aqi-dashboard-section #aqi-dashboard .chart-card,
+.aqi-dashboard-section #aqi-dashboard .chart-primary,
+.aqi-dashboard-section #aqi-dashboard .detail-charts {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.aqi-dashboard-section #aqi-dashboard .chart-body,
+.aqi-dashboard-section #aqi-dashboard .chart-body svg {
+  overflow: visible;
+}
+
+/* ── Fully left-aligned AQI legend + year snapshot ── */
+.aqi-dashboard-section #aqi-dashboard .legend-block,
+.aqi-dashboard-section #aqi-dashboard .stat-block {
+  text-align: left;
+  margin-left: 0;
+  padding-left: 0;
+}
+.aqi-dashboard-section #aqi-dashboard .legend-block h3,
+.aqi-dashboard-section #aqi-dashboard .stat-block h3 {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-align: left;
+  margin-left: 0;
+  padding-left: 0;
+}
+.aqi-dashboard-section #aqi-dashboard .legend-bins li {
+  font-size: 0.72rem;
+  line-height: 1.3;
+  gap: 0.5rem;
+  margin-bottom: 0.28rem;
+  justify-content: flex-start;
+  text-align: left;
+}
+.aqi-dashboard-section #aqi-dashboard .legend-swatch {
+  width: 10px;
+  height: 10px;
+}
+.aqi-dashboard-section #aqi-dashboard .stat-list div {
+  font-size: 0.72rem;
+  margin-bottom: 0.28rem;
+  justify-items: start;
+}
+.aqi-dashboard-section #aqi-dashboard .stat-list dt,
+.aqi-dashboard-section #aqi-dashboard .stat-list dd {
+  font-size: 0.72rem;
+  text-align: left;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+/* Center the right column vertically so the trend sits lower, filling the
+   empty space under it instead of clinging to the top. */
+.aqi-dashboard-section #aqi-dashboard .dashboard-detail-rail {
+  align-content: center;
+}
+

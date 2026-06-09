@@ -10,6 +10,7 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%26%23x1F637%3B%3C/text%3E%3C/svg%3E"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dashboard.css" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
   </head>
@@ -230,11 +231,11 @@
             <p>narrow prep window</p>
           </aside>
           <p class="lede">
-After their rice harvest, farmers in Punjab and Haryana have only a few weeks to prepare their fields for wheat. The gap leaves little time to clear what is left behind
+After their rice harvest, farmers in Punjab and Haryana have only a few weeks to prepare their fields for wheat.
           </p>
           <p class="lede">
 
-            Clearing crop residue requires time, labor, and equipment that many cannot afford. Burning stubble is the fastest and cheapest way to prepare fields for the next planting season. 
+            Clearing crop residue requires time, labor, and equipment that many <b>cannot afford</b>. Burning stubble is the <b>fastest</b> and <b>cheapest</b> way to prepare fields for the next planting season. 
           </p>
         </article>
         <aside
@@ -491,11 +492,225 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
           Delhi's air is in crisis all year long. Millions of people breathe air
           far above safety limits — and for some, this is all they know.
         </p>
-        <p class="meaning-sub">
-          Year after year, that air quietly reshapes the body — shortening lives
-          by close to a decade and fueling asthma, heart disease, and stroke,
-          while stunting the lungs of children who grow up breathing it.
-        </p>
+        <div class="meaning-effects">
+          <div class="meaning-effect">
+            <div class="meaning-stat">~12 yrs</div>
+            <h3>Life cut short</h3>
+            <p>
+              Sustained exposure can shorten life expectancy by roughly a decade
+              compared with breathing clean air.
+            </p>
+          </div>
+          <div class="meaning-effect">
+            <div class="meaning-stat">Lungs</div>
+            <h3>Harder to breathe</h3>
+            <p>
+              Fine particles drive chronic coughing, asthma, bronchitis, and
+              long-term diseases like COPD.
+            </p>
+          </div>
+          <div class="meaning-effect">
+            <div class="meaning-stat">Heart</div>
+            <h3>Strain on the body</h3>
+            <p>
+              PM2.5 enters the bloodstream, raising the risk of heart attacks,
+              stroke, and high blood pressure.
+            </p>
+          </div>
+          <div class="meaning-effect">
+            <div class="meaning-stat">Kids</div>
+            <h3>Growing up in it</h3>
+            <p>
+              Children who grow up breathing this air may never fully develop
+              healthy lungs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      aria-label="Delhi air quality by month"
+      class="aqi-dashboard-section"
+      id="aqi-dashboard-section"
+    >
+      <p id="aqi-load-status" class="aqi-load-status" hidden>
+        Loading sensor data…
+      </p>
+      <div id="aqi-dashboard" data-aqi-embed="true">
+        <div id="loader" class="loader hidden">
+          <div class="loader-inner">
+            <p class="loader-label">LOADING DELHI SENSOR DATA</p>
+            <div class="loader-bar">
+              <div class="loader-fill" id="loader-fill"></div>
+            </div>
+          </div>
+        </div>
+        <div id="app" class="app hidden">
+          <section id="view-home" class="view view-active">
+            <header class="hero">
+              <p class="eyebrow">Delhi · Hourly sensors · 2020–2023</p>
+              <h1 class="title">The Smoke <em>That Stays</em></h1>
+              <p class="subtitle">
+                Mean monthly AQI in discrete health bands. Select a year, then
+                click a month to compare the season's daily signal against a
+                <strong>2026</strong> curve.
+              </p>
+            </header>
+            <div class="dashboard-grid">
+              <div class="panel panel-radial">
+                <div class="panel-head">
+                  <h2>Monthly AQI calendar</h2>
+                  <p class="panel-hint">
+                    Click a colored month to load the side plots · Oct-Nov =
+                    stubble season
+                  </p>
+                </div>
+                <div class="radial-wrap">
+                  <div class="radial-chart-box">
+                    <svg
+                      id="radial-chart"
+                      role="img"
+                      aria-label="Monthly AQI radial chart"
+                    ></svg>
+                    <div class="radial-center-label" id="radial-center">2020</div>
+                  </div>
+                  <div class="radial-year-nav">
+                    <button
+                      type="button"
+                      id="year-prev"
+                      class="year-arrow"
+                      aria-label="Previous year"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      id="year-next"
+                      class="year-arrow"
+                      aria-label="Next year"
+                    >
+                      →
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <aside class="panel panel-side">
+                <div class="year-control">
+                  <label for="year-slider">Year</label>
+                  <select
+                    id="year-slider"
+                    class="year-select"
+                    aria-label="Year"
+                  ></select>
+                  <div class="year-meta">
+                    <span id="year-display" class="year-big">2020</span>
+                    <button
+                      type="button"
+                      id="year-play"
+                      class="btn-ghost"
+                      title="Play years"
+                    >
+                      ▶
+                    </button>
+                  </div>
+                </div>
+                <div class="legend-block">
+                  <h3>AQI categories</h3>
+                  <p class="legend-note">Discrete bands — not a continuous scale</p>
+                  <ul id="legend-bins" class="legend-bins"></ul>
+                </div>
+                <div class="stat-block" id="year-stats">
+                  <h3>Year snapshot</h3>
+                  <dl class="stat-list">
+                    <div><dt>Peak month AQI</dt><dd id="stat-peak">—</dd></div>
+                    <div><dt>Mean (months w/ data)</dt><dd id="stat-mean">—</dd></div>
+                    <div><dt>Months recorded</dt><dd id="stat-months">—</dd></div>
+                  </dl>
+                </div>
+              </aside>
+            </div>
+          </section>
+          <section id="view-detail" class="view">
+            <div class="detail-placeholder">
+              <h2>What is AQI?</h2>
+              <p>
+                The Air Quality Index (AQI) rolls pollutants like PM2.5 into one
+                number: <strong>0–50 is good</strong>, 150+ is unhealthy, and
+                <strong>300+ is hazardous to everyone</strong>. Delhi spends much
+                of the year above 200, and every winter it spikes past 400 —
+                ranking among the most polluted cities on Earth.
+              </p>
+              <p>
+                Across a single year, Delhi's air rises and falls with the
+                seasons — clearing through the monsoon, then thickening as winter
+                settles in and the fields begin to burn.
+              </p>
+              <p>
+                Pick a year with the dropdown or arrows, then click a month to
+                see just how bad the air gets, day by day.
+              </p>
+            </div>
+            <nav class="detail-nav">
+              <button type="button" id="btn-back" class="btn-back">
+                Clear month
+              </button>
+              <span class="detail-badge" id="detail-badge">Select a month</span>
+            </nav>
+            <header class="detail-hero">
+              <h1 id="detail-title">November 2020</h1>
+              <p id="detail-sub" class="detail-sub">
+                Daily mean AQI and key pollutants driving the haze
+              </p>
+            </header>
+            <div class="detail-charts">
+              <article class="chart-card chart-primary">
+                <header class="chart-head">
+                  <h2>Daily AQI trend <span class="chart-unit" id="chart-aqi-unit">(selected month)</span></h2>
+                </header>
+                <div class="chart-body" id="chart-aqi"></div>
+              </article>
+            </div>
+            <section class="predict-section" id="predict-section">
+              <div class="predict-header">
+                <h2>Predict <span id="predict-month-label">November 2026</span></h2>
+                <p>
+                  Pick a month, then draw the daily AQI trend you expect for it
+                  in <strong>2026</strong>. The dotted line is that month in a
+                  recent year. When you are done, press <strong>Finish</strong>
+                  to reveal sensor data (or an estimate for months not yet
+                  recorded).
+                </p>
+                <div class="predict-month-control">
+                  <label for="predict-month">Month</label>
+                  <select id="predict-month" aria-label="Month to predict"></select>
+                </div>
+              </div>
+              <div class="predict-card">
+                <div class="predict-toolbar">
+                  <button type="button" id="btn-clear-draw" class="btn-ghost">
+                    Clear drawing
+                  </button>
+                  <span class="draw-hint">Click and drag on the chart below</span>
+                </div>
+                <div class="predict-canvas-wrap" id="predict-wrap">
+                  <svg id="predict-grid" class="predict-svg"></svg>
+                  <canvas id="predict-canvas"></canvas>
+                </div>
+                <div class="predict-actions">
+                  <button type="button" id="btn-finish" class="btn-primary">
+                    Finish & reveal 2026
+                  </button>
+                </div>
+                <div id="reveal-panel" class="reveal-panel hidden">
+                  <h3 id="reveal-title">Actual 2026</h3>
+                  <p id="reveal-note" class="reveal-note"></p>
+                  <div class="chart-body" id="chart-reveal"></div>
+                </div>
+              </div>
+            </section>
+          </section>
+        </div>
       </div>
     </section>
 
@@ -887,5 +1102,19 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
     </a>
 
     <script src="app.js?v=fire-takeover"></script>
+
+    <!-- Embedded Delhi AQI dashboard: radial calendar + draw-to-predict -->
+    <script>
+      (function () {
+        window.__delhiDataPromise = fetch("data/delhi_aqi.json", {
+          cache: "no-store",
+        }).then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        });
+      })();
+    </script>
+    <script src="aqi-bins.js"></script>
+    <script src="aqi-dashboard.js"></script>
   </body>
 </html>
