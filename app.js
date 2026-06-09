@@ -217,7 +217,7 @@
       type: "interaction",
     },
     { id: "city-wrapped-in-smoke", label: "India Gate", type: "text" },
-    { id: "why-winter-makes-it-worse", label: "Winter Trap", type: "text" },
+    { id: "inversion-story", label: "It's Not Just the Fires", type: "text" },
     { id: "more-than-one-source", label: "Other Sources", type: "text" },
   ].filter((section) => document.getElementById(section.id));
 

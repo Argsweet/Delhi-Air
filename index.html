@@ -1115,110 +1115,32 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
     </section>
 
     <section
-      aria-label="The air we breathe"
-      class="smoke-city-section story-section"
-      id="city-wrapped-in-smoke"
+      aria-label="How Delhi's air gets trapped"
+      class="inversion-section"
+      id="inversion-story"
     >
-      <div aria-hidden="true" class="smoke-cap smoke-city-cap">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <div class="smoke-city-copy">
-        <h2>Why the Smog Doesn't Disappear</h2>
-        <p>
-          Geography, Weather, and Other Factors<br />
-          Contribute to the Smog.
-        </p>
-      </div>
-      <div class="smoke-scroll-cue" aria-hidden="true">
-        <span></span>
-        <p>Scroll</p>
-      </div>
-    </section>
-
-    <section
-      aria-label="Why winter makes Delhi pollution worse"
-      class="delhi-effects-draft story-section"
-      id="why-winter-makes-it-worse"
-    >
-
-    <div class="pollution-bars">
-
-  <div class="pollution-item">
-    <div class="pollution-label">TRAFFIC</div>
-    <div class="pollution-bar traffic">
-      <div class="tooltip">
-        Vehicle exhaust is one of Delhi's largest year-round sources of PM2.5.
-      </div>
-    </div>
-  </div>
-
-  <div class="pollution-item">
-    <div class="pollution-label">CROP BURNING</div>
-    <div class="pollution-bar crop">
-      <div class="tooltip">
-        Seasonal agricultural burning in Punjab and Haryana can significantly worsen winter smog.
-      </div>
-    </div>
-  </div>
-
-  <div class="pollution-item">
-    <div class="pollution-label">CONSTRUCTION DUST</div>
-    <div class="pollution-bar dust">
-      <div class="tooltip">
-        Dust from construction sites and roads contributes heavily to particulate pollution.
-      </div>
-    </div>
-  </div>
-
-  <div class="pollution-item">
-    <div class="pollution-label">INDUSTRY</div>
-    <div class="pollution-bar industry">
-      <div class="tooltip">
-        Industrial facilities emit particulates and precursor gases that form smog.
-      </div>
-    </div>
-  </div>
-
-  <div class="pollution-item">
-    <div class="pollution-label">WASTE BURNING</div>
-    <div class="pollution-bar waste">
-      <div class="tooltip">
-        Open burning of garbage releases toxic fine particles into the air.
-      </div>
-    </div>
-  </div>
-
-</div>
-      <article class="effects-text-panel">
-        <div class="body-copy">
-          <p>
-            With the Himalayas to the
-            north, Delhi's air circulation is limited. During winter, cold air becomes
-            trapped near the ground beneath a layer of warmer air above -- a
-            phenomenon known as a <b>temperature inversion</b>.
-          </p>
-          <p>
-            Pollutants accumulate, and moist winter air mixes with them, creating the
-            thick smog that frequently blankets the city.
-          </p>
-          <p>
-            Horizons disappear into haze. Schools close. Flights are delayed.
-             More than thirty million people
-            continue daily life beneath air that health experts routinely
-            classify as unsafe to breathe.
-          </p>
-          <p>
-            What begins as smoke hundreds of kilometers away can remain trapped
-            over Delhi for days, turning pollution from an invisible statistic
-            into a visible part of daily life.
-          </p>
+      <div class="inversion-scrolly">
+        <div class="inversion-pinned">
+          <div id="inversion-viz" aria-hidden="true"></div>
+          <div class="inversion-overlay">
+            <h2 class="effects-header">It's Not Just the Fires</h2>
+            <div
+              class="inversion-caption"
+              id="inversion-caption"
+              aria-live="polite"
+            ></div>
+          </div>
         </div>
-      </article>
-
+        <div class="inversion-triggers" aria-hidden="true">
+          <div class="inversion-step" data-step="1"></div>
+          <div class="inversion-step inversion-step-tall" data-step="2"></div>
+          <div class="inversion-step" data-step="3"></div>
+          <div class="inversion-step" data-step="4"></div>
+          <div class="inversion-step" data-step="5"></div>
+          <div class="inversion-step" data-step="6"></div>
+          <div class="inversion-step" data-step="7"></div>
         </div>
+      </div>
     </section>
 
     <div aria-hidden="true" class="map-reveal-veil" id="map-reveal-veil"></div>
@@ -1258,6 +1180,7 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
     </script>
     <script src="aqi-bins.js"></script>
     <script src="aqi-dashboard.js"></script>
+    <script src="inversion-mechanism.js?v=scene4"></script>
     <!-- <script src="pm25-trend.js"></script> -->
     <script>
       (function () {

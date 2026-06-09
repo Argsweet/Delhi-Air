@@ -20,7 +20,13 @@
       "WebFetch(domain:en.wikipedia.org)",
       "WebFetch(domain:businessstandard.substack.com)",
       "Bash(node --check pm25-trend.js)",
-      "Bash(curl -s -o /dev/null -w \"pm25-trend.js: %{http_code}\\\\n\" \"http://localhost:8000/pm25-trend.js\")"
+      "Bash(curl -s -o /dev/null -w \"pm25-trend.js: %{http_code}\\\\n\" \"http://localhost:8000/pm25-trend.js\")",
+      "WebFetch(domain:wendydu1102.github.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(node --check inversion-mechanism.js)",
+      "Bash(curl -s -o /dev/null -w \"inversion-mechanism.js: %{http_code}\\\\n\" \"http://localhost:8000/inversion-mechanism.js\")",
+      "Bash(awk '/\\\\.story-section[ ,{]/{f=1} f{print NR\": \"$0} /}/{if\\(f\\)c++; if\\(c>0 && f\\){f=0;c=0;exit}}' styles.css)",
+      "Bash(awk 'NR>=1 && /^\\\\.problem-section \\\\{/{f=1} f{print NR\": \"$0} f&&/^\\\\}/{exit}' styles.css)"
     ]
   }
 }

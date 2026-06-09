@@ -4712,7 +4712,7 @@ body {
 
 .cigarette-interactive .kicker {
   margin: 0 0 1.45rem;
-  color: var(--rust);
+  color: #f0c89a;
   font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(0.82rem, 1vw, 1rem);
   font-weight: 900;
@@ -4736,7 +4736,7 @@ body {
 .cigarette-interactive .cig-copy h1 {
   max-width: 41rem;
   margin: 0 0 1.45rem;
-  color: var(--charcoal);
+  color: #efe5d9;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(2rem, 2.85vw, 3.2rem);
   font-weight: 800;
@@ -4753,7 +4753,7 @@ body {
 .cigarette-interactive .reveal-label,
 .cigarette-interactive .hist-title {
   margin: 0;
-  color: var(--rust);
+  color: #f0c89a;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.86rem;
   font-weight: 900;
@@ -6825,5 +6825,132 @@ body.fire-scroll-locked {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* "It's not just the fires" — dark inversion scrollytelling: story steps on the
+   left half, full-bleed particle viz on the right half. */
+.inversion-section {
+  position: relative;
+  padding: 0;
+  background: #383735;
+  color: #ece6da;
+}
+.inversion-scrolly {
+  position: relative;
+}
+/* One full-width scene: background viz + centered text overlay. */
+.inversion-pinned {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+#inversion-viz {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.inversion-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.inversion-section .effects-header {
+  position: absolute;
+  top: clamp(2.4rem, 13vh, 10rem);
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.04;
+  color: #f5efe3;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.5);
+}
+.inversion-caption {
+  position: absolute;
+  left: clamp(1.5rem, 6vw, 6rem);
+  top: 52%;
+  transform: translateY(-50%);
+  max-width: min(42%, 34rem);
+  text-align: left;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.inversion-caption.is-shown {
+  opacity: 1;
+}
+.inversion-caption h3 {
+  margin: 0 0 0.8rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+  font-weight: 700;
+  color: #e6b878;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+}
+.inversion-caption p {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.15rem, 2.1vw, 1.9rem);
+  line-height: 1.5;
+  color: #f1eadd;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+}
+.inversion-caption b {
+  color: #e6b878;
+}
+.inversion-caption .cap-lead {
+  margin: 0 0 1.2rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  color: #f1eadd;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+}
+.inversion-caption .cap-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.inversion-caption .cap-li {
+  margin: 0 0 0.7rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.25rem, 2.3vw, 2rem);
+  font-weight: 700;
+  color: #e6b878;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+}
+.inversion-caption .cap-li.cap-new {
+  animation: capFadeUp 0.6s ease both;
+}
+@keyframes capFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Invisible scroll-height triggers (pulled up to overlap the pinned scene). */
+.inversion-triggers {
+  position: relative;
+  margin-top: -100vh;
+  z-index: 3;
+  pointer-events: none;
+}
+.inversion-step {
+  height: 95vh;
+}
+.inversion-step-tall {
+  height: 165vh;
+}
+@media (max-width: 700px) {
+  .inversion-overlay {
+    padding-top: clamp(2.5rem, 12vh, 8rem);
   }
 }
