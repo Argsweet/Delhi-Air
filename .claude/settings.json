@@ -12,7 +12,15 @@
       "Bash(grep -oE 'class=\\\\\\\\+\"[a-z-]*effect[a-z-]*\\\\\\\\*\"' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
       "Bash(grep -oE '[.][a-z-]*health-\\(card|effect\\)[a-z-]*[^{]{0,4}\\\\{[^}]{0,400}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
       "Bash(grep -oE '<div class=\"meaning-effects\">.{40,1600}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
-      "Bash(grep -oE '[.]meaning-effect h3 ?\\\\{[^}]{0,300}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)"
+      "Bash(grep -oE '[.]meaning-effect h3 ?\\\\{[^}]{0,300}' C:/Users/argsw/.claude/projects/c--Users-argsw-DSC106-Delhi-Air/301cf2b8-22ce-4766-ad88-4a8dbd686f62.jsonl)",
+      "Bash(awk -F, 'NR==2{print $1} END{print $1}' data/delhi_pm25_daily.csv)",
+      "Bash(awk -F, 'NR==2{print \"first:\",$1} END{print \"last:\",$1}' data/raw/delhi_air_pollution_hourly.csv)",
+      "WebSearch",
+      "WebFetch(domain:thefederal.com)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:businessstandard.substack.com)",
+      "Bash(node --check pm25-trend.js)",
+      "Bash(curl -s -o /dev/null -w \"pm25-trend.js: %{http_code}\\\\n\" \"http://localhost:8000/pm25-trend.js\")"
     ]
   }
 }

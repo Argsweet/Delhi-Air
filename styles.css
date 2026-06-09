@@ -4442,12 +4442,39 @@ body {
 .meaning-section {
   position: relative;
   z-index: 4;
-  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 6vw, 5rem);
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 6vw, 5rem)
+    clamp(1.25rem, 2.5vw, 2.25rem);
   background: var(--peach-pale, #f0c89a);
   color: #2e2e2e;
+  overflow: hidden;
+}
+
+.top-left-smoke {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  /* was 52vw */
+  width: 34vw;
+
+  max-width: 520px;
+  min-width: 340px;
+
+  height: 650px;
+
+  z-index: 0;
+  pointer-events: none;
+}
+
+.top-left-smoke svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .meaning-inner {
+  position: relative;
+  z-index: 2;
   max-width: 72rem;
   margin: 0 auto;
   text-align: center;
@@ -6678,4 +6705,131 @@ body.fire-scroll-locked {
   font-size: clamp(0.92rem, 1.05vw, 1.02rem);
   line-height: 1.55;
   color: rgba(46, 46, 46, 0.74);
+}
+
+/* ── PM2.5 draw-to-reveal (in the meaning section, full-bleed, no card) ── */
+.meaning-section .pm25-draw {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding: 0 clamp(1rem, 4vw, 4rem);
+  box-sizing: border-box;
+}
+.pm25-draw-text {
+  max-width: 56rem;
+  margin: 0 auto clamp(1.6rem, 3vw, 2.6rem);
+  text-align: center;
+}
+.pm25-draw-title {
+  margin: 0 0 0.8rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #2b2620;
+}
+.pm25-draw-desc {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.02rem, 1.3vw, 1.2rem);
+  line-height: 1.6;
+  color: rgba(58, 46, 36, 0.82);
+}
+.pm25-draw-chart {
+  width: 100%;
+  max-width: 96rem;
+  margin: 0 auto;
+}
+.pm25-draw-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: clamp(1.2rem, 2.5vw, 2rem);
+}
+.pm25-draw-controls[hidden] {
+  display: none;
+}
+.pm25-btn {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+.pm25-btn-solid {
+  background: #c2541f;
+  color: #fff;
+  border: 0;
+}
+.pm25-btn-solid:hover:not(:disabled) {
+  background: #a8431a;
+}
+.pm25-btn-solid:disabled {
+  background: rgba(120, 82, 50, 0.28);
+  color: rgba(255, 255, 255, 0.85);
+  cursor: not-allowed;
+}
+.pm25-btn-ghost {
+  background: transparent;
+  border: 1.5px solid rgba(120, 82, 50, 0.35);
+  color: #7a6450;
+}
+.pm25-btn-ghost:hover {
+  border-color: #c2541f;
+  color: #c2541f;
+}
+
+/* Health-effect cards fade + rise in on scroll (staggered). Progressive
+   enhancement: .anim-ready is added by JS, so without JS they stay visible. */
+.meaning-effect.anim-ready {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+.meaning-effect.anim-ready.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.meaning-effect.anim-ready:nth-child(2) {
+  transition-delay: 0.12s;
+}
+.meaning-effect.anim-ready:nth-child(3) {
+  transition-delay: 0.24s;
+}
+.meaning-effect.anim-ready:nth-child(4) {
+  transition-delay: 0.36s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .meaning-effect.anim-ready {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Generic scroll-in reveal (used for the AQI header + dashboard card). */
+.scroll-reveal.anim-ready {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.85s ease,
+    transform 0.85s ease;
+}
+.scroll-reveal.anim-ready.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal.anim-ready {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

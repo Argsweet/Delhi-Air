@@ -882,7 +882,8 @@
   position: relative;
   z-index: 4;
   overflow: hidden;
-  padding: clamp(3rem, 7vw, 6rem) clamp(1.4rem, 6vw, 5rem) clamp(4rem, 9vw, 7rem);
+  padding: clamp(1.25rem, 3vw, 2.75rem) clamp(1.4rem, 6vw, 5rem)
+    clamp(4rem, 9vw, 7rem);
   background:
     radial-gradient(circle at 86% 20%, rgba(255, 247, 228, 0.85), transparent 32%),
     linear-gradient(180deg, #f4d2a4 0%, #efc695 55%, #ecbf8b 100%);
@@ -1293,5 +1294,141 @@
    empty space under it instead of clinging to the top. */
 .aqi-dashboard-section #aqi-dashboard .dashboard-detail-rail {
   align-content: center;
+}
+
+/* ── Faint landscape (skyline + hills + wheat) at the bottom of the AQI section.
+      Classes scoped to .section-landscape so the generic .skyline / .hill-*
+      names don't clash with the problem-section's city graphic. ── */
+.section-landscape {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 46vh;
+  min-height: 360px;
+  z-index: 0;
+  pointer-events: none;
+}
+.section-landscape svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.section-landscape .landscape-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
+  /* fade the image's top edge into the section's peach background */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 24%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 24%);
+}
+.section-landscape .delhi-skyline {
+  fill: #9b7a50;
+  opacity: 0.16;
+}
+.section-landscape .hill-back {
+  fill: #d8b079;
+  opacity: 0.85;
+}
+.section-landscape .hill-mid {
+  fill: #c6a062;
+  opacity: 0.9;
+}
+.section-landscape .hill-front {
+  fill: #b78b4c;
+  opacity: 0.95;
+}
+.section-landscape .smoke {
+  fill: #a99b86;
+  opacity: 0.5;
+}
+.section-landscape .fire-pile {
+  fill: #6f5230;
+}
+.section-landscape .fire-flame-outer {
+  fill: #e0641e;
+}
+.section-landscape .fire-flame-inner {
+  fill: #f6b03e;
+}
+.section-landscape .wheat {
+  opacity: 0.6;
+}
+.section-landscape .wheat ellipse {
+  fill: #a9824a;
+}
+.section-landscape .wheat path {
+  fill: none;
+  stroke: #a9824a;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+/* Small header above the AQI calendar visual. */
+.aqi-dashboard-section .aqi-section-header {
+  position: relative;
+  z-index: 2;
+  max-width: 72rem;
+  margin: 0 auto clamp(1.4rem, 3vw, 2.4rem);
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.55rem, 2.9vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  line-height: 1.1;
+  color: #2b2620;
+}
+.aqi-dashboard-section .aqi-section-header::after {
+  content: "";
+  display: block;
+  width: 3.25rem;
+  height: 3px;
+  margin: 0.75rem auto 0;
+  background: #c2541f;
+  border-radius: 2px;
+}
+
+/* Let the 3-column dashboard shrink on narrower (Mac) viewports instead of
+   forcing ~1070px of column minimums and spilling the right text column out. */
+.aqi-dashboard-section #aqi-dashboard .app.is-detail .dashboard-grid {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+}
+.aqi-dashboard-section #aqi-dashboard .app.is-detail .panel-radial {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 175px);
+}
+.aqi-dashboard-section #aqi-dashboard .panel,
+.aqi-dashboard-section #aqi-dashboard .panel-side,
+.aqi-dashboard-section #aqi-dashboard .dashboard-detail-rail,
+.aqi-dashboard-section #aqi-dashboard #view-detail,
+.aqi-dashboard-section #aqi-dashboard .detail-charts,
+.aqi-dashboard-section #aqi-dashboard .chart-body {
+  min-width: 0;
+}
+.aqi-dashboard-section #aqi-dashboard .detail-placeholder {
+  max-width: 100%;
+}
+
+/* Mirrored smoke blob on the right, above the AQI plot. */
+.top-right-smoke {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24vw;
+  max-width: 360px;
+  min-width: 250px;
+  height: 430px;
+  z-index: 0;
+  pointer-events: none;
+  transform: scaleX(-1);
+  /* soften the top edge so there's no hard horizontal cut */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 30%);
+}
+.top-right-smoke svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
