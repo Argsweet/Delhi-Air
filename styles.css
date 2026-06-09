@@ -4601,7 +4601,7 @@ body {
       rgba(255, 222, 174, 0.34),
       transparent 18rem
     ),
-    linear-gradient(180deg, #e2b579 0%, #e2b579 100%);
+    linear-gradient(180deg, #926c48 0%, #926c48 100%);
 }
 
 /* Remove old cigarette top cap during fire-to-health transition */
@@ -4622,13 +4622,7 @@ body {
   --sand: #c8916a;
   min-height: 100vh;
   padding: clamp(3.5rem, 7vw, 5.8rem) clamp(1.1rem, 5.4vw, 5.6rem);
-  background:
-    radial-gradient(
-      circle at 78% 88%,
-      rgba(212, 149, 106, 0.24),
-      transparent 26rem
-    ),
-    var(--peach-pale);
+  background: #926c48;
   color: var(--dark);
 }
 
