@@ -1143,6 +1143,85 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
       </div>
     </section>
 
+    <section
+      aria-label="What more can be done about Delhi's smog"
+      class="reflection-section"
+      id="more-than-one-source"
+    >
+      <div class="footer-smoke" aria-hidden="true">
+        <img src="assets/footer.png" alt="" />
+      </div>
+      <div class="bg-quotes" aria-hidden="true">
+        <p class="bg-quote">
+          "Lethal smog is back in the world's most polluted capital."
+          <span>— CNN</span>
+        </p>
+        <p class="bg-quote">
+          "A suffocating blanket of smog has engulfed India's capital."
+          <span>— Al Jazeera</span>
+        </p>
+        <p class="bg-quote">
+          "Pollution levels are now at hazardous levels." <span>— CNN</span>
+        </p>
+        <p class="bg-quote">
+          "Dozens detained after rare protest demanding Delhi clean up its toxic
+          air." <span>— BBC</span>
+        </p>
+        <p class="bg-quote">
+          "The air gets darker, heavier and starts scratching the throats and
+          testing the lungs." <span>— CNN</span>
+        </p>
+        <p class="bg-quote">
+          "Several demonstrators wore gas masks as a symbolic gesture of
+          protest." <span>— BBC</span>
+        </p>
+        <p class="bg-quote">
+          "Pollution levels surge to concentrations 60 times above recommended
+          guidelines." <span>— Al Jazeera</span>
+        </p>
+        <p class="bg-quote">
+          "Residents took to the streets to protest." <span>— AP News</span>
+        </p>
+        <p class="bg-quote">
+          "The Red Fort is turning black." <span>— CNN</span>
+        </p>
+      </div>
+      <div class="protest-signs" aria-hidden="true">
+        <img class="protest-sign sign-first" src="assets/first.png" alt="" />
+        <img class="protest-sign sign-second" src="assets/second.png" alt="" />
+      </div>
+      <article class="text-panel">
+        <h1>But is that everything?</h1>
+        <div class="body-copy">
+          <p>
+            Despite government efforts to curb pollution and crop burning, and
+            clean the air, Delhi once again made global headlines in the winter
+            of 2025. Air quality surpassed <strong>400 AQI</strong>, flights
+            were disrupted, and millions were left breathing hazardous air.
+          </p>
+          <p>
+            In a city of more than <strong>30 million people</strong>, one of
+            the largest in the world, is there not more to be done?
+          </p>
+          <p class="protest-line">
+            Young protesters gathered in Delhi in November 2025 as pollution
+            levels climbed above 400 AQI, demanding action and fighting for
+            their right to breathe clean air.
+          </p>
+          <p>
+            The smoke that blankets Delhi each winter does not come from a
+            single source. Together, they create a problem that affects millions
+            of people every year.
+          </p>
+          <p>
+            For now, the haze still returns each winter. And for the people who
+            live beneath it, the question is no longer what causes the smoke,
+            but when they will finally be able to breathe without it.
+          </p>
+        </div>
+      </article>
+    </section>
+
     <div aria-hidden="true" class="map-reveal-veil" id="map-reveal-veil"></div>
 
     <nav
@@ -1180,7 +1259,7 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
     </script>
     <script src="aqi-bins.js"></script>
     <script src="aqi-dashboard.js"></script>
-    <script src="inversion-mechanism.js?v=scene4"></script>
+    <script src="inversion-mechanism.js?v=scene5"></script>
     <!-- <script src="pm25-trend.js"></script> -->
     <script>
       (function () {
@@ -1202,6 +1281,34 @@ After their rice harvest, farmers in Punjab and Haryana have only a few weeks to
         );
         cards.forEach(function (c) {
           obs.observe(c);
+        });
+      })();
+    </script>
+    <script>
+      (function () {
+        var items = document.querySelectorAll(
+          ".reflection-section .bg-quote, .reflection-section .protest-sign",
+        );
+        if (!items.length) return;
+        if (!("IntersectionObserver" in window)) {
+          items.forEach(function (q) {
+            q.classList.add("in");
+          });
+          return;
+        }
+        var obs = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) {
+                e.target.classList.add("in");
+                obs.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.4 },
+        );
+        items.forEach(function (q) {
+          obs.observe(q);
         });
       })();
     </script>

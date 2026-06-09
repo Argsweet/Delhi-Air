@@ -332,6 +332,16 @@
       .attr("y2", 1);
     sky.append("stop").attr("offset", "0%").attr("stop-color", "#322f2a");
     sky.append("stop").attr("offset", "100%").attr("stop-color", "#48433c");
+    // ground fades into the next section's panel colour for a seamless hand-off
+    var grd = defs
+      .append("linearGradient")
+      .attr("id", "inv-ground")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", 1);
+    grd.append("stop").attr("offset", "0%").attr("stop-color", "#201e1a");
+    grd.append("stop").attr("offset", "100%").attr("stop-color", "#383735");
 
     svg
       .append("rect")
@@ -355,7 +365,7 @@
       .attr("y", GROUND_Y)
       .attr("width", VB_W)
       .attr("height", VB_H - GROUND_Y)
-      .attr("fill", "#201e1a");
+      .attr("fill", "url(#inv-ground)");
 
     drawCity(svg.append("g").attr("fill", "#15130f"));
     svg

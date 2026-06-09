@@ -218,7 +218,7 @@
     },
     { id: "city-wrapped-in-smoke", label: "India Gate", type: "text" },
     { id: "inversion-story", label: "It's Not Just the Fires", type: "text" },
-    { id: "more-than-one-source", label: "Other Sources", type: "text" },
+    { id: "more-than-one-source", label: "What Now?", type: "text" },
   ].filter((section) => document.getElementById(section.id));
 
   if (!sections.length) return;

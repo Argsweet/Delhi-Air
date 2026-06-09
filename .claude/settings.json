@@ -26,7 +26,10 @@
       "Bash(node --check inversion-mechanism.js)",
       "Bash(curl -s -o /dev/null -w \"inversion-mechanism.js: %{http_code}\\\\n\" \"http://localhost:8000/inversion-mechanism.js\")",
       "Bash(awk '/\\\\.story-section[ ,{]/{f=1} f{print NR\": \"$0} /}/{if\\(f\\)c++; if\\(c>0 && f\\){f=0;c=0;exit}}' styles.css)",
-      "Bash(awk 'NR>=1 && /^\\\\.problem-section \\\\{/{f=1} f{print NR\": \"$0} f&&/^\\\\}/{exit}' styles.css)"
+      "Bash(awk 'NR>=1 && /^\\\\.problem-section \\\\{/{f=1} f{print NR\": \"$0} f&&/^\\\\}/{exit}' styles.css)",
+      "Bash(ls -la assets/footer.png)",
+      "Bash(file assets/footer.png)",
+      "Bash(python -c \"from PIL import Image; im=Image.open\\('assets/footer.png'\\); print\\('mode:',im.mode,'size:',im.size\\); print\\('has_alpha:', im.mode in \\('RGBA','LA'\\) or 'transparency' in im.info\\)\")"
     ]
   }
 }

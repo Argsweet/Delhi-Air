@@ -1179,7 +1179,7 @@ body {
 html,
 body {
   margin: 0;
-  background: var(--bg);
+  background: #383735;
   color: white;
   font-family: Georgia, "Times New Roman", serif;
   overflow-x: visible;
@@ -1876,6 +1876,225 @@ body {
 }
 .problem-section .bottom-haze {
   background: linear-gradient(to bottom, transparent, rgba(63, 63, 61, 0.78));
+}
+
+/* Closing reflection — same palette/layout as the problem section, with faint
+   italic news quotes drifting behind the text and intensifying toward the end. */
+.reflection-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 140vh;
+  background: #383735;
+  color: #eee6dc;
+}
+.reflection-section .kicker {
+  color: #d2a36e;
+}
+.reflection-section h1 {
+  color: #f4eee6;
+}
+.reflection-section .body-copy {
+  color: rgba(238, 230, 220, 0.76);
+}
+.reflection-section .body-copy strong {
+  color: #f4eee6;
+}
+/* the protest line — gently emphasised, not shouting */
+.reflection-section .body-copy .protest-line {
+  margin: 2rem 0;
+  padding-left: 1.2rem;
+  border-left: 2px solid rgba(230, 184, 120, 0.7);
+  color: #e3d4b8;
+  font-size: clamp(1.2rem, 1.7vw, 1.6rem);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.reflection-section .text-panel {
+  position: relative;
+  z-index: 12;
+}
+
+.reflection-section .bg-quotes {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.reflection-section .bg-quote {
+  position: absolute;
+  max-width: min(42ch, 56vw);
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: clamp(1.05rem, 1.7vw, 1.65rem);
+  line-height: 1.5;
+  color: #eee6dc;
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s ease;
+}
+.reflection-section .bg-quote.in {
+  opacity: var(--q-op, 0.12);
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reflection-section .bg-quote {
+    transform: none;
+    transition: none;
+  }
+}
+.reflection-section .bg-quote span {
+  font-style: normal;
+  font-size: 0.78em;
+  letter-spacing: 0.04em;
+}
+/* horizontal lines; opacity rises as the section goes on */
+.reflection-section .bg-quote:nth-child(1) {
+  top: 2%;
+  left: 5%;
+  --q-op: 0.05;
+}
+.reflection-section .bg-quote:nth-child(2) {
+  top: 13%;
+  right: 5%;
+  --q-op: 0.06;
+}
+.reflection-section .bg-quote:nth-child(3) {
+  top: 25%;
+  left: 5%;
+  --q-op: 0.07;
+}
+.reflection-section .bg-quote:nth-child(4) {
+  top: 36%;
+  right: 6%;
+  --q-op: 0.08;
+}
+.reflection-section .bg-quote:nth-child(5) {
+  top: 46%;
+  left: 5%;
+  --q-op: 0.09;
+}
+.reflection-section .bg-quote:nth-child(6) {
+  top: 54%;
+  right: 5%;
+  --q-op: 0.1;
+}
+.reflection-section .bg-quote:nth-child(7) {
+  top: 60%;
+  left: 9%;
+  --q-op: 0.11;
+}
+.reflection-section .bg-quote:nth-child(8) {
+  top: 65%;
+  right: 4%;
+  --q-op: 0.12;
+}
+.reflection-section .bg-quote:nth-child(9) {
+  top: 69%;
+  left: 4%;
+  --q-op: 0.13;
+}
+.reflection-section .bg-quote:nth-child(10) {
+  top: 72%;
+  right: 9%;
+  --q-op: 0.14;
+}
+.reflection-section .bg-quote:nth-child(11) {
+  top: 75%;
+  left: 13%;
+  --q-op: 0.15;
+}
+.reflection-section .bg-quote:nth-child(12) {
+  top: 78%;
+  right: 5%;
+  --q-op: 0.16;
+}
+.reflection-section .bg-quote:nth-child(13) {
+  top: 80%;
+  left: 6%;
+  --q-op: 0.17;
+}
+.reflection-section .bg-quote:nth-child(14) {
+  top: 83%;
+  right: 11%;
+  --q-op: 0.18;
+}
+.reflection-section .bg-quote:nth-child(15) {
+  top: 85%;
+  left: 18%;
+  --q-op: 0.19;
+}
+.reflection-section .bg-quote:nth-child(16) {
+  top: 87%;
+  right: 4%;
+  --q-op: 0.2;
+}
+.reflection-section .bg-quote:nth-child(17) {
+  top: 90%;
+  left: 8%;
+  --q-op: 0.21;
+}
+.reflection-section .bg-quote:nth-child(18) {
+  top: 92%;
+  right: 13%;
+  --q-op: 0.22;
+}
+
+.reflection-section .protest-signs {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.reflection-section .protest-sign {
+  position: absolute;
+  height: auto;
+  opacity: 0;
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
+}
+.reflection-section .protest-sign.in {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reflection-section .sign-first {
+  top: 14%;
+  left: -6%;
+  width: clamp(19rem, 34vw, 36rem);
+  transform: translateX(-52px);
+}
+.reflection-section .sign-second {
+  top: 40%;
+  right: -1.5%;
+  width: clamp(24rem, 42vw, 44rem);
+  transform: translateX(52px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reflection-section .protest-sign {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Smoke art capping the foot of the section — sits behind the text and quotes,
+   above the section background. */
+.reflection-section .footer-smoke {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 0;
+  line-height: 0;
+  pointer-events: none;
+}
+.reflection-section .footer-smoke img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* Farmer clock scope */
