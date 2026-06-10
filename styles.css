@@ -1922,7 +1922,7 @@ body {
 }
 .reflection-section .bg-quote {
   position: absolute;
-  max-width: min(42ch, 56vw);
+  max-width: min(24ch, 26vw);
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
   font-style: italic;
@@ -1996,50 +1996,16 @@ body {
   left: 4%;
   --q-op: 0.13;
 }
-.reflection-section .bg-quote:nth-child(10) {
-  top: 72%;
-  right: 9%;
-  --q-op: 0.14;
+/* confine each quote to its side gutter, clear of the centred 760px text block */
+.reflection-section .bg-quote:nth-child(odd) {
+  left: 1.5rem;
+  right: calc(50% + 380px + 1.5rem);
+  max-width: none;
 }
-.reflection-section .bg-quote:nth-child(11) {
-  top: 75%;
-  left: 13%;
-  --q-op: 0.15;
-}
-.reflection-section .bg-quote:nth-child(12) {
-  top: 78%;
-  right: 5%;
-  --q-op: 0.16;
-}
-.reflection-section .bg-quote:nth-child(13) {
-  top: 80%;
-  left: 6%;
-  --q-op: 0.17;
-}
-.reflection-section .bg-quote:nth-child(14) {
-  top: 83%;
-  right: 11%;
-  --q-op: 0.18;
-}
-.reflection-section .bg-quote:nth-child(15) {
-  top: 85%;
-  left: 18%;
-  --q-op: 0.19;
-}
-.reflection-section .bg-quote:nth-child(16) {
-  top: 87%;
-  right: 4%;
-  --q-op: 0.2;
-}
-.reflection-section .bg-quote:nth-child(17) {
-  top: 90%;
-  left: 8%;
-  --q-op: 0.21;
-}
-.reflection-section .bg-quote:nth-child(18) {
-  top: 92%;
-  right: 13%;
-  --q-op: 0.22;
+.reflection-section .bg-quote:nth-child(even) {
+  right: 1.5rem;
+  left: calc(50% + 380px + 1.5rem);
+  max-width: none;
 }
 
 .reflection-section .protest-signs {
